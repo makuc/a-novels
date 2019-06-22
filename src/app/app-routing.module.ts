@@ -5,10 +5,7 @@ import { E404Component } from './shared/pages/e404/e404.component';
 import { LoginComponent } from './core/authentication/pages/login/login.component';
 import { RegisterComponent } from './core/authentication/pages/register/register.component';
 
-// const adminOnly = hasCustomClaim('admin');
-// const redirectUnauthorizedToLogin = redirectUnauthorizedTo(['login']);
-const redirectLoggedInToHome = redirectLoggedInTo(['items']);
-// const belongsToAccount = (next) => hasCustomClaim(`account-${next.params.id}`);
+import { redirectLoggedInToHome } from './core/guards/const-def.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },

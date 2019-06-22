@@ -6,6 +6,7 @@
 * {
   box-sizing: border-box;
 }
+
 html,
 body {
   height: 100%;
@@ -13,9 +14,11 @@ body {
   margin: 0;
   background: #eaeaea;
 }
+
 a {
   cursor: pointer;
 }
+
 div {
   app-header .navbar {
     //height: 2.6rem;
@@ -31,12 +34,13 @@ div {
       }
     }
   }
+
   mat-sidenav {
     position: fixed !important;
   }
 
-  main > app-home {
-    & > * {
+  main>app-home {
+    &>* {
       max-width: 35em;
       margin: 0;
       margin-left: auto !important;
@@ -44,11 +48,13 @@ div {
       border-left: 2px solid #aaa;
       border-right: 2px solid #aaa;
     }
-    & > .full {
+
+    &>.full {
       max-width: 100%;
       border: none;
     }
-    & > mat-sidenav-container {
+
+    &>mat-sidenav-container {
       position: absolute;
       top: 0;
       bottom: 0;
@@ -59,17 +65,21 @@ div {
     .bckg {
       background: #ccc;
     }
+
     img {
       max-width: 100%;
     }
+
     p {
       margin: 0;
       padding: 15px 0;
     }
+
     figure {
       background: #f3f3f3;
       font-size: 0em;
     }
+
     figcaption {
       text-align: center;
       color: #999;
@@ -79,7 +89,14 @@ div {
     }
   }
 }
+
 .mat-tooltip {
   margin-top: 0.5em !important;
   font-size: 0.6em;
+}
+
+.content {
+  width: 75%;
+  max-width: 40em;
+  margin: 1em auto 1em auto;
 }

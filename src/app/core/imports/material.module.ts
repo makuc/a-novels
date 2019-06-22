@@ -16,7 +16,10 @@ import {
     MatRippleModule,
     MatBottomSheetModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatPaginatorModule,
+    MatExpansionModule,
+    MatTableModule
 } from '@angular/material';
 
 const pckgs = [
@@ -35,7 +38,10 @@ const pckgs = [
     MatRippleModule,
     MatBottomSheetModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatPaginatorModule,
+    MatExpansionModule,
+    MatTableModule
 ];
 
 @NgModule({

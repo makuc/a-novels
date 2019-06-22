@@ -1,24 +1,40 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { User } from 'src/app/shared/models/user.model';
+import { keysConfig } from 'src/app/keys.config';
+import { Injectable, OnInit } from '@angular/core';
+import { User, auth } from 'firebase/app';
+import { UserProfile } from 'src/app/shared/models/user-profile.model';
 
-const config = {
-    apiUrl: 'http://localhost:4000'
-};
+import { Observable } from 'rxjs';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-    constructor(private http: HttpClient) { }
+    /* tslint:disable: variable-name */
+    private _user: User;
+    private _userProfile: AngularFirestoreDocument<UserProfile>;
+    /* tslink:enable: variable-name */
 
-    getAll() {
-        return this.http.get<User[]>(`${config.apiUrl}/users`);
+    public userProfile: Observable<UserProfile | null>;
+
+    constructor(
+        private authService: AngularFireAuth,
+        private afStore: AngularFirestore
+    ) {
+        this.authService.user.subscribe(user => {
+            this._user = user;
+        });
+        this.userProfile = this.afStore.doc('users/FhbJpOsFtiYlunrc5PDqKKw17jl2').valueChanges() as Observable<UserProfile | null>;
     }
 
-    register(user: User) {
-        return this.http.post(`${config.apiUrl}/users/register`, user);
+    private createProfile(uid: string, birthDate: Date) {
+
+    }
+
+    getAll() {
+        return;
     }
 
     delete(id: number) {
-        return this.http.delete(`${config.apiUrl}/users/${id}`);
+        return;
     }
 }

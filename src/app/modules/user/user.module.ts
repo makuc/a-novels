@@ -3,15 +3,10 @@ import { CommonModule } from '@angular/common';
 
 import { UserRoutingModule } from './user-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule, MatCardModule,
-  MatButtonModule,
-  MatToolbarModule,
-  MatProgressSpinnerModule
-} from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MaterialModule } from 'src/app/core/imports/material.module';
+import { FirebaseModule } from 'src/app/core/imports/firebase.module';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 @NgModule({
   imports: [
@@ -19,20 +14,16 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     FormsModule,
     ReactiveFormsModule,
     UserRoutingModule,
-    // Material
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatCardModule,
-    MatButtonModule,
-    MatToolbarModule,
-    MatProgressSpinnerModule,
+    FlexLayoutModule,
 
-    FlexLayoutModule
+    MaterialModule,
+    FirebaseModule
   ],
   declarations: [
+    ProfileComponent
   ],
   exports: [
+    ProfileComponent
   ]
 })
 export class UserModule { }

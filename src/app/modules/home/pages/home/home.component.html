@@ -2,7 +2,7 @@
 <section class="bckg" fxLayout="column" fxLayoutAlign="center stretch">
   <div style="width: 100%; height: 1px"></div>
 
-  <h1>Welcome, {{ currentUser ? currentUser.firstName : "Guest" }}!</h1>
+  <h1>Welcome, {{ currentUser ? currentUser.displayName : "Guest" }}!</h1>
 
   <p>In this application we are going to work with:</p>
 </section>
@@ -15,8 +15,7 @@
 </div>
 
 <figure class='full'>
-  <img src="https://unsplash.it/1800/300
-" width="100%">
+  <div style="width: 100%; height: 300px; background: greenyellow"></div>
   <figcaption>Some text.</figcaption>
 </figure>
 

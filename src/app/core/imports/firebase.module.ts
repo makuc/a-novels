@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 
 // Firebase
 import { AngularFireModule } from '@angular/fire';
-// import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 // import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule, AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
@@ -17,7 +17,8 @@ import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
     // Firebase SDK
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
-    AngularFireAuthGuardModule
+    AngularFireAuthGuardModule,
+    AngularFirestoreModule
   ],
   declarations: [],
   exports: [

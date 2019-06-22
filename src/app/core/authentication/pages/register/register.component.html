@@ -14,6 +14,18 @@
     <form [formGroup]="registerForm" (ngSubmit)="register()">
       <div>
         <mat-form-field class="full-width">
+          <input type="text" matInput placeholder="Display name" required formControlName="name">
+          <button mat-button *ngIf="f['name'].value" matSuffix mat-icon-button aria-label="Clear"
+                  (click)="f['name'].reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="f['name'].hasError('required')">
+            Display name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="full-width">
           <input type="email" matInput placeholder="E-mail" required formControlName="email">
           <button mat-button *ngIf="f['email'].value" matSuffix mat-icon-button aria-label="Clear"
                   (click)="f['email'].reset()">
@@ -37,8 +49,30 @@
           <mat-error *ngIf="f['password'].hasError('minlength') && !f['password'].hasError('required')">Password must be
             at
             least <strong>6 characters</strong> long</mat-error>
-          <mat-error *ngIf="f['password'].hasError('required')">Password is <strong>required</strong></mat-error>
+          <mat-error *ngIf="f['password'].hasError('required')">
+            Password is <strong>required</strong>
+          </mat-error>
         </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="full-width">
+          <input type="password" matInput placeholder="Confirm password" required formControlName="confirm">
+          <button mat-button *ngIf="f['confirm'].value" matSuffix mat-icon-button aria-label="Clear"
+                  (click)="f['confirm'].reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="f['confirm'].hasError('mustmatch') && !f['confirm'].hasError('required')">
+            Passwords <strong>must match</strong>
+          </mat-error>
+          <mat-error *ngIf="f['confirm'].hasError('required')">
+            Password confirmation is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="terms">
+        <mat-checkbox name="acceptTerms" formControlName="acceptTerms">
+          I agree to the <a routerLink="/terms" class="mat-button mat-primary">terms.</a>
+        </mat-checkbox>
       </div>
       <mat-toolbar>
         <button [disabled]="loading" mat-flat-button color="primary">

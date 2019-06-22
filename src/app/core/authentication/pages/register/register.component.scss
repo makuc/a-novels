@@ -1,31 +1,39 @@
 :host {
   font-size: 1rem;
 }
+
 .wrapper {
   max-width: 15em;
   margin-left: auto;
   margin-right: auto;
   margin-top: 1em;
 }
+
 .avatar-size {
   font-size: 2.2em;
 }
+
 .full-width {
   width: 100%;
   min-width: 150px;
   max-width: 500px;
 }
+
 button mat-spinner {
   display: inline-block;
 }
+
 .spacer {
   flex: 1 1 auto;
 }
+
 mat-toolbar {
   background: transparent;
 }
+
 #providers {
   margin-top: 1em;
+
   button {
     margin-top: 0.5em;
     color: white;
@@ -34,10 +42,20 @@ mat-toolbar {
       margin-top: 0;
     }
   }
+
   .btn-p-google {
     background: red;
   }
+
   .btn-p-fb {
     background: blue;
+  }
+}
+
+.terms {
+  a {
+    padding-left: 0;
+    padding-right: 0;
+    min-width: unset;
   }
 }
