@@ -1,0 +1,24 @@
+.c-btn {
+  position: absolute;
+  z-index: 1;
+  padding: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: auto;
+  min-width: auto;
+
+  &.c-btn-next {
+    right: 0;
+    text-align: right;
+  }
+  &.c-btn-prev {
+    left: 0;
+    text-align: left;
+  }
+  .bigger {
+    height: auto;
+    width: auto;
+    font-size: 4em;
+  }
+}

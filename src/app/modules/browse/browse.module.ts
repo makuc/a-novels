@@ -1,14 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BrowseComponent } from './browse.component';
 
 import { BrowseRoutingModule } from './browse-routing.module';
 
 @NgModule({
   imports: [
-    CommonModule
-  ,
+    CommonModule,
     BrowseRoutingModule],
-  declarations: [BrowseComponent]
+  declarations: []
 })
 export class BrowseModule { }

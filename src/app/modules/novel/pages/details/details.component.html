@@ -1,0 +1,99 @@
+<mat-card class="novel-details" ngClass.xs="xs-width" fxLayout="column">
+  <mat-card-header fxHide.gt-xs>
+    <mat-card-title>{{ novel.Title }}</mat-card-title>
+    <mat-card-subtitle>
+      {{ novel.Author }} |
+      <mat-icon matTooltip="Number of released chapter" matTooltipClass="dscr-tooltip">library_books</mat-icon>1331 |
+      <mat-icon matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">trending_up</mat-icon>13
+      chs/w
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start center"
+       fxLayoutGap=".6em">
+
+    <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center"
+         fxLayoutGap=".6em">
+      <img src="/assets/img/novels/01/cover.jpg" alt="Cover picture of '{{ novel.Title}}''">
+      <app-ratings [novel]="novel"></app-ratings>
+    </div>
+
+
+    <div fxFlex fxLayout="column" fxLayoutAlign="start start">
+      <mat-card-title fxShow.gt-xs fxHide>{{ novel.Title }}</mat-card-title>
+      <mat-card-subtitle fxShow.gt-xs fxHide>
+        {{ novel.Author }} |
+        <mat-icon matTooltip="Number of released chapter" matTooltipClass="dscr-tooltip">library_books</mat-icon>1331 |
+        <mat-icon matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">trending_up</mat-icon>13
+        chs /
+        week
+      </mat-card-subtitle>
+
+      <mat-card-content fxHide.xs>
+        <p *ngFor="let parag of novel.Description.split('\n')">
+          {{ parag }}
+        </p>
+      </mat-card-content>
+
+      <div class="actions" fxLayout="row" fxLayoutAlign="start start">
+        <button mat-button (click)="addFavorites()" *ngIf="!isFavorite"
+                matTooltip="Number of released chapter">
+          <mat-icon>favorite_border</mat-icon>
+        </button>
+        <button mat-button (click)="removeFavorites()" *ngIf="isFavorite">
+          <mat-icon>favorite</mat-icon>
+        </button>
+        <button mat-button *ngIf="!inLibrary" (click)="addToLibrary()">
+          <mat-icon>playlist_add</mat-icon>
+          LIBRARY
+        </button>
+        <button mat-button *ngIf="inLibrary" (click)="removeFromLibrary()">
+          <mat-icon>playlist_add_check</mat-icon>
+          LIBRARY
+        </button>
+      </div>
+    </div>
+
+
+
+  </div>
+
+  <app-full-statistic></app-full-statistic>
+
+  <mat-card-content fxHide.gt-xs>
+    <p *ngFor="let parag of novel.Description.split('\n')">
+      {{ parag }}
+    </p>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="novel-details nowrap" ngClass.xs="xs-width" fxLayout="column">
+  <mat-card-content>
+    <mat-tab-group mat-stretch-tabs dynamicHeight>
+
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">toc</mat-icon>
+          Chapters
+        </ng-template>
+
+        <app-toc [toc]="toc" pagination="true"></app-toc>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">grade</mat-icon>
+          Reviews
+        </ng-template>
+        <div class="wrapper">
+          <h1>Some more tab content</h1>
+          <p>...</p>
+        </div>
+
+        <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </mat-tab>
+
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>

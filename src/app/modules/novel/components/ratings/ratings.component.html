@@ -1,0 +1,52 @@
+<div fxLayout="column" fxLayoutAlign="start end">
+
+  <div class="rating">
+    <mat-icon matTooltip="Users' favorite" matTooltipClass="dscr-tooltip">favorite</mat-icon>:
+    <div class="stars" fxFlex>
+      <span>{{ novel.NFavorites }}</span>
+    </div>
+  </div>
+
+  <div class="rating">
+    <mat-icon matTooltip="Number of reviews" matTooltipClass="dscr-tooltip">stars</mat-icon>:
+    <div class="stars" fxFlex>
+      <span>{{ novel.NRatings }}</span>
+    </div>
+  </div>
+
+  <div class="rating">
+    <mat-icon matTooltip="Story idea and progression" matTooltipClass="dscr-tooltip">gesture</mat-icon>:
+    <mat-icon *ngFor="let star of showRating(novel.StoryRating)">
+      {{ star == 1 ? 'star' : star == 0 ? 'star_border' : 'star_half' }}
+    </mat-icon>
+  </div>
+
+  <div class="rating">
+    <mat-icon matTooltip="Writing style" matTooltipClass="dscr-tooltip">brush</mat-icon>:
+    <mat-icon *ngFor="let star of showRating(novel.StyleRating)">
+      {{ star == 1 ? 'star' : star == 0 ? 'star_border' : 'star_half' }}
+    </mat-icon>
+  </div>
+
+  <div class="rating">
+    <mat-icon matTooltip="Characters development" matTooltipClass="dscr-tooltip">wc</mat-icon>:
+    <mat-icon *ngFor="let star of showRating(novel.CharsRating)">
+      {{ star == 1 ? 'star' : star == 0 ? 'star_border' : 'star_half' }}
+    </mat-icon>
+  </div>
+
+  <div class="rating">
+    <mat-icon matTooltip="World building" matTooltipClass="dscr-tooltip">public</mat-icon>:
+    <mat-icon *ngFor="let star of showRating(novel.WorldRating)">
+      {{ star == 1 ? 'star' : star == 0 ? 'star_border' : 'star_half' }}
+    </mat-icon>
+  </div>
+
+  <div class="rating">
+    <mat-icon matTooltip="Grammar and structure" matTooltipClass="dscr-tooltip">school</mat-icon>:
+    <mat-icon *ngFor="let star of showRating(novel.GrammRating)">
+      {{ star == 1 ? 'star' : star == 0 ? 'star_border' : 'star_half' }}
+    </mat-icon>
+  </div>
+
+</div>

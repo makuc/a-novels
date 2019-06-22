@@ -1,0 +1,46 @@
+a {
+  text-decoration: none;
+  color: white;
+}
+
+a:hover, a:active{
+  color: lightgray;
+}
+
+.navigation-items{
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+mat-toolbar{
+  border-radius: 3px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 99999;
+}
+
+
+@media(max-width: 959px){
+  mat-toolbar{
+    border-radius: 0px;
+  }
+}
+
+.id {
+  margin-right: 1em;
+}
+
+.acc-btn {
+  border: solid thin;
+  padding: 0;
+}
+/*
+:host {
+}
+
+.pad-right {
+  flex: 1 1 auto;
+}
+*/

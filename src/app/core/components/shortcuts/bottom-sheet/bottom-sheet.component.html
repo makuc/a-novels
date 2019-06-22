@@ -1,0 +1,42 @@
+<div id="tools">
+  <mat-toolbar>
+    <button mat-stroked-button [matMenuTriggerFor]="themeMenu">
+      <mat-icon inline="true">palette</mat-icon>
+    </button>
+    <button mat-stroked-button [matMenuTriggerFor]="fontMenu">
+      <mat-icon inline="true">tune</mat-icon>
+    </button>
+    <button mat-button (click)="close()">
+      <mat-icon inline="true">close</mat-icon>
+    </button>
+  </mat-toolbar>
+</div>
+
+<mat-menu class="tools-submenu" #fontMenu="matMenu" yPosition="above">
+  <button class="full-btn" mat-menu-item (click)="fontSizeChange($event)">
+    <mat-icon inline="true">format_size</mat-icon>
+    <span>Larger</span>
+  </button>
+  <button class="full-btn" mat-menu-item (click)="fontSizeDefault($event)">
+    <mat-icon inline="true">format_clear</mat-icon>
+    <span>Default</span>
+  </button>
+  <button class="full-btn" mat-menu-item (click)="fontSizeChange($event, false)">
+    <mat-icon inline="true">text_fields</mat-icon>
+    <span>Smaller</span>
+  </button>
+</mat-menu>
+
+<mat-menu class="tools-submenu" #themeMenu="matMenu" yPosition="above">
+  <button mat-menu-item>
+    <mat-icon inline="true">brush</mat-icon>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon inline="true">edit</mat-icon>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon inline="true">audiotrack</mat-icon>
+  </button>
+</mat-menu>

@@ -1,3 +1,7 @@
-<p>
-  header works!
-</p>
+<div class="navbar" fxFlex>
+  <app-headbar (sidenavToggle)="sidenav.toggle()" [user]="user" (onLogout)="logout()"></app-headbar>
+</div>
+<mat-sidenav #sidenav role="navigation">
+  <div class="mat-toolbar-row"></div>
+  <app-sidebar (sidenavClose)="sidenav.close()"></app-sidebar>
+</mat-sidenav>

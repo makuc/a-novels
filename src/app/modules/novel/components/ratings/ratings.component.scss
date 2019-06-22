@@ -1,0 +1,19 @@
+:host {
+  font-size: 1rem;
+}
+.rating {
+  text-align: left;
+  width: 100%;
+  vertical-align: middle;
+  mat-icon,
+  span {
+    vertical-align: middle;
+  }
+  .stars {
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: right;
+  }
+}

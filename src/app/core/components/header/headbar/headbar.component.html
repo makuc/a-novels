@@ -1,0 +1,29 @@
+<mat-toolbar color="primary" class="navbar">
+  <div class="id">
+    <a routerLink="/home">Aa</a>
+  </div>
+  <div fxFlex fxHide.xs>
+    <ul fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" class="navigation-items">
+      <li>
+        <a routerLink="/novel/1">Browse</a>
+      </li>
+      <li>
+        <mat-search-bar fxLayout="row" fxLayoutAlign="start center"></mat-search-bar>
+      </li>
+    </ul>
+  </div>
+  <div fxHide.xs>
+    <ul fxLayout="row" fxLayoutGap="15px" class="navigation-items">
+      <li>
+        <a routerLink="/library">Library</a>
+      </li>
+    </ul>
+  </div>
+  <app-userpane fxLayout="row" fxLayoutAlign="end center" fxFlex.lt-sm fxFlexOffset="1"
+                [user]="user" (logout)="logout()"></app-userpane>
+  <div fxHide.gt-xs>
+    <button mat-icon-button (click)="onToggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>

@@ -1,0 +1,18 @@
+<button mat-mini-fab class="main-btn" (click)="openShortcuts()">
+  <mat-icon inline="true">settings</mat-icon>
+</button>
+<mat-menu #shortcuts="matMenu" yPosition="above" xPosition="before">
+  <button mat-menu-item>Settings</button>
+  <button mat-menu-item>Help</button>
+  <button mat-menu-item [matMenuTriggerFor]="fontSize">
+    <mat-icon>tune</mat-icon>
+  </button>
+</mat-menu>
+<mat-menu #fontSize="matMenu" yPosition="above" xPosition="before">
+  <button mat-menu-item>
+    <mat-icon>format_size</mat-icon>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>text_fields</mat-icon>
+  </button>
+</mat-menu>

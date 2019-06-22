@@ -1,0 +1,11 @@
+<mat-form-field class="mat-search_field" [@slideInOut]="searchVisible" floatLabel="never">
+  <input #input matInput mat-menu-item type="search" placeholder="Search..."
+         [(ngModel)]="value" (ngModelChange)="updateChanges()" (blur)="onBlurring(input.value)"
+         (keyup.enter)="onEnterring(input.value)" (focus)="onFocussing(input.value)">
+  <button class="smaller" mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="value" (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
+<span class="mat-search_icons mat-icon">
+  <mat-icon class="mat-search_icon-search" (click)="!searchVisible ? open(): search();" matRipple>search</mat-icon>
+</span>

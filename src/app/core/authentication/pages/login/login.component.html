@@ -1,0 +1,49 @@
+<mat-card class="wrapper">
+
+  <mat-card-header>
+    <mat-icon mat-card-avatar [inline]="true" class="avatar-size">account_circle</mat-icon>
+    <mat-card-title>Login</mat-card-title>
+    <mat-card-subtitle>Account already exists</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+
+    <form [formGroup]="loginForm" (ngSubmit)="loginEmail()">
+      <div>
+        <mat-form-field class="full-width">
+          <input type="email" matInput placeholder="E-mail" required formControlName="email">
+          <mat-error *ngIf="c['email'].hasError('email') && !c['email'].hasError('required')">
+            Please enter a valid e-mail address
+          </mat-error>
+          <mat-error *ngIf="c['email'].hasError('required')">
+            E-mail is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="full-width">
+          <input type="password" matInput placeholder="Password" required formControlName="password">
+          <mat-error *ngIf="c['password'].invalid">Password is <strong>required</strong></mat-error>
+        </mat-form-field>
+      </div>
+      <mat-toolbar>
+        <button [disabled]="loading" mat-flat-button color="primary">
+          <mat-spinner *ngIf="loading" [diameter]="15"></mat-spinner>
+          Login
+        </button>
+        <span class="spacer"></span>
+        <a mat-stroked-button routerLink="/register" class="btn btn-link">Register</a>
+      </mat-toolbar>
+    </form>
+
+    <div id="providers" fxLayout="column" fxLayoutAlign="center stretch">
+      <button mat-raised-button class="btn-p-google" (click)="loginGoogle()">
+        <em>Login with <strong>Google</strong></em>
+      </button>
+      <button mat-raised-button class="btn-p-fb" (click)="loginFacebook()">
+        <em>Login with <strong>Facebook</strong></em>
+      </button>
+    </div>
+
+  </mat-card-content>
+</mat-card>

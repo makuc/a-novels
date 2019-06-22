@@ -1,0 +1,35 @@
+:host {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  height: 1.7em;
+  overflow: hidden;
+}
+
+.mat-search_field {
+  z-index: 1;
+  padding: 0;
+  width: 240px;
+}
+
+.mat-search_icons {
+  margin: 0;
+  padding: 0;
+  position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  .mat-search_icon-search {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+    border-radius: 50%;
+  }
+
+  &.mat-search_icons--active .mat-search_icon-search {
+    opacity: 0;
+    transform: rotate(0deg);
+  }
+}
