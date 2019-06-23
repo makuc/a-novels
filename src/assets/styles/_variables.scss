@@ -5,33 +5,36 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/theming';
 
-$bckg: #eaeaea;
-
 
 // Define the default theme (same as the example above).
 $indigo-light-primary: mat-palette($mat-indigo);
 $indigo-light-accent: mat-palette($mat-blue, A200, A100, A400);
-$indigo-light-warn: mat-palette($mat-pink, 700);
+$indigo-light-warn: mat-palette($mat-pink, 700); // Optional. Defaults to: red
+$indigo-light-background: map_get($mat-blue-grey, 50);
 $indigo-light-theme: mat-light-theme($indigo-light-primary, $indigo-light-accent, $indigo-light-warn);
+// Insert custom background color
+$background: map-get($indigo-light-theme, background);
+$background: map_merge($background, (background: $indigo-light-background));
+$indigo-light-theme: map_merge($indigo-light-theme, (background: $background));
 
 // Define an alternate dark theme for indigo.
 $indigo-dark-primary: mat-palette($mat-blue-grey);
-$indigo-dark-accent: mat-palette($mat-amber, A200, A100, A400);
+$indigo-dark-accent: mat-palette($mat-amber);
 $indigo-dark-warn: mat-palette($mat-deep-orange);
+$indigo-dark-background: map_get($mat-blue-grey, 900);
+$indigo-dark-background-card: map_get($mat-blue-grey, 800);
 $indigo-dark-theme: mat-dark-theme($indigo-dark-primary, $indigo-dark-accent, $indigo-dark-warn);
+// Insert custom background color
+$background: map-get($indigo-dark-theme, background);
+$background: map_merge($background, (background: $indigo-dark-background));
+
+$indigo-dark-theme: map_merge($indigo-dark-theme, (background: $background));
 
 // Define the default theme (same as the example above).
 $purple-light-primary: mat-palette($mat-purple);
 $purple-light-accent: mat-palette($mat-pink, A200, A100, A400);
 $purple-light-warn: mat-palette($mat-red, A700);
 $purple-light-theme: mat-light-theme($purple-light-primary, $purple-light-accent, $purple-light-warn);
-
-
-$custom-typography: mat-typography-config($font-family: 'Roboto, monospace',
-  $headline: mat-typography-level(32px, 48px, 700),
-  $body-1: mat-typography-level(16px, 24px, 500));
-// Override typography for all Angular Material, including mat-base-typography and all components.
-@include angular-material-typography($custom-typography);
 
 /*
 // https: //material.angular.io/guide/typography#material-typography-in-your-custom-css

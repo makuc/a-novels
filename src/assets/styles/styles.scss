@@ -1,10 +1,9 @@
 @import "variables.scss";
+@import "typography.scss";
 
 // Plus imports for other components in your app.
 @include mat-core();
 
-
-@import "typography.scss";
 
 // Include the default theme styles.
 .indigo {

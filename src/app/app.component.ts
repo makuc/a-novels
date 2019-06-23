@@ -41,6 +41,9 @@ export class AppComponent implements OnInit, OnDestroy {
           this.theme = keysConfig.DEFAULT_THEME;
         }
         document.body.className = this.theme;
+        document.body.classList.add('mat-app-background');
+        document.body.classList.add('mat-typography');
+        document.body.classList.add('app-panel');
 
         // Assign proper theme mode
         if (this.darkMode) {
