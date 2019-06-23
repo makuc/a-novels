@@ -3,23 +3,28 @@ app-shortcuts {
   bottom: 0.5em;
   right: 0.5em;
   font-size: 1rem;
+  z-index: 999;
 }
+
 .main-btn {
   font-size: 1.5em;
   width: 1.5em !important;
   min-width: unset !important;
   height: 1.5em !important;
 }
+
 .tools-panel {
   min-width: unset !important;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   padding: 0 !important;
 }
+
 #tools {
   mat-toolbar {
     padding: 0.5em;
-    > button {
+
+    >button {
       font-size: 1.5rem;
       width: 1.5em;
       height: 1.5em;
@@ -33,29 +38,35 @@ app-shortcuts {
     }
   }
 }
+
 .tools-submenu {
   background: yellowgreen;
   min-height: unset !important;
   max-width: unset !important;
   min-width: auto !important;
   margin-bottom: 0.5em !important;
+
   .mat-menu-content {
     padding: 0 !important;
   }
+
   .full-btn {
     width: 100% !important;
   }
+
   button {
     font-size: 1.5rem;
     line-height: 1em;
     width: auto !important;
     height: auto !important;
     padding: 0.3em !important;
+
     mat-icon {
       margin: 0 !important;
       height: auto !important;
       width: auto !important;
     }
+
     span {
       padding-left: 0.4em;
       padding-right: 0.4em;

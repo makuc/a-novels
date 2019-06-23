@@ -10,7 +10,15 @@
 }
 
 .avatar-size {
-  font-size: 2.2em;
+  font-size: 2.6em;
+  width: 1em !important;
+  height: 1em !important;
+
+  mat-icon {
+    vertical-align: middle;
+    line-height: 1em;
+    margin: -8px 0;
+  }
 }
 
 .full-width {
@@ -28,7 +36,14 @@ button mat-spinner {
 }
 
 mat-toolbar {
-  background: transparent;
+  margin-top: 0.5em;
+  background: transparent !important;
+  height: auto !important;
+
+  button,
+  a {
+    line-height: 2em !important;
+  }
 }
 
 #providers {

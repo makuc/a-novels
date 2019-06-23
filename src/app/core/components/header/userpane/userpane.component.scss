@@ -1,18 +1,27 @@
 .wider {
   min-width: 7em;
 }
+
 .acc-btn {
   font-size: 1.5em;
-  width: 1.5em !important;
-  height: 1.5em !important;
+  width: 1.1em !important;
+  height: 1.1em !important;
   min-width: unset !important;
   padding: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 
-  line-height: 1em;
+  line-height: 1em !important;
+
+  >span {
+    padding: 0 !important;
+    line-height: 1em !important;
+  }
 
   mat-icon {
     margin: 0 !important;
     height: auto !important;
     width: auto !important;
+    line-height: 1em;
   }
 }

@@ -9,7 +9,6 @@ import { map } from 'rxjs/operators';
 })
 export class AppSettingsService {
 
-  settings: Observable<{}>;
   // tslint:disable-next-line: variable-name
   private _settings: BehaviorSubject<{}>;
   private privateSettings: {} = {};
@@ -17,7 +16,6 @@ export class AppSettingsService {
   constructor() {
     this.init();
     this._settings = new BehaviorSubject(this.privateSettings);
-    this.settings = this._settings.asObservable();
   }
 
   private init() {

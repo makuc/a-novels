@@ -1,46 +1,57 @@
-import { Component, OnInit } from '@angular/core';
-import { MatBottomSheetRef, MatBottomSheet } from '@angular/material';
-import { AppSettingsService } from 'src/app/core/services/app-settings.service';
 import { keysConfig } from 'src/app/keys.config';
+import { Component, Input, Output, EventEmitter, Inject } from '@angular/core';
+import { MatBottomSheetRef, MatBottomSheet } from '@angular/material';
+import { Shortcuts } from '../shortcuts.model';
+import { MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-bottom-sheet',
   templateUrl: './bottom-sheet.component.html'
 })
-export class BottomSheetComponent implements OnInit {
-  fontSize: number;
+export class BottomSheetComponent {
+  /* tslint:disable: no-output-on-prefix */
+  onFontSizeChange = new EventEmitter<number>();
+  onThemeSwitch = new EventEmitter<string>();
+  onThemeModeSwitch = new EventEmitter();
+  /* tslint:enable: no-output-on-prefix */
 
   constructor(
     private bottomSheet: MatBottomSheet,
     private bottomSheetRef: MatBottomSheetRef<BottomSheetComponent>,
-    private appSettings: AppSettingsService
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any
   ) { }
 
-  ngOnInit(): void {
-    this.appSettings.getSetting(keysConfig.FONT_SIZE_KEY).subscribe(updatedFontSize => {
-      if (updatedFontSize) {
-        this.fontSize = updatedFontSize as number;
-      } else {
-        this.appSettings.setSetting(keysConfig.FONT_SIZE_KEY, keysConfig.FONT_SIZE_DEFAULT);
-      }
-    });
+  close() {
+    this.bottomSheet.dismiss();
   }
 
   fontSizeChange(event: MouseEvent, increaseFontSize: boolean = true): void {
     event.stopPropagation();
     if (increaseFontSize) {
-      this.appSettings.setSetting(keysConfig.FONT_SIZE_KEY, this.fontSize + keysConfig.FONT_SIZE_STEP);
+      this.data.fontSize += keysConfig.FONT_SIZE_STEP;
+      this.onFontSizeChange.emit(this.data.fontSize);
     } else {
-      this.appSettings.setSetting(keysConfig.FONT_SIZE_KEY, this.fontSize - keysConfig.FONT_SIZE_STEP);
+      this.data.fontSize -= keysConfig.FONT_SIZE_STEP;
+      this.onFontSizeChange.emit(this.data.fontSize);
     }
   }
+
   fontSizeDefault(event: MouseEvent): void {
     event.stopPropagation();
-    this.appSettings.setSetting(keysConfig.FONT_SIZE_KEY, keysConfig.FONT_SIZE_DEFAULT);
+    this.data.fontSize = keysConfig.FONT_SIZE_DEFAULT;
+    this.onFontSizeChange.emit(this.data.fontSize);
   }
 
-  public close() {
-    this.bottomSheet.dismiss();
+  switchTheme(event: MouseEvent, themeName: string) {
+    event.stopPropagation();
+    this.data.themeName = themeName;
+    this.onThemeSwitch.emit(themeName);
+  }
+
+  switchThemeMode(event: MouseEvent) {
+    event.stopPropagation();
+    this.data.darkMode = !this.data.darkMode;
+    this.onThemeModeSwitch.emit();
   }
 
 }

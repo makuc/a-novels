@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth, User, UserInfo } from 'firebase/app';
 import { MatSnackBar } from '@angular/material';
+import { first, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,21 +15,14 @@ export class AuthenticationService {
   /* tslint:disable:variable-name */
   private _credentials: auth.AuthCredential;
   /* tslint:enable:variable-name */
-  public user: User;
-  public loggedIn: boolean;
 
   constructor(
     private afAuth: AngularFireAuth,
     private alert: MatSnackBar
-  ) {
-    this.afAuth.user.subscribe(user => {
-      this.user = user;
-      this.loggedIn = user !== null;
-    });
-  }
+  ) { }
 
   get getUser(): Observable<User> {
-    return this.afAuth.user;
+    return this.afAuth.authState;
   }
 
   loginEmail(email: string, password: string) {
@@ -37,7 +31,7 @@ export class AuthenticationService {
       .then(
         (userCredential) => {
           this._credentials = userCredential.credential;
-          return this.user;
+          return userCredential.user;
         },
         (error) => {
           return error;
@@ -48,10 +42,10 @@ export class AuthenticationService {
     return this.afAuth.auth
       .createUserWithEmailAndPassword(email, password)
       .then(
-        (credential) => {
-          this._credentials = credential.credential;
+        (userCredential) => {
+          this._credentials = userCredential.credential;
 
-          return this.user;
+          return userCredential.user;
         },
         (error) => {
           if (error.code === 'auth/weak-password') {
@@ -82,7 +76,7 @@ export class AuthenticationService {
       userCredential => {
         this._credentials = userCredential.credential;
 
-        return this.user;
+        return userCredential.user;
       },
       error => {
         // The provider's account email, can be used in case of
@@ -113,17 +107,19 @@ export class AuthenticationService {
   }
 
   discoverProviders(email: string) {
-    const prom = this.afAuth.auth.fetchSignInMethodsForEmail(email);
-    prom.then(
-      providers => {
-        // The returned 'providers' is a list of the available providers
-        // linked to the email address. Please refer to the guide for a more
-        // complete explanation on how to recover from this error.
-      },
-      err2 => {
-        console.error('Error getting providers:', err2);
-      });
-    return prom;
+    this.afAuth.auth
+      .fetchSignInMethodsForEmail(email)
+      .then(
+        providers => {
+          // The returned 'providers' is a list of the available providers
+          // linked to the email address. Please refer to the guide for a more
+          // complete explanation on how to recover from this error.
+          return providers;
+        },
+        error => {
+          console.error('Error getting providers:', error);
+          return error;
+        });
   }
 
 }

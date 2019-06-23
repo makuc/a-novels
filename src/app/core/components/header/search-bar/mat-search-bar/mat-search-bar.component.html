@@ -6,6 +6,7 @@
     <mat-icon>close</mat-icon>
   </button>
 </mat-form-field>
-<span class="mat-search_icons mat-icon">
-  <mat-icon class="mat-search_icon-search" (click)="!searchVisible ? open(): search();" matRipple>search</mat-icon>
+<span class="mat-search_icons">
+  <mat-icon class="mat-search_icon-search" [inline]="true"
+            (click)="!searchVisible ? open(): search();" matRipple>search</mat-icon>
 </span>

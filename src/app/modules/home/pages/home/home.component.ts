@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { UserService } from 'src/app/core/services/user.service';
-import { first } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
 import { User } from 'firebase';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+  private destroyer = new Subject<void>();
   tabs = ['assets/img/carousel/bird2.jpg', 'assets/img/carousel/bird1.jpg', 'assets/img/carousel/bird3.jpg'];
   currentUser: User;
   users = [];
@@ -17,12 +19,17 @@ export class HomeComponent implements OnInit {
   constructor(
     private authService: AuthenticationService,
     private userService: UserService
-  ) {
-    this.currentUser = this.authService.user;
+  ) { }
+
+  ngOnInit(): void {
+    this.authService.getUser
+      .pipe(takeUntil(this.destroyer))
+      .subscribe(user => this.currentUser = user);
   }
 
-  ngOnInit() {
-    //this.loadAllUsers();
+  ngOnDestroy(): void {
+    this.destroyer.next();
+    this.destroyer.unsubscribe();
   }
 
   public executeSelectedChange = (event) => {

@@ -3,6 +3,12 @@
     <button mat-stroked-button [matMenuTriggerFor]="themeMenu">
       <mat-icon inline="true">palette</mat-icon>
     </button>
+    <!--
+    <button mat-stroked-button (click)="switchThemeMode()">
+      <mat-icon inline="true" *ngIf="darkMode">brightness_5</mat-icon>
+      <mat-icon inline="true" *ngIf="!darkMode">brightness_2</mat-icon>
+    </button>
+    -->
     <button mat-stroked-button [matMenuTriggerFor]="fontMenu">
       <mat-icon inline="true">tune</mat-icon>
     </button>
@@ -28,15 +34,17 @@
 </mat-menu>
 
 <mat-menu class="tools-submenu" #themeMenu="matMenu" yPosition="above">
-  <button mat-menu-item>
-    <mat-icon inline="true">brush</mat-icon>
+  <button class="full-btn" mat-menu-item (click)="switchTheme($event, 'indigo')">
+    <mat-icon inline="true">format_size</mat-icon>
+    <span>Indigo Theme</span>
   </button>
-
-  <button mat-menu-item>
-    <mat-icon inline="true">edit</mat-icon>
+  <button class="full-btn" mat-menu-item (click)="switchTheme($event, 'purple')">
+    <mat-icon inline="true">format_clear</mat-icon>
+    <span>Purple Theme</span>
   </button>
-
-  <button mat-menu-item>
-    <mat-icon inline="true">audiotrack</mat-icon>
+  <button class="full-btn" mat-menu-item (click)="switchThemeMode($event)">
+    <mat-icon inline="true" *ngIf="data.darkMode">brightness_5</mat-icon>
+    <mat-icon inline="true" *ngIf="!data.darkMode">brightness_2</mat-icon>
+    <span>Switch mode</span>
   </button>
 </mat-menu>

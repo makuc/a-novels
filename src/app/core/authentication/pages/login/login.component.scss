@@ -1,42 +1,61 @@
 :host {
   font-size: 1rem;
 }
+
 .wrapper {
-  max-width: 15em;
+  max-width: 20em;
   margin-left: auto;
   margin-right: auto;
   margin-top: 1em;
 }
+
 .avatar-size {
-  font-size: 2.2em;
+  font-size: 2.6em;
 }
+
 .full-width {
   width: 100%;
   min-width: 150px;
   max-width: 500px;
 }
+
 button mat-spinner {
   display: inline-block;
 }
+
 .spacer {
   flex: 1 1 auto;
 }
+
 mat-toolbar {
-  background: transparent;
+  margin: 0.5em 0 1.5em 0;
+  background: transparent !important;
+  height: auto !important;
+
+  button,
+  a {
+    line-height: 2em !important;
+  }
 }
+
 #providers {
   margin-top: 1em;
+
   button {
     margin-top: 0.5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
     color: white;
 
     &:first-of-type {
       margin-top: 0;
     }
   }
+
   .btn-p-google {
     background: red;
   }
+
   .btn-p-fb {
     background: blue;
   }

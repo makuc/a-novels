@@ -8,8 +8,9 @@ export const keysConfig = {
     RETURN_URL_KEY: 'returnUrl',
 
     // Themes
+    DEFAULT_THEME: 'indigo',
     SELECTED_THEME: 'theme',
-    SELECTED_THEME_MODE: 'themeMode',
+    SELECTED_THEME_DARK_MODE: 'darkMode',
 
     // API
     API_URL: 'http://localhost:4000',
