@@ -1,13 +1,18 @@
-<mat-card class="novel-details" ngClass.xs="xs-width" fxLayout="column">
-  <mat-card-header fxHide.gt-xs>
-    <mat-card-title>{{ novel.Title }}</mat-card-title>
-    <mat-card-subtitle>
+<section class="novel-details" ngClass.xs="xs-width" fxLayout="column">
+  <div fxHide.gt-xs>
+    <h1>{{ novel.Title }}</h1>
+    <h4>
       {{ novel.Author }} |
-      <mat-icon matTooltip="Number of released chapter" matTooltipClass="dscr-tooltip">library_books</mat-icon>1331 |
-      <mat-icon matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">trending_up</mat-icon>13
+      <mat-icon inline matTooltip="Number of released chapter" matTooltipClass="dscr-tooltip">
+        library_books
+      </mat-icon>
+      1331 |
+      <mat-icon inline matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">
+        trending_up
+      </mat-icon>13
       chs/w
-    </mat-card-subtitle>
-  </mat-card-header>
+    </h4>
+  </div>
 
   <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start center"
        fxLayoutGap=".6em">
@@ -65,7 +70,7 @@
       {{ parag }}
     </p>
   </mat-card-content>
-</mat-card>
+</section>
 
 <mat-card class="novel-details nowrap" ngClass.xs="xs-width" fxLayout="column">
   <mat-card-content>

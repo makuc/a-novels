@@ -16,4 +16,12 @@ export class CarouselComponent implements OnInit {
   ngOnInit() {
   }
 
+  nextTab() {
+    this.selected = (this.selected + 1) % this.tabs.length;
+  }
+
+  prevTab() {
+    this.selected = (this.selected > 0) ? this.selected - 1 : this.tabs.length;
+  }
+
 }

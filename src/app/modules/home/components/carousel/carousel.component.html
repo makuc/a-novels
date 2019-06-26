@@ -1,13 +1,12 @@
 <div class="carousel-wrapper">
   <mat-tab-group [(selectedIndex)]="selected" dynamicHeight="true" headerPosition="top" disableRipple="true"
-    mat-align-tabs="center">
+                 mat-align-tabs="center">
     <mat-tab *ngFor="let imageUrl of tabs; let index = index">
       <ng-template mat-tab-label>
         <mat-icon color="primary">{{ index == selected ? "radio_button_checked" : "radio_button_unchecked" }}</mat-icon>
       </ng-template>
-      <app-swipe-tab [nTabs]="tabs.length" [(selected)]="selected">
-        <img src="{{ imageUrl }}" width="100%">
-      </app-swipe-tab>
+      <img app-swipe-side src="{{ imageUrl }}" width="100%"
+           (swipeleft)="nextTab()" (swiperight)="prevTab()" data-mc-options='{ "touchAction": "pan-y" }'>
     </mat-tab>
   </mat-tab-group>
   <app-btn-switch [nTabs]="tabs.length" [(selected)]="selected"></app-btn-switch>

@@ -1,12 +1,36 @@
-<button mat-mini-fab class="main-btn" (click)="openShortcuts()">
-  <mat-icon inline="true">settings</mat-icon>
+<button mat-fab color="link" [matMenuTriggerFor]="shortcuts">
+  <mat-icon>tune</mat-icon>
 </button>
-<mat-menu #shortcuts="matMenu" yPosition="above" xPosition="before">
-  <button mat-menu-item>Settings</button>
-  <button mat-menu-item>Help</button>
-  <button mat-menu-item [matMenuTriggerFor]="fontSize">
-    <mat-icon>tune</mat-icon>
-  </button>
+<mat-menu class="mat-elevation-z0 shortcuts" #shortcuts="matMenu"
+          yPosition="below" xPosition="after" overlapTrigger>
+  <ul class='circle-container'>
+
+    <li>
+      <button mat-mini-fab (click)="noClose($event)">
+        <mat-icon>palette</mat-icon>
+      </button>
+    </li>
+
+    <li>
+      <button mat-mini-fab (click)="increaseFontSize(false, $event)">
+        <mat-icon>text_fields</mat-icon>
+      </button>
+    </li>
+    <li>
+      <button mat-mini-fab secondary (click)="increaseFontSize(true, $event)">
+        <mat-icon>format_size</mat-icon>
+      </button>
+    </li>
+
+    <li>
+      <button mat-mini-fab (click)="switchThemeMode($event)">
+        <mat-icon *ngIf="data.darkMode">brightness_5</mat-icon>
+        <mat-icon *ngIf="!data.darkMode">brightness_2</mat-icon>
+      </button>
+    </li>
+
+  </ul>
+
 </mat-menu>
 <mat-menu #fontSize="matMenu" yPosition="above" xPosition="before">
   <button mat-menu-item>

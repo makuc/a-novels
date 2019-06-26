@@ -1,9 +1,8 @@
 :host {
   font-size: 1rem;
 }
+
 .novel-details {
-  width: 75%;
-  max-width: 40em;
   margin: 1em auto 1em auto;
 
   span {
@@ -16,6 +15,7 @@
     border: thin solid #ddd;
     margin-right: 0.2em;
   }
+
   mat-card-subtitle mat-icon {
     width: 1em;
     height: 1em;
@@ -23,26 +23,32 @@
     vertical-align: middle;
   }
 }
+
 .cover {
   max-width: 10em;
   min-width: 2em;
   width: 100%;
+
   img {
     width: 100%;
     display: block;
     text-align: left;
   }
 }
+
 .inline {
   display: inline !important;
   min-width: 7.9em;
 }
+
 .cover-xs {
   max-width: 15em;
 }
+
 .xs-width {
   width: 100%;
 }
+
 .actions {
   padding: 0.5em 0 0 0;
 }
@@ -50,12 +56,15 @@
 .tab-icon {
   margin-right: 0.2em;
 }
+
 .wrapper {
   padding: 0 1em 0 1em;
 }
+
 .nowrap {
   padding: 0;
 }
+
 .centered {
   position: relative;
   margin-left: auto;

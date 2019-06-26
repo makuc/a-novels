@@ -1,78 +1,47 @@
+@import "mixins";
+
+$item-count: 4;
+$circle-size: 160px;
+$sec-btn-size: 24px;
+$main-btn-size: 54px;
+
 app-shortcuts {
   position: fixed;
-  bottom: 0.5em;
-  right: 0.5em;
-  font-size: 1rem;
+  bottom: $sec-btn-size / 3 * 2;
+  right: $sec-btn-size / 3 * 2;
   z-index: 999;
 }
 
-.main-btn {
-  font-size: 1.5em;
-  width: 1.5em !important;
-  min-width: unset !important;
-  height: 1.5em !important;
-}
-
-.tools-panel {
-  min-width: unset !important;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  padding: 0 !important;
-}
-
-#tools {
-  mat-toolbar {
-    padding: 0.5em;
-
-    >button {
-      font-size: 1.5rem;
-      width: 1.5em;
-      height: 1.5em;
-      padding: 0;
-      min-width: unset;
-      margin-left: 0.5rem;
-
-      &:first-of-type {
-        margin-left: 0;
-      }
-    }
-  }
-}
-
-.tools-submenu {
-  background: yellowgreen;
-  min-height: unset !important;
-  max-width: unset !important;
-  min-width: auto !important;
-  margin-bottom: 0.5em !important;
+.shortcuts {
+  background: none !important;
+  margin-bottom: -$circle-size / 2 + $sec-btn-size / 2;
+  margin-right: -$circle-size / 2 + $sec-btn-size / 2;
+  overflow: hidden !important;
+  border-radius: 50% !important;
 
   .mat-menu-content {
     padding: 0 !important;
-  }
 
-  .full-btn {
-    width: 100% !important;
-  }
+    .circle-container {
+      @include on-circle($item-count, $circle-size, $sec-btn-size);
+      position: relative;
+      margin: $sec-btn-size / 4 * 3;
 
-  button {
-    font-size: 1.5rem;
-    line-height: 1em;
-    width: auto !important;
-    height: auto !important;
-    padding: 0.3em !important;
+      >* {
+        display: block;
+        max-width: 100%;
+        border-radius: 50%;
+        //filter: grayscale(100%);
+        transition: .15s;
 
-    mat-icon {
-      margin: 0 !important;
-      height: auto !important;
-      width: auto !important;
+        &:hover,
+        &:active {
+          filter: grayscale(0);
+        }
+      }
+
     }
 
-    span {
-      padding-left: 0.4em;
-      padding-right: 0.4em;
-      font-size: 0.6em;
-      vertical-align: middle;
-      line-height: 1em;
-    }
   }
+
 }

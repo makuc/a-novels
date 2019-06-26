@@ -11,6 +11,7 @@ $indigo-light-primary: mat-palette($mat-indigo);
 $indigo-light-accent: mat-palette($mat-blue, A200, A100, A400);
 $indigo-light-warn: mat-palette($mat-pink, 700); // Optional. Defaults to: red
 $indigo-light-background: map_get($mat-blue-grey, 50);
+
 $indigo-light-theme: mat-light-theme($indigo-light-primary, $indigo-light-accent, $indigo-light-warn);
 // Insert custom background color
 $background: map-get($indigo-light-theme, background);

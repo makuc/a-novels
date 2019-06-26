@@ -1,0 +1,46 @@
+<mat-nav-list id="sidenav-links" [class.min]="!sideMax">
+
+  <a mat-list-item (click)="toggleCollapse()">
+    <div [class.min]="!sideMax" [class.max]="sideMax">
+      <mat-icon *ngIf="!sideMax" class="rot-90">unfold_more</mat-icon>
+      <mat-icon *ngIf="sideMax" class="rot-90">unfold_less</mat-icon>
+      <span class="mat-body-2" *ngIf="sideMax">Collapse</span>
+    </div>
+  </a>
+
+  <mat-divider></mat-divider>
+
+  <a mat-list-item routerLink="/home">
+    <div [class.min]="!sideMax" [class.max]="sideMax">
+      <mat-icon>home</mat-icon>
+      <span class="mat-body-2">Home</span>
+    </div>
+  </a>
+
+  <a mat-list-item routerLink="/novel/1">
+    <div [class.min]="!sideMax" [class.max]="sideMax">
+      <mat-icon>assignment_ind</mat-icon>
+      <span class="mat-body-2">Browse</span>
+    </div>
+  </a>
+
+  <a mat-list-item routerLink="/library">
+    <div [class.min]="!sideMax" [class.max]="sideMax">
+      <mat-icon>account_balance</mat-icon>
+      <span class="mat-body-2">Library</span>
+    </div>
+  </a>
+
+  <a mat-list-item [matMenuTriggerFor]="example">
+    <div [class.min]="!sideMax" [class.max]="sideMax">
+      <mat-icon>unfold_more</mat-icon>
+      <span class="mat-body-2">Example</span>
+    </div>
+  </a>
+
+  <mat-menu #example="matMenu">
+    <button mat-menu-item routerLink="/user/me">View profile</button>
+    <button mat-menu-item>Add contact</button>
+  </mat-menu>
+
+</mat-nav-list>

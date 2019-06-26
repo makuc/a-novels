@@ -1,29 +1,47 @@
-a {
-  text-decoration: none;
-  color: white;
+@import "~@angular/material/theming";
+
+$basic-header-typography: mat-typography-config( //
+  $button: mat-typography-level(18px, 14px, 400),
+  // Line-height must be unit-less fraction of the font-size.
+  $input: mat-typography-level(8px, 1, 100) //
+);
+$bolder-header-typography: mat-typography-config( //
+  $button: mat-typography-level(18px, 14px, 600) //
+);
+
+
+@include mat-button-typography($basic-header-typography);
+
+// For providing website's logo text
+.bolder {
+  @include mat-button-typography($bolder-header-typography);
+
+  a {
+    min-width: unset !important;
+  }
 }
 
-a:hover, a:active{
-  color: lightgray;
+#id {
+  button {
+    vertical-align: middle;
+  }
 }
 
-.navigation-items{
+.navigation-items {
   list-style-type: none;
   padding: 0;
   margin: 0;
 }
 
-mat-toolbar{
+mat-toolbar {
   border-radius: 3px;
-  position: fixed;
-  top: 0;
   width: 100%;
   z-index: 99999;
 }
 
 
-@media(max-width: 959px){
-  mat-toolbar{
+@media(max-width: 959px) {
+  mat-toolbar {
     border-radius: 0px;
   }
 }
@@ -36,6 +54,8 @@ mat-toolbar{
   border: solid thin;
   padding: 0;
 }
+
+
 /*
 :host {
 }

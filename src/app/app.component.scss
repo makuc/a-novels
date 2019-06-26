@@ -1,0 +1,61 @@
+@import "~@angular/material/theming";
+
+$custom-typography: mat-typography-config( //
+  $font-family: 'Roboto, monospace',
+  $body-2: mat-typography-level(11px, 24px, 500) //
+);
+
+:host {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+$mat-list-side-padding: 16px; // Copied from: components/src/material/list/list.scss
+
+app-header {
+  position: fixed;
+  width: 100%;
+  /* Make sure the toolbar will stay on top of the content as it scrolls past. */
+  z-index: 2;
+}
+
+mat-sidenav-container {
+  /* When the sidenav is fixed, don't constrain the height of the sidenav container. This allows the
+     `<body>` to be our scrolling element for mobile layouts. */
+  flex: 1 0 auto;
+}
+
+#min-toggle {
+  mat-icon {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
+
+  .min {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    @include mat-base-typography($custom-typography);
+  }
+
+  .max {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+
+    span {
+      padding-left: 6px;
+    }
+  }
+
+}

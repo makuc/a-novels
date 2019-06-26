@@ -14,79 +14,59 @@ a {
   cursor: pointer;
 }
 
-div {
-  app-header .navbar {
-    //height: 2.6rem;
-    border-radius: 0 !important;
+app-header .navbar {
+  border-radius: 0 !important;
+}
 
-    .mat-fab {
-      //width: 3.3em;
-      //height: 3.3em;
-      padding: 0;
+app-root {
 
-      img {
-        //max-width: 3.2em;
-      }
-    }
-  }
-
-  mat-sidenav {
-    position: fixed !important;
-  }
-
-  main>app-home {
+  main>* {
     &>* {
-      max-width: 35em;
-      margin: 0;
+      max-width: 40rem;
       margin-left: auto !important;
       margin-right: auto !important;
-      border-left: 2px solid #aaa;
-      border-right: 2px solid #aaa;
+      text-align: justify;
+    }
+
+    &>p,
+    &>*>p {
+      text-indent: 1em;
+    }
+
+    p {
+      margin: 0.75em 0 0.75em 0 !important;
     }
 
     &>.full {
       max-width: 100%;
       border: none;
-    }
-
-    &>mat-sidenav-container {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    }
-
-    .bckg {
-      background: #ccc;
+      text-indent: 0;
     }
 
     img {
       max-width: 100%;
     }
 
-    p {
-      margin: 0;
-      padding: 15px 0;
-    }
-
     figure {
       background: #f3f3f3;
-      font-size: 0em;
     }
 
     figcaption {
       text-align: center;
       color: #999;
+
+      >p {
+        margin: 0 !important;
+      }
+
       padding: 5px 0;
-      font-size: 1rem;
       font-style: italic;
     }
   }
 }
 
 .mat-tooltip {
-  margin-top: 0.5em !important;
+  margin-top: 10px !important;
   font-size: 0.6em;
 }
 
@@ -96,10 +76,10 @@ div {
   margin: 1em auto 1em auto;
 }
 
-.mat-button,
-.mat-flat-button,
-.mat-icon-button,
-.mat-stroked-button,
-.mat-raised-button {
-  line-height: 1.5em !important;
+.rot-90 {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
 }

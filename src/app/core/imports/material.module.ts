@@ -19,7 +19,8 @@ import {
     MatSnackBarModule,
     MatPaginatorModule,
     MatExpansionModule,
-    MatTableModule
+    MatTableModule,
+    MatTooltipModule
 } from '@angular/material';
 
 const pckgs = [
@@ -41,7 +42,8 @@ const pckgs = [
     MatSnackBarModule,
     MatPaginatorModule,
     MatExpansionModule,
-    MatTableModule
+    MatTableModule,
+    MatTooltipModule
 ];
 
 @NgModule({

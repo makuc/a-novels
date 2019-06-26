@@ -1,5 +1,10 @@
 .carousel-wrapper {
-   mat-tab-header {
+  width: 100%;
+  position: relative;
+  line-height: 0;
+  min-height: 50px;
+
+  mat-tab-header {
     border: none !important;
     position: absolute;
     bottom: .3em;
@@ -8,30 +13,14 @@
     height: auto;
     padding: 0 0 0 0;
   }
+
   .mat-ink-bar {
     display: none;
   }
+
   .mat-tab-label {
-    min-width: auto !important;
-    width: 1.6em !important;
     height: auto;
+    min-width: auto !important;
     padding: 0;
-  }
-}
-.carousel-wrapper {
-  overflow: hidden;
-  width: 100%;
-  position: relative;
-
-  &> * {
-    overflow: hidden;
-  }
-
-  app-swipe-tab {
-    > div {
-      > div {
-
-      }
-    }
   }
 }

@@ -16,11 +16,12 @@ import { environment } from 'src/environments/environment';
 // Header
 import { HeaderComponent } from './components/header/header.component';
 import { HeadbarComponent } from './components/header/headbar/headbar.component';
-import { SidebarComponent } from './components/header/sidebar/sidebar.component';
 import { UserpaneComponent } from './components/header/userpane/userpane.component';
 import { NgMatSearchBarModule } from './components/header/search-bar/ng-mat-search-bar.module';
 // Footer
 import { FooterComponent } from './components/footer/footer.component';
+// Sidenav
+import { SidenavComponent } from './components/sidenav/sidenav.component';
 // Shortcuts
 import { ShortcutsComponent } from './components/shortcuts/shortcuts.component';
 import { BottomSheetComponent } from './components/shortcuts/bottom-sheet/bottom-sheet.component';
@@ -60,10 +61,11 @@ import { RegisterComponent } from './authentication/pages/register/register.comp
   declarations: [
     HeaderComponent,
     HeadbarComponent,
-    SidebarComponent,
     UserpaneComponent,
 
     FooterComponent,
+
+    SidenavComponent,
 
     ShortcutsComponent,
     BottomSheetComponent,
@@ -78,8 +80,11 @@ import { RegisterComponent } from './authentication/pages/register/register.comp
     HeaderComponent,
     FooterComponent,
     ShortcutsComponent,
+
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+
+    SidenavComponent
   ]
 })
 export class CoreModule { }

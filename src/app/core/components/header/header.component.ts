@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, EventEmitter, Output } from '@angular/core';
 import { AuthenticationService } from '../../authentication/authentication.service';
 import { User } from 'firebase/app';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MatSidenav } from '@angular/material';
 
 @Component({
   selector: 'app-header',
@@ -13,6 +14,8 @@ import { takeUntil } from 'rxjs/operators';
 export class HeaderComponent implements OnInit, OnDestroy {
   private destroyer = new Subject<void>();
   public user: User | null;
+
+  @Output() sidenavToggle = new EventEmitter();
 
   constructor(
     private router: Router,
