@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { User } from 'firebase';
 import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile-overview',
@@ -19,9 +20,11 @@ export class ProfileOverviewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.route.data.subscribe(data => {
-      this.user = data.user;
-    });
+    this.route.data
+      .pipe(takeUntil(this.destroyer))
+      .subscribe(data => {
+        this.user = data.user;
+      });
   }
 
   ngOnDestroy() {
