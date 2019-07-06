@@ -1,0 +1,25 @@
+.profile-details {
+  margin: 1em 2em;
+  align-items: baseline;
+
+  .label {
+    padding-right: 0.5em;
+    text-align: right;
+  }
+
+  .value {
+    padding-left: 0.5em;
+    text-align: left;
+  }
+}
+
+#profile-tabs {
+  mat-nav-list {
+    padding: 0;
+  }
+
+  mat-tab-group {
+    width: 100%;
+    min-width: 0;
+  }
+}

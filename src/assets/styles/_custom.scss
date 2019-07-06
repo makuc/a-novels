@@ -1,68 +1,11 @@
 // _custom.scss
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-}
-
-a {
-  cursor: pointer;
-}
+@import 'custom/defaults-reset';
+@import 'custom/main-wrapper';
+@import 'custom/min-max-links';
+@import 'custom/shortcuts';
 
 app-header .navbar {
   border-radius: 0 !important;
-}
-
-app-root {
-
-  main>* {
-    &>* {
-      max-width: 40rem;
-      margin-left: auto !important;
-      margin-right: auto !important;
-      text-align: justify;
-    }
-
-    &>p,
-    &>*>p {
-      text-indent: 1em;
-    }
-
-    p {
-      margin: 0.75em 0 0.75em 0 !important;
-    }
-
-    &>.full {
-      max-width: 100%;
-      border: none;
-      text-indent: 0;
-    }
-
-    img {
-      max-width: 100%;
-    }
-
-    figure {
-      background: #f3f3f3;
-    }
-
-    figcaption {
-      text-align: center;
-      color: #999;
-
-      >p {
-        margin: 0 !important;
-      }
-
-      padding: 5px 0;
-      font-style: italic;
-    }
-  }
 }
 
 .mat-tooltip {
@@ -76,10 +19,6 @@ app-root {
   margin: 1em auto 1em auto;
 }
 
-.rot-90 {
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  transform: rotate(90deg);
+.headerless-mat-tabs-group mat-tab-group mat-tab-header {
+  display: none;
 }

@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth, User, UserInfo } from 'firebase/app';
 import { MatSnackBar } from '@angular/material';
-import { first, take } from 'rxjs/operators';
+import { emailVerified } from '@angular/fire/auth-guard';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,19 @@ export class AuthenticationService {
   ) { }
 
   get getUser(): Observable<User> {
-    return this.afAuth.authState;
+    return this.afAuth.user;
+
+    /*
+    return this.afAuth.user.pipe(map(user => {
+      return {
+        uid: user.uid,
+        displayName: user.displayName,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        photoUrl: user.photoURL,
+      }
+    }));
+    */
   }
 
   loginEmail(email: string, password: string) {

@@ -1,0 +1,74 @@
+<app-profile-header></app-profile-header>
+
+<section class="full">
+  <div fxLayout="row" fxLayoutGap="1em" id="profile-tabs">
+
+    <app-profile-nav user="user" ngClass.xs="hidden" fxFlex="initial"></app-profile-nav>
+    <div id="profile-nav"> </div>
+
+    <div fxFlex fxLayout="column" style="overflow: hidden;">
+      <mat-tab-group #profileTabs animationDuration="0ms" mat-stretch-tabs>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <div ngClass.xs="min" ngClass.gt-xs="max">
+              <mat-icon class="tab-icon">info</mat-icon>
+              <span>Details</span>
+            </div>
+          </ng-template>
+          <ng-template matTabContent>
+            <h2>Details</h2>
+            <div class="profile-details" fxLayout="row">
+              <span class="label">Display name:</span>
+              <span class="value">{{ user.displayName }}</span>
+            </div>
+            <div class="profile-details" fxLayout="row">
+              <span class="label">Birth date:</span>
+              <span class="value">31. 3. 1995</span>
+            </div>
+            <div class="profile-details" fxLayout="row">
+              <span class="label">E-mail:</span>
+              <span class="value">{{ user.email }}</span>
+            </div>
+            <div class="profile-details" fxLayout="row" *ngIf="user.phoneNumber">
+              <span class="label">Phone number:</span>
+              <span class="value">{{ user.phoneNumber }}</span>
+            </div>
+          </ng-template>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <div ngClass.xs="min" ngClass.gt-xs="max">
+              <mat-icon class="tab-icon">assignment_turned_in</mat-icon>
+              <span>Achievements</span>
+            </div>
+          </ng-template>
+          <ng-template matTabContent>
+            The Second Content
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+
+      <mat-toolbar class="mat-elevation-z1">
+        <span>User's Library</span>
+      </mat-toolbar>
+      <div>
+        <ul>
+          <li>Fictions</li>
+          <li>Reviews</li>
+          <li>Favorites</li>
+          <li>Achievements</li>
+          <li>Reputation:
+            <ul>
+              <li>Reader: lvl 1</li>
+              <li>Author: lvl 2</li>
+              <li>Reviewer: lvl 1</li>
+              <li>Commenter: lvl 15</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>

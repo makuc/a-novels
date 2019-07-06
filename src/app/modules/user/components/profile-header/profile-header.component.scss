@@ -1,0 +1,30 @@
+.profile-head {
+  padding: 2em 0;
+
+  .userpic {
+    line-height: 0;
+    padding: 0 1em;
+
+    &.userpic-gt-xs {
+        padding-left: 6em;
+    }
+
+    img {
+      border-radius: 50%;
+      max-width: 6.25em;
+      max-height: 6.25em;
+      width: 100%;
+    }
+  }
+
+  .userdetails {
+    padding: 0 1em;
+
+    h1,
+    h3,
+    h4 {
+      margin: 0;
+      line-height: 1.3em;
+    }
+  }
+}

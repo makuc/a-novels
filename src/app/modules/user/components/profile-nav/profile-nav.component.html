@@ -1,0 +1,52 @@
+<mat-nav-list>
+
+  <a mat-list-item routerLink="/user/{{ user?.uid }}">
+    <div class="max">
+      <mat-icon>account_circle</mat-icon>
+      <span class="mat-body-2">Overview</span>
+    </div>
+  </a>
+
+  <a mat-list-item routerLink="/user/{{ user.uid }}/workshop">
+    <div class="max">
+      <mat-icon>description</mat-icon>
+      <span class="mat-body-2">Fictions</span>
+    </div>
+  </a>
+
+  <a mat-list-item routerLink="/user/{{ user.uid }}">
+    <div class="max">
+      <mat-icon>star_rate</mat-icon>
+      <span class="mat-body-2">Reviews</span>
+    </div>
+  </a>
+
+  <a mat-list-item routerLink="/user/{{ user.uid }}">
+    <div class="max">
+      <mat-icon>schedule</mat-icon>
+      <span class="mat-body-2">Waiting list</span>
+    </div>
+  </a>
+
+  <a mat-list-item routerLink="/user/{{ user.uid }}">
+    <div class="max">
+      <mat-icon>favorite_border</mat-icon>
+      <span class="mat-body-2">Favorites</span>
+    </div>
+  </a>
+
+  <a mat-list-item routerLink="/user/{{ user.uid }}">
+    <div class="max">
+      <mat-icon>archive</mat-icon>
+      <span class="mat-body-2">Archive</span>
+    </div>
+  </a>
+
+  <a mat-list-item routerLink="/user/{{ user.uid }}">
+    <div class="max">
+      <mat-icon>history</mat-icon>
+      <span class="mat-body-2">Reading History</span>
+    </div>
+  </a>
+
+</mat-nav-list>

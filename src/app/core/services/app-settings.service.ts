@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 export class AppSettingsService {
 
   // tslint:disable-next-line: variable-name
-  private _settings: BehaviorSubject<{}>;
+  private _settings: BehaviorSubject<any>;
   private privateSettings: {} = {};
 
   constructor() {

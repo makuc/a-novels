@@ -1,0 +1,32 @@
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { User } from 'firebase';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-profile-overview',
+  templateUrl: './profile-overview.component.html',
+  styleUrls: ['./profile-overview.component.scss']
+})
+export class ProfileOverviewComponent implements OnInit, OnDestroy {
+
+  private destroyer = new Subject<void>();
+
+  public user: User;
+
+  constructor(
+    private route: ActivatedRoute
+  ) { }
+
+  ngOnInit() {
+    this.route.data.subscribe(data => {
+      this.user = data.user;
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroyer.next();
+    this.destroyer.unsubscribe();
+  }
+
+}

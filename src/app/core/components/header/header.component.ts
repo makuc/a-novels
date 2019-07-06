@@ -4,7 +4,6 @@ import { User } from 'firebase/app';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatSidenav } from '@angular/material';
 
 @Component({
   selector: 'app-header',
@@ -28,7 +27,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyer))
       .subscribe(user => {
         this.user = user;
-        console.log('User (headbar):', user);
       });
   }
 

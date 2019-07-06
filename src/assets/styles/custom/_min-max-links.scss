@@ -1,0 +1,28 @@
+@import "~@angular/material/theming";
+
+$custom-typography: mat-typography-config( //
+  $font-family: 'Roboto, monospace',
+  $body-2: mat-typography-level(11px, 24px, 500) //
+);
+
+mat-nav-list,
+mat-tab-header {
+    .min {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    width: 100% !important;
+    @include mat-base-typography($custom-typography);
+  }
+
+  .max {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    span {
+      padding-left: 0.5em;
+    }
+  }
+}

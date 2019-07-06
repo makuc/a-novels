@@ -4,7 +4,7 @@
   <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [opened]="sideOpen" role="navigation"
                fixedInViewport fixedTopGap="{{mobileQuery.matches ? 56 : 64}}">
 
-    <app-sidenav></app-sidenav>
+    <app-sidenav [isMobile]="mobileQuery.matches"></app-sidenav>
 
   </mat-sidenav>
 

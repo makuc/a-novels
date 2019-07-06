@@ -20,5 +20,9 @@ export const keysConfig = {
     CURRENT_USER_KEY: 'user',
 
     SIDENAV_OPEN: 'sidenav-open',
-    SIDENAV_MAXIMIZED: 'sidenav-maximized'
+    SIDENAV_MAXIMIZED: 'sidenav-maximized',
 };
+
+export const dbKeysConfig = {
+    COLLECTION_USERS: 'users',
+}

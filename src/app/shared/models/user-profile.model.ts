@@ -1,15 +1,19 @@
 // user.model.ts
 
-export class UserProfile {
-    uid: number | string;
+export interface AuthProvier {
+    name: string;
+    token: string;
+}
 
-    birthDate: Date;
+export class UserProfile {
+    uid: string;
+    created: firebase.firestore.Timestamp;
+    birthDate?: firebase.firestore.Timestamp;
 
     constructor(
-        uid: string, birthDate: string
+        uid: string
     ) {
         this.uid = uid;
-        this.birthDate = new Date(birthDate);
     }
 
     private dateFields = [
@@ -18,16 +22,10 @@ export class UserProfile {
 
     reviver(key: string, value: string): any {
         if (this.dateFields.indexOf(key) > -1) {
-            return new Date(value);
-        } else {
-            return value;
+            if (value) {
+                return new Date(value);
+            }
         }
-    }
-
-    toJSON() {
-        return {
-            uid: this.uid,
-            birthDate: this.birthDate.toISOString
-        };
+        return value;
     }
 }

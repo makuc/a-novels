@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public executeSelectedChange = (event) => {
-    //console.log(event);
+    // console.log(event);
   }
 
 }
