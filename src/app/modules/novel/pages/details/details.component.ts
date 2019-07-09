@@ -76,25 +76,31 @@ export class DetailsComponent implements OnInit {
 
   inLibrary = true;
   isFavorite = true;
-  novel;
+  novel: Novel;
   toc = ch;
 
   constructor() {
-    this.novel = new Novel(
-      tn.title,
-      tn.author,
-      tn.cover,
-      tn.description,
-      tn.tags,
-      tn.dateCreated,
-      tn.nFavorites,
-      tn.nRatings,
-      tn.storyRating,
-      tn.styleRating,
-      tn.charsRating,
-      tn.worldRating,
-      tn.grammRating
-    );
+
+    this.novel = {
+      id: 'really-hard-id',
+
+      title: tn.title,
+      authorUid: tn.author,
+      coverURL: tn.cover,
+
+      description: tn.description,
+      tags: tn.tags,
+
+      // created: firebase.firestore.Timestamp = new firebase.firestore.Timestamp(new Date(''));
+      nFavorites: tn.nFavorites,
+
+      nRatings: tn.nRatings,
+      storyRating: tn.storyRating,
+      styleRating: tn.styleRating,
+      charsRating: tn.charsRating,
+      worldRating: tn.worldRating,
+      grammRating: tn.grammRating
+    };
   }
 
   addFavorites() {
