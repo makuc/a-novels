@@ -14,35 +14,35 @@
     </div>
   </a>
 
-  <a mat-list-item routerLink="/user/{{ user.uid }}">
+  <a mat-list-item routerLink="/user/{{ user.uid }}/reviews">
     <div class="max">
       <mat-icon>star_rate</mat-icon>
-      <span class="mat-body-2">Reviews</span>
+      <span class="mat-body-2">Reviews-{{ user.uid }}</span>
     </div>
   </a>
 
-  <a mat-list-item routerLink="/user/{{ user.uid }}">
+  <!--<a mat-list-item routerLink="/user/{{ user.uid }}">
     <div class="max">
       <mat-icon>schedule</mat-icon>
       <span class="mat-body-2">Waiting list</span>
     </div>
-  </a>
+  </a>-->
 
-  <a mat-list-item routerLink="/user/{{ user.uid }}">
+  <a mat-list-item routerLink="/user/{{ user.uid }}/favorites">
     <div class="max">
       <mat-icon>favorite_border</mat-icon>
       <span class="mat-body-2">Favorites</span>
     </div>
   </a>
 
-  <a mat-list-item routerLink="/user/{{ user.uid }}">
+  <a mat-list-item routerLink="/user/{{ user.uid }}/archive">
     <div class="max">
       <mat-icon>archive</mat-icon>
       <span class="mat-body-2">Archive</span>
     </div>
   </a>
 
-  <a mat-list-item routerLink="/user/{{ user.uid }}">
+  <a mat-list-item routerLink="/user/{{ user.uid }}/reading-history">
     <div class="max">
       <mat-icon>history</mat-icon>
       <span class="mat-body-2">Reading History</span>

@@ -11,6 +11,11 @@ import { ProfileOverviewComponent } from './pages/profile-overview/profile-overv
 import { UserResolver } from './resolvers/user.resolver';
 import { ProfileNavComponent } from './components/profile-nav/profile-nav.component';
 import { ProfileHeaderComponent } from './components/profile-header/profile-header.component';
+import { ProfileArchiveComponent } from './pages/profile-archive/profile-archive.component';
+import { ProfileWorkshopComponent } from './pages/profile-workshop/profile-workshop.component';
+import { ProfileReviewsComponent } from './pages/profile-reviews/profile-reviews.component';
+import { ProfileReadingHistoryComponent } from './pages/profile-reading-history/profile-reading-history.component';
+import { ProfileFavoritesComponent } from './pages/profile-favorites/profile-favorites.component';
 
 @NgModule({
   imports: [
@@ -28,7 +33,13 @@ import { ProfileHeaderComponent } from './components/profile-header/profile-head
 
     ProfileHeaderComponent,
     ProfileNavComponent,
-    ProfileOverviewComponent
+    ProfileOverviewComponent,
+
+    ProfileArchiveComponent,
+    ProfileWorkshopComponent,
+    ProfileReviewsComponent,
+    ProfileReadingHistoryComponent,
+    ProfileFavoritesComponent
   ],
   exports: [
     EditProfileComponent,

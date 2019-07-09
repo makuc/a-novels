@@ -24,6 +24,7 @@ export class ProfileOverviewComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyer))
       .subscribe(data => {
         this.user = data.user;
+        console.log(this.user);
       });
   }
 

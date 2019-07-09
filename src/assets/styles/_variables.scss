@@ -1,18 +1,14 @@
-/*
-    Filename: _variables.scss
-    Description: Various variables used in theming the project.
-*/
-/* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/theming';
 
 
-// Define the default theme (same as the example above).
+// Define the default theme
 $indigo-light-primary: mat-palette($mat-indigo);
 $indigo-light-accent: mat-palette($mat-blue, A200, A100, A400);
 $indigo-light-warn: mat-palette($mat-pink, 700); // Optional. Defaults to: red
 $indigo-light-background: map_get($mat-blue-grey, 50);
 
 $indigo-light-theme: mat-light-theme($indigo-light-primary, $indigo-light-accent, $indigo-light-warn);
+
 // Insert custom background color
 $background: map-get($indigo-light-theme, background);
 $background: map_merge($background, (background: $indigo-light-background));
@@ -24,7 +20,9 @@ $indigo-dark-accent: mat-palette($mat-amber);
 $indigo-dark-warn: mat-palette($mat-deep-orange);
 $indigo-dark-background: map_get($mat-blue-grey, 900);
 $indigo-dark-background-card: map_get($mat-blue-grey, 800);
+
 $indigo-dark-theme: mat-dark-theme($indigo-dark-primary, $indigo-dark-accent, $indigo-dark-warn);
+
 // Insert custom background color
 $background: map-get($indigo-dark-theme, background);
 $background: map_merge($background, (background: $indigo-dark-background));
@@ -36,21 +34,3 @@ $purple-light-primary: mat-palette($mat-purple);
 $purple-light-accent: mat-palette($mat-pink, A200, A100, A400);
 $purple-light-warn: mat-palette($mat-red, A700);
 $purple-light-theme: mat-light-theme($purple-light-primary, $purple-light-accent, $purple-light-warn);
-
-/*
-// https: //material.angular.io/guide/typography#material-typography-in-your-custom-css
-
-// Create a config with the default typography levels.
-$config: mat-typography-config();
-
-// Custom header that uses only the Material `font-size` and `font-family`.
-.unicorn-header {
-  font-size: mat-font-size($config, headline);
-  font-family: mat-font-family($config);
-}
-
-// Custom title that uses all of the typography styles from the `title` level.
-.unicorn-title {
-  @include mat-typography-level-to-styles($config, title);
-}
-*/

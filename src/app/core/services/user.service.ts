@@ -5,41 +5,47 @@ import { UserProfile } from 'src/app/shared/models/user-profile.model';
 
 import { Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { first } from 'rxjs/operators';
+import { first, take, switchMap, map } from 'rxjs/operators';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
     /* tslint:disable: variable-name */
-    private _user: User;
-    private _userProfile: AngularFirestoreDocument<UserProfile>;
-    private usersCollection: AngularFirestoreCollection<UserProfile>;
+    private _user: AngularFirestoreDocument<UserProfile>;
+    private _users: AngularFirestoreCollection<UserProfile>;
     /* tslink:enable: variable-name */
 
-    get user$(): Observable<UserProfile> {
-        return this._userProfile.valueChanges();
-    }
+    public user: Observable<UserProfile>;
 
     // Implementation
     constructor(
-        private authService: AngularFireAuth,
+        private authService: AuthenticationService,
         private afStore: AngularFirestore
     ) {
-        this.authService.user.pipe(first()).subscribe(user => {
-            this._user = user;
-        });
-        this._userProfile = this.afStore.doc<UserProfile>('users/FhbJpOsFtiYlunrc5PDqKKw17jl2');
+        this._users = this.afStore.collection(dbKeysConfig.COLLECTION_USERS);
+        // this._userProfile = this._usersCollection.doc
     }
 
-    private createProfile(birthDate: Date) {
-        this.usersCollection = this.afStore.collection<UserProfile>(dbKeysConfig.COLLECTION_USERS);
+    getUsers(): Observable<UserProfile[]> {
+        return this._users.valueChanges();
     }
 
-    getAll() {
-        return;
+    getUser(uid: string): Observable<UserProfile> {
+        return this._users.doc<UserProfile>(uid).valueChanges();
     }
 
-    delete(id: number) {
-        return;
+    getMe(): Observable<UserProfile> {
+        return this.authService.getUser
+            .pipe(
+                map(user => user.uid),
+                switchMap(uid => this.getUser(uid))
+            );
     }
+
+    get currentUser(): Observable<UserProfile> {
+        return this.getMe();
+    }
+
+    // Delete user from Auth to remove matching doc from this collection
+
 }

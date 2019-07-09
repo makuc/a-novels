@@ -7,9 +7,16 @@ export interface AuthProvier {
 
 export class UserProfile {
     uid: string;
-    created: firebase.firestore.Timestamp;
-    birthDate?: firebase.firestore.Timestamp;
+    displayName: string;
+    email?: string;
+    emailVerified?: boolean;
+    phoneNumber?: string;
+    photoURL?: string;
 
+    createdAt: firebase.firestore.Timestamp;
+    birthday?: firebase.firestore.Timestamp;
+
+/*
     constructor(
         uid: string
     ) {
@@ -17,7 +24,7 @@ export class UserProfile {
     }
 
     private dateFields = [
-        'birthDate'
+        'birthday'
     ];
 
     reviver(key: string, value: string): any {
@@ -28,4 +35,5 @@ export class UserProfile {
         }
         return value;
     }
+*/
 }

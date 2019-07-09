@@ -30,7 +30,6 @@ import { BottomSheetComponent } from './components/shortcuts/bottom-sheet/bottom
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { ErrorHandlerInterceptor } from './interceptors/error-handler.interceptor';
 import { AppSettingsService } from './services/app-settings.service';
-import { fakeBackendProvider } from './mocks/fake-backend.mock';
 import { AlertService } from './services/alert.service';
 
 import { LoginComponent } from './authentication/pages/login/login.component';
@@ -56,7 +55,6 @@ import { RegisterComponent } from './authentication/pages/register/register.comp
     AlertService,
     // { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorHandlerInterceptor, multi: true },
-    fakeBackendProvider
   ],
   declarations: [
     HeaderComponent,

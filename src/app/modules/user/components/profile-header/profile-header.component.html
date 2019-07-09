@@ -3,7 +3,8 @@
     <img class="mat-elevation-z3" src="/assets/img/users/01/userpic.jpg" alt="userpic">
   </div>
   <div class="userdetails" fxFlex>
-    <h1>Armin Makovec</h1>
-    <h4 class="caption">ID: 2032014711</h4>
+    <h1>{{ user.displayName }}</h1>
+    <h6>UID: {{ user.uid }}</h6>
+    <h4>Registered: {{ user.createdAt.seconds * 1000 | date:'d. M. yyyy' }}</h4>
   </div>
 </div>
