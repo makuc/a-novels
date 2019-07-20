@@ -1,0 +1,18 @@
+<span *ngIf="placeholder" class="placeholder">{{ value ? placeholder : '&nbsp;' }}</span>
+<div class="text-editor mat-elevation-z2">
+  <mat-toolbar class="txe-header mat-elevation-z2">
+    <button mat-icon-button aria-label="Make selection bold" mat-tooltip="Make selection bold"
+            (click)="toggleBold($event)">
+      <mat-icon>format_bold</mat-icon>
+    </button>
+    <button mat-icon-button aria-label="Make selection bold" mat-tooltip="Make selection bold"
+            (click)="toggleItalic($event)">
+      <mat-icon>format_italic</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <div #txe contenteditable="true" [attr.placeholder]="placeholder" (keypress)="keyPress($event)"
+       (input)="process($event)" (focus)="doFocus($event)" (blur)="doBlur($event)">
+  </div>
+</div>
+<span>{{ error ? error : '&nbsp;' }}</span>

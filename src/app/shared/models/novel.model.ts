@@ -1,4 +1,5 @@
-import { firestore } from 'firebase';
+import { firestore, User } from 'firebase/app';
+import { AngularFirestoreDocument } from '@angular/fire/firestore';
 
 // novel.model.ts
 
@@ -6,16 +7,22 @@ export default class Novel {
     id?: string;
 
     title: string;
-    authorUid: string;
-    coverURL: string;
+    author?: {
+        uid: string;
+        displayName: string;
+        ref?: AngularFirestoreDocument<User>;
+    };
+    editors?: any;
 
-    createdAt?: any;
-    updatedAt?: any;
+    coverURL: string;
+    published: boolean;
+
+    createdAt?: firestore.Timestamp | firestore.FieldValue;;
+    updatedAt?: firestore.Timestamp | firestore.FieldValue;;
 
     description: string;
     tags: string[];
 
-    // created: firebase.firestore.Timestamp = new firebase.firestore.Timestamp(new Date(''));
     nFavorites?: number;
 
     nRatings?: number;

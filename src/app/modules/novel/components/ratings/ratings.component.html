@@ -3,48 +3,48 @@
   <div class="rating">
     <mat-icon matTooltip="Users' favorite" matTooltipClass="dscr-tooltip">favorite</mat-icon>:
     <div class="stars" fxFlex>
-      <span>{{ novel.NFavorites }}</span>
+      <span>{{ novel.nFavorites }}</span>
     </div>
   </div>
 
   <div class="rating">
     <mat-icon matTooltip="Number of reviews" matTooltipClass="dscr-tooltip">stars</mat-icon>:
     <div class="stars" fxFlex>
-      <span>{{ novel.NRatings }}</span>
+      <span>{{ novel.nRatings }}</span>
     </div>
   </div>
 
   <div class="rating">
     <mat-icon matTooltip="Story idea and progression" matTooltipClass="dscr-tooltip">gesture</mat-icon>:
-    <mat-icon *ngFor="let star of showRating(novel.StoryRating)">
+    <mat-icon *ngFor="let star of showRating(novel.storyRating)">
       {{ star == 1 ? 'star' : star == 0 ? 'star_border' : 'star_half' }}
     </mat-icon>
   </div>
 
   <div class="rating">
     <mat-icon matTooltip="Writing style" matTooltipClass="dscr-tooltip">brush</mat-icon>:
-    <mat-icon *ngFor="let star of showRating(novel.StyleRating)">
+    <mat-icon *ngFor="let star of showRating(novel.styleRating)">
       {{ star == 1 ? 'star' : star == 0 ? 'star_border' : 'star_half' }}
     </mat-icon>
   </div>
 
   <div class="rating">
     <mat-icon matTooltip="Characters development" matTooltipClass="dscr-tooltip">wc</mat-icon>:
-    <mat-icon *ngFor="let star of showRating(novel.CharsRating)">
+    <mat-icon *ngFor="let star of showRating(novel.charsRating)">
       {{ star == 1 ? 'star' : star == 0 ? 'star_border' : 'star_half' }}
     </mat-icon>
   </div>
 
   <div class="rating">
     <mat-icon matTooltip="World building" matTooltipClass="dscr-tooltip">public</mat-icon>:
-    <mat-icon *ngFor="let star of showRating(novel.WorldRating)">
+    <mat-icon *ngFor="let star of showRating(novel.worldRating)">
       {{ star == 1 ? 'star' : star == 0 ? 'star_border' : 'star_half' }}
     </mat-icon>
   </div>
 
   <div class="rating">
     <mat-icon matTooltip="Grammar and structure" matTooltipClass="dscr-tooltip">school</mat-icon>:
-    <mat-icon *ngFor="let star of showRating(novel.GrammRating)">
+    <mat-icon *ngFor="let star of showRating(novel.grammRating)">
       {{ star == 1 ? 'star' : star == 0 ? 'star_border' : 'star_half' }}
     </mat-icon>
   </div>

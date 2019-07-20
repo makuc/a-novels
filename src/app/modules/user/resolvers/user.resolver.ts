@@ -1,18 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { UserService } from 'src/app/core/services/user.service';
-import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
-import { User } from 'firebase';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { UserProfile } from 'src/app/shared/models/user-profile.model';
 
 @Injectable()
-export class UserResolver implements Resolve<any> {
+export class UserResolver implements Resolve<UserProfile> {
 
     constructor(
-        private userService: UserService,
-        private authService: AuthenticationService
+        private userService: UserService
     ) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<UserProfile> {

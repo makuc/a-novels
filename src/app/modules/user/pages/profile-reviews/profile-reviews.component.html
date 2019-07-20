@@ -1,3 +1,22 @@
-<p>
-  profile-reviews works!
-</p>
+<app-profile-header [user]="user"></app-profile-header>
+
+<section class="full">
+  <div fxLayout="row" fxLayoutGap="1em" id="profile-tabs">
+
+    <app-profile-nav [navId]="navId" ngClass.xs="hidden" fxFlex="initial"></app-profile-nav>
+    <div id="profile-nav"> </div>
+
+    <div fxFlex fxLayout="column" style="overflow: hidden;">
+
+      <mat-toolbar class="mat-elevation-z1">
+        <span>User's Reviews</span>
+      </mat-toolbar>
+      <div>
+        <ul>
+          <li>Book 1</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-create',
-  templateUrl: './create.component.html',
-  styleUrls: ['./create.component.scss']
+  selector: 'app-novel-add',
+  templateUrl: './novel-add.component.html',
+  styleUrls: ['./novel-add.component.scss']
 })
-export class CreateComponent implements OnInit {
+export class NovelAddComponent implements OnInit {
   fgroup: FormGroup;
   loading = false;
   submitted = false;

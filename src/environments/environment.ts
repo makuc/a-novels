@@ -12,6 +12,10 @@ export const environment = {
     storageBucket: 'testing-192515.appspot.com',
     messagingSenderId: '729912964915',
     appId: '1:729912964915:web:d9f965a8c3370b6c'
+  },
+  algolia: {
+    appId: '925VS84GFN',
+    apiKey: '02570576af0698da680e7d7788b3e700'
   }
 };
 

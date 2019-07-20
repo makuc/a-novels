@@ -34,6 +34,9 @@ import { AlertService } from './services/alert.service';
 
 import { LoginComponent } from './authentication/pages/login/login.component';
 import { RegisterComponent } from './authentication/pages/register/register.component';
+import { NovelService } from './services/novel.service';
+import { UserService } from './services/user.service';
+import { WorkshopService } from './services/workshop.service';
 
 @NgModule({
   imports: [
@@ -44,7 +47,6 @@ import { RegisterComponent } from './authentication/pages/register/register.comp
     RouterModule,
     BrowserAnimationsModule,
     MaterialModule,
-    FlexLayoutModule,
     FirebaseModule,
 
     NgMatSearchBarModule
@@ -55,6 +57,9 @@ import { RegisterComponent } from './authentication/pages/register/register.comp
     AlertService,
     // { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorHandlerInterceptor, multi: true },
+    NovelService,
+    UserService,
+    WorkshopService
   ],
   declarations: [
     HeaderComponent,

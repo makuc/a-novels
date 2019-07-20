@@ -1,9 +1,13 @@
 <section class="novel-details" ngClass.xs="xs-width" fxLayout="column">
   <div fxHide.gt-xs>
-    <h1>{{ novel.Title }}</h1>
+    <h1>{{ novel.title }}</h1>
     <h4>
-      {{ novel.Author }} |
-      <mat-icon inline matTooltip="Number of released chapter" matTooltipClass="dscr-tooltip">
+      <mat-icon inline matTooltip="Author of the novel" matTooltipClass="dscr-tooltip">
+        perm_identity
+      </mat-icon>
+      <a routerLink="/user/{{ novel.author?.uid }}"> {{ novel.author.displayName }}</a>
+      |
+      <mat-icon inline matTooltip="Number of released chapters" matTooltipClass="dscr-tooltip">
         library_books
       </mat-icon>
       1331 |
@@ -19,23 +23,26 @@
 
     <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center"
          fxLayoutGap=".6em">
-      <img src="/assets/img/novels/01/cover.jpg" alt="Cover picture of '{{ novel.Title}}''">
+      <img src="/assets/img/novels/01/cover.jpg" alt="Cover picture of '{{ novel.title}}''">
       <app-ratings [novel]="novel"></app-ratings>
     </div>
 
 
     <div fxFlex fxLayout="column" fxLayoutAlign="start start">
-      <mat-card-title fxShow.gt-xs fxHide>{{ novel.Title }}</mat-card-title>
+      <mat-card-title fxShow.gt-xs fxHide>{{ novel.title }}</mat-card-title>
       <mat-card-subtitle fxShow.gt-xs fxHide>
-        {{ novel.Author }} |
-        <mat-icon matTooltip="Number of released chapter" matTooltipClass="dscr-tooltip">library_books</mat-icon>1331 |
-        <mat-icon matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">trending_up</mat-icon>13
+        <mat-icon inline matTooltip="Author of the novel" matTooltipClass="dscr-tooltip">perm_identity</mat-icon>
+        <a class="mat-h4" routerLink="/user/{{ novel.author?.uid }}"> {{ novel.author.displayName }}</a> |
+        <mat-icon inline matTooltip="Number of released chapter" matTooltipClass="dscr-tooltip">library_books</mat-icon>
+        1331 |
+        <mat-icon inline matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">trending_up
+        </mat-icon>13
         chs /
         week
       </mat-card-subtitle>
 
       <mat-card-content fxHide.xs>
-        <p *ngFor="let parag of novel.Description.split('\n')">
+        <p *ngFor="let parag of novel.description.split('\n')">
           {{ parag }}
         </p>
       </mat-card-content>
@@ -66,7 +73,7 @@
   <app-full-statistic></app-full-statistic>
 
   <mat-card-content fxHide.gt-xs>
-    <p *ngFor="let parag of novel.Description.split('\n')">
+    <p *ngFor="let parag of novel.description.split('\n')">
       {{ parag }}
     </p>
   </mat-card-content>

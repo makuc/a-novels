@@ -23,7 +23,6 @@ import { ProfileFavoritesComponent } from './pages/profile-favorites/profile-fav
     FormsModule,
     ReactiveFormsModule,
     UserRoutingModule,
-    FlexLayoutModule,
 
     MaterialModule,
     FirebaseModule

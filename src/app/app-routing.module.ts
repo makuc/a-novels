@@ -15,6 +15,7 @@ const routes: Routes = [
   { path: 'novel', loadChildren: './modules/novel/novel.module#NovelModule' },
   { path: 'user', loadChildren: './modules/user/user.module#UserModule' },
   { path: 'browse', loadChildren: './modules/browse/browse.module#BrowseModule' },
+  { path: 'workshop', loadChildren: './modules/workshop/workshop.module#WorkshopModule'},
   // Default
   { path: '**', component: E404Component }
 ];

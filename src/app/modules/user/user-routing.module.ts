@@ -12,13 +12,15 @@ import { ProfileWorkshopComponent } from './pages/profile-workshop/profile-works
 import { ProfileReviewsComponent } from './pages/profile-reviews/profile-reviews.component';
 import { ProfileReadingHistoryComponent } from './pages/profile-reading-history/profile-reading-history.component';
 import { ProfileFavoritesComponent } from './pages/profile-favorites/profile-favorites.component';
+import { NavIdResolver } from './resolvers/nav-id.resolver';
 
 const routes: Routes = [
     {
         path: ':uid',
         component: ProfileOverviewComponent,
         resolve: {
-            user: UserResolver
+            user: UserResolver,
+            navId: NavIdResolver
         },
         ...canActivate(redirectUnauthorizedToLogin)
     },
@@ -26,7 +28,8 @@ const routes: Routes = [
         path: 'me/edit',
         component: EditProfileComponent,
         resolve: {
-            user: UserResolver
+            user: UserResolver,
+            navId: NavIdResolver
         },
         ...canActivate(redirectUnauthorizedToLogin)
     },
@@ -34,7 +37,8 @@ const routes: Routes = [
         path: ':uid/archive',
         component: ProfileArchiveComponent,
         resolve: {
-            user: UserResolver
+            user: UserResolver,
+            navId: NavIdResolver
         },
         ...canActivate(redirectUnauthorizedToLogin)
     },
@@ -42,7 +46,8 @@ const routes: Routes = [
         path: ':uid/workshop',
         component: ProfileWorkshopComponent,
         resolve: {
-            user: UserResolver
+            user: UserResolver,
+            navId: NavIdResolver
         },
         ...canActivate(redirectUnauthorizedToLogin)
     },
@@ -50,7 +55,8 @@ const routes: Routes = [
         path: ':uid/reviews',
         component: ProfileReviewsComponent,
         resolve: {
-            user: UserResolver
+            user: UserResolver,
+            navId: NavIdResolver
         },
         ...canActivate(redirectUnauthorizedToLogin)
     },
@@ -58,7 +64,8 @@ const routes: Routes = [
         path: ':uid/reading-history',
         component: ProfileReadingHistoryComponent,
         resolve: {
-            user: UserResolver
+            user: UserResolver,
+            navId: NavIdResolver
         },
         ...canActivate(redirectUnauthorizedToLogin)
     },
@@ -66,7 +73,8 @@ const routes: Routes = [
         path: ':uid/favorites',
         component: ProfileFavoritesComponent,
         resolve: {
-            user: UserResolver
+            user: UserResolver,
+            navId: NavIdResolver
         },
         ...canActivate(redirectUnauthorizedToLogin)
     },

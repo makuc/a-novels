@@ -4,7 +4,10 @@ import { PageEvent } from '@angular/material';
 
 const tn = {
   title: 'Mikayla the Dungeon, with extra long title for the lolz... And to see how it looks',
-  author: 'Armin Makovec',
+  author: {
+    displayName: 'Armin Makovec',
+    uid: 'Vt9rGYLvbKZQaT7rL1fWPBE1OqF2'
+  },
   cover: '/assets/img/novel/01/cover.jpg',
   // tslint:disable-next-line: max-line-length
   description: 'Mikayla, a girl titled as genius in body-enhancement magic!\nYet she knows better. She is naught but a handicapped human, after all, ever since a magical accident when she was just a little girl. A human with an affliction preventing her from using casting her magic outside her own body. Something everyone else take for granted.\nThat is, until another accident happens and she loses her own body as well, becoming a pure crystalline being.\nFollow her as she learns to interact with the world as a crystal anew, find companionship and rediscover her new self.',
@@ -85,8 +88,9 @@ export class DetailsComponent implements OnInit {
       id: 'really-hard-id',
 
       title: tn.title,
-      authorUid: tn.author,
+      author: tn.author,
       coverURL: tn.cover,
+      published: true,
 
       description: tn.description,
       tags: tn.tags,

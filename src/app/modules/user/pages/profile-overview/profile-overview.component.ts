@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { User } from 'firebase';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
+import { UserProfile } from 'src/app/shared/models/user-profile.model';
 
 @Component({
   selector: 'app-profile-overview',
@@ -13,7 +14,8 @@ export class ProfileOverviewComponent implements OnInit, OnDestroy {
 
   private destroyer = new Subject<void>();
 
-  public user: User;
+  public user: UserProfile;
+  public navId: string;
 
   constructor(
     private route: ActivatedRoute
@@ -24,7 +26,7 @@ export class ProfileOverviewComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyer))
       .subscribe(data => {
         this.user = data.user;
-        console.log(this.user);
+        this.navId = data.navId;
       });
   }
 

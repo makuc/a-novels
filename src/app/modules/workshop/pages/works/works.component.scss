@@ -1,0 +1,27 @@
+.container {
+    width: 100%;
+    height: auto;
+    padding: 2em 1em;
+}
+
+#novels {
+    ul {
+        align-items: flex-end;
+    }
+    li {
+        mat-card {
+            width: 100%;
+            max-width: 8rem;
+            //min-width: 6rem;
+        }
+    }
+
+    .not-published {
+        -webkit-filter: grayscale(1);
+        -moz-filter: grayscale(1);
+        -o-filter: grayscale(1);
+        -ms-filter: grayscale(1);
+        filter: grayscale(0.8) brightness(0.5);
+    }
+
+}

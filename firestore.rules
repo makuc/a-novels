@@ -1,0 +1,84 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /tags/{tagId} {
+      allow read;
+      allow write: if isSignedIn() && sameIdAndName() && properFields();
+
+      function sameIdAndName() {
+        return request.resource.data.name == tagId;
+      }
+
+      function properFields() {
+        return  (resource.data.keys().size() == 2 && resource.data.keys().hasAll(['name', 'createdAt'])) ||
+                (resource.data.keys().size() == 3 && resource.data.keys().hasAll(['name', 'createdAt', 'description'])) ||
+                (resource.data.keys().size() == 4 && resource.data.keys().hasAll(['name', 'createdAt', 'updatedAt', 'description']));
+      }
+    }
+
+    match /users/{userId} {
+      allow get;
+      allow list: if isSignedIn();
+      allow update: if isUser(userId) || isMod();
+
+      function consistentUid() {
+        return  request.resource.data.uid == resource.data.uid &&
+                resource.data.uid == userId;
+      }
+    }
+
+    match /novels/{novelId} {
+      allow read;
+      allow create: if properAuthor();
+      allow delete: if novelAuthor() || isAdmin() || isMod();
+      allow update: if consistentId() && (novelAuthor() || isEditor() || novelEditor());
+
+      // Check if all author fields are properly set
+      function properAuthor() {
+        return  request.resource.data.author.uid == request.auth.uid &&
+                request.resource.data.author.displayName == request.auth.token.name;
+      }
+      function consistentId() {
+        return request.resource.data.id == resource.data.id;
+      }
+      // Checks if current user is this novel's author
+      function novelAuthor() {
+        return request.auth.uid == resource.data.author.uid;
+      }
+      // Checks if current user belongs to this novel's editors
+      function novelEditor() {
+        return request.auth.uid == resource.data.editors
+      }
+    }
+
+  }
+}
+
+// Check if user is signed into the app
+function isSignedIn() {
+  return request.auth != null;
+}
+
+// Compares `userId` with current user
+function isUser(userId) {
+  return request.auth.uid == userId;
+}
+
+// Does user have admin claim?
+function isAdmin() {
+  return request.auth.token.admin;
+}
+
+// Does user have moderator claim?
+function isMod() {
+  return request.auth.token.moderator;
+}
+
+// Does user have verified editor claim?
+function isEditor() {
+  return request.auth.token.editor;
+}

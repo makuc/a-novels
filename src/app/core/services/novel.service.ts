@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, DocumentReference } from '@angular/fire/firestore';
 import Novel from 'src/app/shared/models/novel.model';
 import { Observable } from 'rxjs';
-import { firestore } from 'firebase';
+import { firestore } from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -33,8 +33,7 @@ export class NovelService {
     return this._novels.doc(id).set({
       id,
       ...data,
-      updatedAt: timestamp,
-      createdAt: timestamp
+      updatedAt: timestamp
     });
   }
 

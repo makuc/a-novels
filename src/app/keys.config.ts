@@ -24,6 +24,8 @@ export const keysConfig = {
 };
 
 export const dbKeysConfig = {
+    COLLECTION_TAGS: 'tags',
+
     COLLECTION_USERS: 'users',
 
     COLLECTION_NOVELS: 'novels',

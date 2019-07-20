@@ -4,9 +4,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth, User, UserInfo } from 'firebase/app';
+import { AngularFirestoreCollection } from '@angular/fire/firestore';
+import { auth, User } from 'firebase/app';
 import { MatSnackBar } from '@angular/material';
-import { emailVerified } from '@angular/fire/auth-guard';
+import { UserProfile } from 'src/app/shared/models/user-profile.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ import { emailVerified } from '@angular/fire/auth-guard';
 export class AuthenticationService {
   /* tslint:disable:variable-name */
   private _credentials: auth.AuthCredential;
+  private _users: AngularFirestoreCollection<UserProfile>;
   /* tslint:enable:variable-name */
 
   constructor(
@@ -23,18 +25,9 @@ export class AuthenticationService {
 
   get getUser(): Observable<User> {
     return this.afAuth.user;
-
-    /*
-    return this.afAuth.user.pipe(map(user => {
-      return {
-        uid: user.uid,
-        displayName: user.displayName,
-        email: user.email,
-        emailVerified: user.emailVerified,
-        photoUrl: user.photoURL,
-      }
-    }));
-    */
+  }
+  get tokenResults(): Observable<auth.IdTokenResult> {
+    return this.afAuth.idTokenResult;
   }
 
   loginEmail(email: string, password: string) {
