@@ -1,4 +1,4 @@
-import { keysConfig, dbKeysConfig } from 'src/app/keys.config';
+import { keysConfig, dbKeys } from 'src/app/keys.config';
 import { Injectable, OnInit } from '@angular/core';
 import { User, auth } from 'firebase/app';
 import { UserProfile } from 'src/app/shared/models/user-profile.model';
@@ -22,7 +22,7 @@ export class UserService {
         private authService: AuthenticationService,
         private afStore: AngularFirestore
     ) {
-        this._users = this.afStore.collection(dbKeysConfig.COLLECTION_USERS);
+        this._users = this.afStore.collection(dbKeys.COLLECTION_USERS);
         // this._userProfile = this._usersCollection.doc
     }
 

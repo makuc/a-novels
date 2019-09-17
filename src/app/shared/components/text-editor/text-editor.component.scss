@@ -1,42 +1,37 @@
 @import 'src/assets/styles/variables';
 
-:host {
-    display: block;
-    margin: 0 0 1em 0;
+.mat-form-field-type-txe.mat-form-field-can-float:not(.mat-form-field-should-float) .mat-form-field-label-wrapper {
+  margin-top: 4em;
+  margin-left: 0.5rem;
 }
 
-[contenteditable=true]:empty:before {
-  content: attr(placeholder);
-  display: block; /* For Firefox */
-  filter: opacity(0.5);
-}
+app-text-editor {
+  display: block;
+  margin: 0;
 
-.placeholder {
-    line-height: 2em;
-    filter: opacity(0.5);
-}
-
-.text-editor {
+  .text-editor {
     .txe-header {
-        height: 2.5em;
-        padding: 0 4px;
+      height: 2.5em;
+      padding: 0 4px;
     }
 
     [contenteditable=true] {
-        padding: .5em;
-        display: block;
-        width: 100%;
-        min-height: 8em;
-        border: none;
+      padding: .5em;
+      display: block;
+      width: 100%;
+      min-height: 8em;
+      border: none;
 
-        *:first-child {
-            margin-top: 0 !important;
-            padding-top: 0 !important;
-        }
+      *:first-child {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+      }
 
-        *:last-child {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-        }
+      *:last-child {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+      }
     }
+  }
+
 }

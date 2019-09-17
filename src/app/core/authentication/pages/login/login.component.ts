@@ -1,3 +1,4 @@
+import { environment } from 'src/environments/environment';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -45,7 +46,7 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
 
     // reset alerts on submit
-    //this.alertService.clear();
+    // this.alertService.clear();
 
     // stop here if form is invalid
     if (this.loginForm.invalid) {
@@ -57,19 +58,36 @@ export class LoginComponent implements OnInit {
         data => {
           this.router.navigate([this.returnUrl]);
         },
-        error => {
-          //this.alertService.error(error);
+        err => {
+          // this.alertService.error(error);
+          if (!environment.production) { console.error(err); }
           this.loading = false;
         }
       );
   }
 
   loginGoogle() {
-    this.authenticationService.loginGoogle();
+    this.authenticationService.loginGoogle()
+      .then(
+        data => {
+          this.router.navigate([this.returnUrl]);
+        },
+        err => {
+          if (!environment.production) { console.error(err); }
+        }
+      );
   }
 
   loginFacebook() {
-    this.authenticationService.loginFacebook();
+    this.authenticationService.loginFacebook()
+    .then(
+      data => {
+        this.router.navigate([this.returnUrl]);
+      },
+      err => {
+        if (!environment.production) { console.error(err); }
+      }
+    );
   }
 
 }

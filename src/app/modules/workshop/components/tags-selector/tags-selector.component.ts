@@ -1,4 +1,4 @@
-import { COMMA, ENTER, SEMICOLON } from '@angular/cdk/keycodes';
+import { COMMA, ENTER, SEMICOLON, FF_SEMICOLON, SPACE, MAC_ENTER } from '@angular/cdk/keycodes';
 import { Component, Input, ViewChild, ElementRef, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -24,73 +24,47 @@ export class TagsSelectorComponent {
   @Input() selectable = true;
   @Input() removable = true;
   @Input() addOnBlur = true;
-  @Input() separatorKeysCodes: number[] = [ENTER, COMMA, SEMICOLON];
+  @Input() separatorKeysCodes: number[] = [SEMICOLON, ENTER, MAC_ENTER, COMMA, FF_SEMICOLON, SPACE];
   @Input() tagsCtrl = new FormControl();
   @Input() possibleTags: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
 
-  tags: string[] = [];
+  inputCtrl = new FormControl();
   searchTags: Observable<string[]>;
 
   @ViewChild('tagInput', { static: false }) tagInput: ElementRef<HTMLInputElement>;
   @ViewChild('tagSelector', { static: false }) matAutocomplete: MatAutocomplete;
 
-  constructor() {
-    this.searchTags = this.tagsCtrl.valueChanges
-      .pipe(
-        startWith(null),
-        map((tag: string | null) => {
-          if (tag) {
-            return this._filter(tag);
-          } else {
-            return this.possibleTags;
-          }
-        })
-      );
-  }
+  constructor() { }
 
   add(event: MatChipInputEvent): void {
-    // Add tag only when MatAutocomplete is not open
-    // To make sure this does not conflict with OptionSelected Event
-    if (!this.matAutocomplete.isOpen) {
-      const input = event.input;
-      const value = event.value;
+    const input = event.input;
+    const value = event.value;
 
-      // Add our tag
-      if ((value || '').trim()) {
-        const tag = value.trim();
-        if (this.tags.indexOf(tag) < 0) {
-          this.tags.push(tag);
-        }
+    // Add our tag
+    if ((value || '').trim()) {
+      const tag = value.trim();
+      if (this.tagsCtrl.value.indexOf(tag) < 0) {
+        this.tagsCtrl.value.push(tag);
       }
-
-      // Reset the input value
-      if (input) {
-        input.value = '';
-      }
-
-      this.tagsCtrl.setValue(null);
     }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+
+    this.tagsCtrl.updateValueAndValidity();
+    this.tagsCtrl.markAsDirty();
   }
 
   remove(tag: string): void {
-    const index = this.tags.indexOf(tag);
+    const index = this.tagsCtrl.value.indexOf(tag);
 
     if (index >= 0) {
-      this.tags.splice(index, 1);
+      this.tagsCtrl.value.splice(index, 1);
     }
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    if (this.tags.indexOf(event.option.viewValue) < 0) {
-      this.tags.push(event.option.viewValue);
-    }
-    this.tagInput.nativeElement.value = '';
-    this.tagsCtrl.setValue(null);
-  }
-
-  private _filter(search: string): string[] {
-    const iSearch = search.toLowerCase();
-    return this.possibleTags.filter(tag => tag.toLowerCase().indexOf(iSearch) === 0);
+    this.tagsCtrl.updateValueAndValidity();
+    this.tagsCtrl.markAsDirty();
   }
 
 }

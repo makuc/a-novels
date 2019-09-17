@@ -21,3 +21,11 @@
   margin: 0 auto;
   text-align: center;
 }
+
+.clean-link {
+  text-decoration: inherit;
+  color: inherit;
+}
+.clean-link:hover {
+  text-decoration: underline;
+}

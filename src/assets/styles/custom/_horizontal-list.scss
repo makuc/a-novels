@@ -24,7 +24,7 @@ ul.horizontal-list {
     }
 
     li {
-        margin: 0.6rem 0.3rem 0 0.3rem;
+        margin: 0.4rem 0.2rem 0 0.2rem;
         flex: 1 1 auto;
         //display:inline-block;
         //*display:inline; /*IE7*/
@@ -34,12 +34,12 @@ ul.horizontal-list {
         //vertical-align: bottom;
 
         // Make the card more compact !!
-        $mat-card-padding: 16px;
+        $mat-card-padding: 0.3rem;
         $mat-card-border-radius: 4px;
         $mat-card-header-size: 20px;
 
         .mat-card {
-            padding: ($mat-card-padding / 2) ($mat-card-padding / 2) 0 ($mat-card-padding / 2);
+            padding: ($mat-card-padding) ($mat-card-padding / 2) 0 ($mat-card-padding / 2);
 
             .mat-card-image {
                 margin: 0 (-($mat-card-padding / 2)) 0 (-($mat-card-padding / 2));
@@ -51,14 +51,16 @@ ul.horizontal-list {
         }
 
         $custom: mat-typography-config( //
-            $headline: mat-typography-level(0.65rem, 1.2em, 400), // .mat-card-title
-            $title: mat-typography-level(0.75rem, 1.2em, 500), // .mat-card-header .mat-card-title
+            $headline: mat-typography-level(0.7rem, 1.2em, 400), // .mat-card-title
+            $title: mat-typography-level(0.8rem, 1.2em, 500), // .mat-card-header .mat-card-title
             $body-1: mat-typography-level(0.6rem, 1.5em, 400), // .mat-card-subtitle, .mat-card-content
         );
 
         @include mat-card-typography($custom);
         .mat-card-title {
             line-height: mat-line-height($custom, headline) !important;
+            margin-bottom: 0.1rem;
+            font-weight: bold;
         }
 
         .mat-card-header .mat-card-title {

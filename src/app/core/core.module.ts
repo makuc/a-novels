@@ -36,7 +36,7 @@ import { LoginComponent } from './authentication/pages/login/login.component';
 import { RegisterComponent } from './authentication/pages/register/register.component';
 import { NovelService } from './services/novel.service';
 import { UserService } from './services/user.service';
-import { WorkshopService } from './services/workshop.service';
+import { GenresService } from './services/genres.service';
 
 @NgModule({
   imports: [
@@ -59,7 +59,7 @@ import { WorkshopService } from './services/workshop.service';
     { provide: HTTP_INTERCEPTORS, useClass: ErrorHandlerInterceptor, multi: true },
     NovelService,
     UserService,
-    WorkshopService
+    GenresService
   ],
   declarations: [
     HeaderComponent,

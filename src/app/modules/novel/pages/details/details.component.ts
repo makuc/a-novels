@@ -1,26 +1,11 @@
+import { storageKeys } from 'src/app/keys.config';
 import { Component, OnInit } from '@angular/core';
-import Novel from 'src/app/shared/models/novel.model';
+import { Novel } from 'src/app/shared/models/novels/novel.model';
 import { PageEvent } from '@angular/material';
-
-const tn = {
-  title: 'Mikayla the Dungeon, with extra long title for the lolz... And to see how it looks',
-  author: {
-    displayName: 'Armin Makovec',
-    uid: 'Vt9rGYLvbKZQaT7rL1fWPBE1OqF2'
-  },
-  cover: '/assets/img/novel/01/cover.jpg',
-  // tslint:disable-next-line: max-line-length
-  description: 'Mikayla, a girl titled as genius in body-enhancement magic!\nYet she knows better. She is naught but a handicapped human, after all, ever since a magical accident when she was just a little girl. A human with an affliction preventing her from using casting her magic outside her own body. Something everyone else take for granted.\nThat is, until another accident happens and she loses her own body as well, becoming a pure crystalline being.\nFollow her as she learns to interact with the world as a crystal anew, find companionship and rediscover her new self.',
-  tags: ['Female MC', 'Magic', 'Dungeon Core', 'Monsters', 'Non-human MC', 'Game Elements', 'Dungeon Master'],
-  dateCreated: '2018-07-23T13:24:57',
-  nFavorites: 1242,
-  nRatings: 24,
-  storyRating: 3.84,
-  styleRating: 4.12,
-  charsRating: 4.58,
-  worldRating: 3.33,
-  grammRating: 4.0
-};
+import { Observable } from 'rxjs';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+import { NovelService } from 'src/app/core/services/novel.service';
 
 const ch = [
   { index: 1, volume: 1, volumeName: 'Becoming a Dungeon', name: 'Chapter 1', url: '/novel/1/chapter/1' },
@@ -73,38 +58,25 @@ const ch = [
   styleUrls: ['./details.component.scss']
 })
 export class DetailsComponent implements OnInit {
+  storage: any;
 
   chaptersPageEvent: PageEvent;
   reviewsPageEvent: PageEvent;
 
   inLibrary = true;
   isFavorite = true;
-  novel: Novel;
+  novel: Observable<Novel>;
   toc = ch;
 
-  constructor() {
-
-    this.novel = {
-      id: 'really-hard-id',
-
-      title: tn.title,
-      author: tn.author,
-      coverURL: tn.cover,
-      published: true,
-
-      description: tn.description,
-      tags: tn.tags,
-
-      // created: firebase.firestore.Timestamp = new firebase.firestore.Timestamp(new Date(''));
-      nFavorites: tn.nFavorites,
-
-      nRatings: tn.nRatings,
-      storyRating: tn.storyRating,
-      styleRating: tn.styleRating,
-      charsRating: tn.charsRating,
-      worldRating: tn.worldRating,
-      grammRating: tn.grammRating
-    };
+  constructor(
+    private novels: NovelService,
+    private route: ActivatedRoute
+  ) {
+    this.storage = storageKeys;
+    this.novel = this.route.paramMap
+      .pipe(
+        switchMap(params => this.novels.getNovel(params.get('id')))
+      );
   }
 
   addFavorites() {

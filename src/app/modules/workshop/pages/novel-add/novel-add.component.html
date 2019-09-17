@@ -14,11 +14,42 @@
       </mat-form-field>
     </div>
 
-    <app-text-editor class="dscr-size"
-                     [(value)]="form['description'].value" placeholder="Description">
-    </app-text-editor>
+    <div>
+      <app-file-select formControlName="cover" accept="image/*" preview></app-file-select>
+    </div>
 
-    <app-tags-selector></app-tags-selector>
+    <div>
+      <mat-form-field class="full">
+        <app-text-editor id="test" class="dscr-size" placeholder="Description" formControlName="description">
+        </app-text-editor>
+        <mat-error *ngIf="form['description'].hasError('required')">
+          Description is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field class="full">
+        <mat-chip-list aria-label="Genres selection" placeholder="Genres" multiple selectable
+                       formControlName="genres">
+          <mat-chip *ngFor="let genre of genresList | async"
+                    [selected]="genreSelected(genre)" (click)="toggleGenre(genre)">
+            {{ genre.name }}
+            <mat-icon matChipRemove *ngIf="genreSelected(genre)" (click)="toggleGenre(genre)">done</mat-icon>
+            <mat-icon matChipRemove *ngIf="!genreSelected(genre)" (click)="toggleGenre(genre)">add</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+        <mat-error *ngIf="form['genres'].hasError('required')">
+          At least one genre is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <app-tags-selector [tagsCtrl]="this.form['tags']"></app-tags-selector>
+
+    <div>
+      <mat-slide-toggle formControlName="published" matTooltip="Available to public">Publish this story?</mat-slide-toggle>
+    </div>
 
     <div>
       <button [disabled]="loading" mat-flat-button color="primary">

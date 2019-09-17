@@ -18,64 +18,36 @@ const routes: Routes = [
     {
         path: ':uid',
         component: ProfileOverviewComponent,
-        resolve: {
-            user: UserResolver,
-            navId: NavIdResolver
-        },
         ...canActivate(redirectUnauthorizedToLogin)
     },
     {
         path: 'me/edit',
         component: EditProfileComponent,
-        resolve: {
-            user: UserResolver,
-            navId: NavIdResolver
-        },
         ...canActivate(redirectUnauthorizedToLogin)
     },
     {
         path: ':uid/archive',
         component: ProfileArchiveComponent,
-        resolve: {
-            user: UserResolver,
-            navId: NavIdResolver
-        },
         ...canActivate(redirectUnauthorizedToLogin)
     },
     {
         path: ':uid/workshop',
         component: ProfileWorkshopComponent,
-        resolve: {
-            user: UserResolver,
-            navId: NavIdResolver
-        },
         ...canActivate(redirectUnauthorizedToLogin)
     },
     {
         path: ':uid/reviews',
         component: ProfileReviewsComponent,
-        resolve: {
-            user: UserResolver,
-            navId: NavIdResolver
-        },
         ...canActivate(redirectUnauthorizedToLogin)
     },
     {
         path: ':uid/reading-history',
         component: ProfileReadingHistoryComponent,
-        resolve: {
-            user: UserResolver,
-            navId: NavIdResolver
-        },
         ...canActivate(redirectUnauthorizedToLogin)
     },
     {
         path: ':uid/favorites',
         component: ProfileFavoritesComponent,
-        resolve: {
-            user: UserResolver,
-            navId: NavIdResolver
-        },
         ...canActivate(redirectUnauthorizedToLogin)
     },
 ];

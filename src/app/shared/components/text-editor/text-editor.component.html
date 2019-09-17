@@ -1,18 +1,17 @@
-<span *ngIf="placeholder" class="placeholder">{{ value ? placeholder : '&nbsp;' }}</span>
-<div class="text-editor mat-elevation-z2">
+<div class="text-editor">
+
   <mat-toolbar class="txe-header mat-elevation-z2">
-    <button mat-icon-button aria-label="Make selection bold" mat-tooltip="Make selection bold"
+    <button type="button" mat-icon-button tabindex="-1" aria-label="Make selection bold" mat-tooltip="Make selection bold"
             (click)="toggleBold($event)">
       <mat-icon>format_bold</mat-icon>
     </button>
-    <button mat-icon-button aria-label="Make selection bold" mat-tooltip="Make selection bold"
+    <button type="button" mat-icon-button tabindex="-1" aria-label="Make selection bold" mat-tooltip="Make selection italic"
             (click)="toggleItalic($event)">
       <mat-icon>format_italic</mat-icon>
     </button>
   </mat-toolbar>
 
-  <div #txe contenteditable="true" [attr.placeholder]="placeholder" (keypress)="keyPress($event)"
+  <div #txe class="txe-field" contenteditable="true" [attr.placeholder]="placeholder" (keypress)="keyPress($event)"
        (input)="process($event)" (focus)="doFocus($event)" (blur)="doBlur($event)">
   </div>
 </div>
-<span>{{ error ? error : '&nbsp;' }}</span>

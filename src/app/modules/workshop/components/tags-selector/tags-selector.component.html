@@ -1,26 +1,23 @@
 <mat-form-field class="full">
-  <mat-chip-list #tagsList aria-label="Tags selection">
-    <mat-chip
-              *ngFor="let tag of tags"
-              [selectable]="selectable"
-              [removable]="removable"
+  <mat-chip-list #tagsList aria-label="Tags selection" multiple selectable [formControl]="tagsCtrl">
+    <mat-chip color="primary" selected removable
+              *ngFor="let tag of tagsCtrl.value"
               (removed)="remove(tag)">
       {{ tag }}
-      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+      <mat-icon matChipRemove>cancel</mat-icon>
     </mat-chip>
     <input
            placeholder="Tags"
            #tagInput
-           [formControl]="tagsCtrl"
-           [matAutocomplete]="tagSelector"
            [matChipInputFor]="tagsList"
            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
            [matChipInputAddOnBlur]="addOnBlur"
            (matChipInputTokenEnd)="add($event)">
   </mat-chip-list>
-  <mat-autocomplete #tagSelector="matAutocomplete" (optionSelected)="selected($event)">
-    <mat-option *ngFor="let tag of searchTags | async" [value]="tag">
-      {{ tag }}
-    </mat-option>
-  </mat-autocomplete>
+  <mat-error *ngIf="tagsCtrl.hasError('required')">
+    At least one tag is <strong>required</strong>
+  </mat-error>
+  <mat-hint>
+    Use space, enter, comma, or semicolon as separator.
+  </mat-hint>
 </mat-form-field>

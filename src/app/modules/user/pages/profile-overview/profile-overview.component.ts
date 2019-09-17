@@ -1,38 +1,30 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
-import { User } from 'firebase';
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, switchMap } from 'rxjs/operators';
 import { UserProfile } from 'src/app/shared/models/user-profile.model';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-profile-overview',
   templateUrl: './profile-overview.component.html',
   styleUrls: ['./profile-overview.component.scss']
 })
-export class ProfileOverviewComponent implements OnInit, OnDestroy {
+export class ProfileOverviewComponent {
 
-  private destroyer = new Subject<void>();
-
-  public user: UserProfile;
+  public user: Observable<UserProfile>;
   public navId: string;
 
   constructor(
-    private route: ActivatedRoute
-  ) { }
-
-  ngOnInit() {
-    this.route.data
-      .pipe(takeUntil(this.destroyer))
-      .subscribe(data => {
-        this.user = data.user;
-        this.navId = data.navId;
-      });
-  }
-
-  ngOnDestroy() {
-    this.destroyer.next();
-    this.destroyer.unsubscribe();
+    private route: ActivatedRoute,
+    private users: UserService
+  ) {
+    this.navId = this.route.snapshot.paramMap.get('uid');
+    if (this.navId === 'me') {
+      this.user = this.users.getMe();
+    } else {
+      this.user = this.users.getUser(this.navId);
+    }
   }
 
 }

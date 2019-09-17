@@ -1,11 +1,11 @@
-<section class="novel-details" ngClass.xs="xs-width" fxLayout="column">
+<section class="novel-details" ngClass.xs="xs-width" fxLayout="column" *ngIf="novel | async as novelData">
   <div fxHide.gt-xs>
-    <h1>{{ novel.title }}</h1>
+    <h1>{{ novelData.title }}</h1>
     <h4>
       <mat-icon inline matTooltip="Author of the novel" matTooltipClass="dscr-tooltip">
         perm_identity
       </mat-icon>
-      <a routerLink="/user/{{ novel.author?.uid }}"> {{ novel.author.displayName }}</a>
+      <a class="clean-link" routerLink="/user/{{ novelData.author?.uid }}"> {{ novelData.author.displayName }}</a>
       |
       <mat-icon inline matTooltip="Number of released chapters" matTooltipClass="dscr-tooltip">
         library_books
@@ -23,16 +23,25 @@
 
     <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center"
          fxLayoutGap=".6em">
-      <img src="/assets/img/novels/01/cover.jpg" alt="Cover picture of '{{ novel.title}}''">
+      <a class="clean-link"
+         href="/assets/img/novels/01/cover.jpg">
+        <img *ngIf="!novelData.cover" alt="Cover picture of '{{ novelData.title}}''"
+             src="/assets/img/novels/01/cover.jpg">
+      </a>
+      <a class="clean-link"
+         [href]="storage.GEN_URL(storage.BASIC_URL, storage.NOVELS_COVER_PATH, novelData.id, storage.NOVELS_COVER_THUMBNAIL)">
+        <img *ngIf="novelData.cover" alt="Cover picture of '{{ novelData.title}}''"
+             [src]="storage.GEN_URL(storage.BASIC_URL, storage.NOVELS_COVER_PATH, novelData.id, storage.NOVELS_COVER_THUMBNAIL)">
+      </a>
       <app-ratings [novel]="novel"></app-ratings>
     </div>
 
 
     <div fxFlex fxLayout="column" fxLayoutAlign="start start">
-      <mat-card-title fxShow.gt-xs fxHide>{{ novel.title }}</mat-card-title>
+      <mat-card-title fxShow.gt-xs fxHide>{{ novelData.title }}</mat-card-title>
       <mat-card-subtitle fxShow.gt-xs fxHide>
         <mat-icon inline matTooltip="Author of the novel" matTooltipClass="dscr-tooltip">perm_identity</mat-icon>
-        <a class="mat-h4" routerLink="/user/{{ novel.author?.uid }}"> {{ novel.author.displayName }}</a> |
+        <a class="mat-h4 clean-link" routerLink="/user/{{ novelData.author?.uid }}"> {{ novelData.author.displayName }}</a> |
         <mat-icon inline matTooltip="Number of released chapter" matTooltipClass="dscr-tooltip">library_books</mat-icon>
         1331 |
         <mat-icon inline matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">trending_up
@@ -41,11 +50,7 @@
         week
       </mat-card-subtitle>
 
-      <mat-card-content fxHide.xs>
-        <p *ngFor="let parag of novel.description.split('\n')">
-          {{ parag }}
-        </p>
-      </mat-card-content>
+      <mat-card-content [innerHTML]="novelData.description"></mat-card-content>
 
       <div class="actions" fxLayout="row" fxLayoutAlign="start start">
         <button mat-button (click)="addFavorites()" *ngIf="!isFavorite"
@@ -66,17 +71,10 @@
       </div>
     </div>
 
-
-
   </div>
 
-  <app-full-statistic></app-full-statistic>
+  <!--<app-full-statistic></app-full-statistic>-->
 
-  <mat-card-content fxHide.gt-xs>
-    <p *ngFor="let parag of novel.description.split('\n')">
-      {{ parag }}
-    </p>
-  </mat-card-content>
 </section>
 
 <mat-card class="novel-details nowrap" ngClass.xs="xs-width" fxLayout="column">

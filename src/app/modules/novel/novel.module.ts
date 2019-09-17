@@ -24,6 +24,9 @@ import { MaterialModule } from 'src/app/core/imports/material.module';
     RatingsComponent,
 
     TocComponent
+  ],
+  exports: [
+    RatingsComponent
   ]
 })
 export class NovelModule { }

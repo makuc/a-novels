@@ -1,3 +1,4 @@
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -5,18 +6,31 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    match /genres/{genreId} {
+      allow read;
+      allow write: if isSignedIn() && sameIdAndName()
+
+      function sameIdAndName() {
+        return request.resource.data.name.lower() == genreId;
+      }
+
+      function properFields() {
+        return  resource.data.keys().hasAll(['name']) &&
+                resource.data.keys().hasOnly(['name', 'description']);
+      }
+    }
+
     match /tags/{tagId} {
       allow read;
       allow write: if isSignedIn() && sameIdAndName() && properFields();
 
       function sameIdAndName() {
-        return request.resource.data.name == tagId;
+        return request.resource.data.name.lower() == tagId;
       }
 
       function properFields() {
-        return  (resource.data.keys().size() == 2 && resource.data.keys().hasAll(['name', 'createdAt'])) ||
-                (resource.data.keys().size() == 3 && resource.data.keys().hasAll(['name', 'createdAt', 'description'])) ||
-                (resource.data.keys().size() == 4 && resource.data.keys().hasAll(['name', 'createdAt', 'updatedAt', 'description']));
+        return  resource.data.keys().hasAll(['name']) &&
+                resource.data.keys().hasOnly(['name', 'description']);
       }
     }
 

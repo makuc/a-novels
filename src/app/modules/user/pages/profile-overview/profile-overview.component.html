@@ -1,9 +1,9 @@
-<app-profile-header [user]="user"></app-profile-header>
+<section class="full" *ngIf="user | async as userData">
+  <app-profile-header [user]="userData"></app-profile-header>
 
-<section class="full">
   <div fxLayout="row" fxLayoutGap="1em" id="profile-tabs">
 
-    <app-profile-nav [navId]="navId" ngClass.xs="hidden" fxFlex="initial"></app-profile-nav>
+    <app-profile-nav [navId]="userData.uid" ngClass.xs="hidden" fxFlex="initial"></app-profile-nav>
     <div id="profile-nav"> </div>
 
     <div fxFlex fxLayout="column" style="overflow: hidden;">
@@ -19,19 +19,19 @@
             <h2>Details</h2>
             <div class="profile-details" fxLayout="row">
               <span class="label">Display name:</span>
-              <span class="value">{{ user.displayName }}</span>
+              <span class="value">{{ userData.displayName }}</span>
             </div>
-            <div class="profile-details" fxLayout="row">
+            <div class="profile-details" fxLayout="row" *ngIf="userData.birthday">
               <span class="label">Birth date:</span>
-              <span class="value">31. 3. 1995</span>
+              <span class="value">{{ userData.birthday }}</span>
             </div>
             <div class="profile-details" fxLayout="row">
               <span class="label">E-mail:</span>
-              <span class="value">{{ user.email }}</span>
+              <span class="value">{{ userData.email }}</span>
             </div>
-            <div class="profile-details" fxLayout="row" *ngIf="user.phoneNumber">
+            <div class="profile-details" fxLayout="row" *ngIf="userData.phoneNumber">
               <span class="label">Phone number:</span>
-              <span class="value">{{ user.phoneNumber }}</span>
+              <span class="value">{{ userData.phoneNumber }}</span>
             </div>
           </ng-template>
         </mat-tab>

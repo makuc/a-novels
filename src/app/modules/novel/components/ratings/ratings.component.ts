@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import Novel from 'src/app/shared/models/novel.model';
+import { Novel } from 'src/app/shared/models/novels/novel.model';
 
 @Component({
   selector: 'app-ratings',

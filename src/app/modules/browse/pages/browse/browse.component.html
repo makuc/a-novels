@@ -1,0 +1,81 @@
+<section class="container">
+  <h1>Browse</h1>
+</section>
+<section id="novels">
+  <ul>
+    <li *ngFor="let novelData of novelsListData">
+
+      <mat-card>
+        <mat-card-content>
+            <div fxHide.gt-xs>
+              <a class="clean-link" href="/novel/{{ novelData.id }}">
+                <h1>{{ novelData.title }}</h1>
+              </a>
+              <h4>
+                <mat-icon inline matTooltip="Author of the novel" matTooltipClass="dscr-tooltip">
+                  perm_identity
+                </mat-icon>
+                <a class="clean-link" routerLink="/user/{{ novelData.author?.uid }}"> {{ novelData.author.displayName }}</a>
+                |
+                <mat-icon inline matTooltip="Number of released chapters" matTooltipClass="dscr-tooltip">
+                  library_books
+                </mat-icon>
+                1331 |
+                <mat-icon inline matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">
+                  trending_up
+                </mat-icon>13
+                chs/w
+              </h4>
+            </div>
+          
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start center"
+                  fxLayoutGap=".6em">
+          
+              <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center"
+                    fxLayoutGap=".6em">
+                <img *ngIf="!novelData.cover" alt="Cover picture of '{{ novelData.title}}''"
+                      src="/assets/img/novels/01/cover.jpg">
+                <img *ngIf="novelData.cover" alt="Cover picture of '{{ novelData.title}}''"
+                      [src]="storage.GEN_URL(storage.BASIC_URL, storage.NOVELS_COVER_PATH, novelData.id, storage.NOVELS_COVER_THUMBNAIL)">
+              </div>
+          
+          
+              <div style="width: 100%" fxFlex fxLayout="column" fxLayoutAlign="start start">
+                <mat-card-title fxShow.gt-xs fxHide>
+                  <a class="clean-link" href="/novel/{{ novelData.id }}">{{ novelData.title }}</a>
+                </mat-card-title>
+                <mat-card-subtitle class="subtitle-fix" fxShow.gt-xs fxHide>
+                  <mat-icon inline matTooltip="Author of the novel" matTooltipClass="dscr-tooltip">perm_identity</mat-icon>
+                  <a class="mat-h4 clean-link" routerLink="/user/{{ novelData.author?.uid }}"> {{ novelData.author.displayName }}</a> |
+                  <mat-icon inline matTooltip="Number of released chapter" matTooltipClass="dscr-tooltip">library_books</mat-icon>
+                  1331 |
+                  <mat-icon inline matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">trending_up
+                  </mat-icon>13
+                  chs /
+                  week
+                </mat-card-subtitle>
+          
+                <div [innerHTML]="novelData.description"></div>
+          
+              </div>
+          
+            </div>
+
+        </mat-card-content>
+      </mat-card>
+      
+    </li>
+  </ul>
+
+  <mat-toolbar *ngIf="novelsList">
+    
+    <button mat-icon-button (click)="prevPage(novelsListData[0])">
+      <mat-icon>navigate_before</mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="nextPage(novelsListData[novelsListData.length - 1])">
+      <mat-icon>navigate_next</mat-icon>
+    </button>
+
+  </mat-toolbar>
+</section>

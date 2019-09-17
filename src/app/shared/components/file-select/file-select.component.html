@@ -1,0 +1,24 @@
+<input #fileInput
+       type="file"
+       [id]="id"
+       class="inputfile"
+       [multiple]="multiple"
+       (focus)="onFocus()"
+       (blur)="onBlur()"
+       (change)="update()"
+       [accept]="accept">
+<label [for]="id" class="btn btn-link mat-stroked-button mat-button-base">
+  Choose file...
+</label>
+<span #msg>No file(s) selected...</span>
+<ng-container *ngIf="preview && value.length">
+  test
+  <div class="inputfile-preview">
+    <ul class="horizontal-list fixed">
+      <li *ngFor="let file of previewSrcs; let i = index">
+        <img [src]="file" alt="upload file preview: {{ i }}">
+      </li>
+    </ul>
+  </div>
+</ng-container>
+

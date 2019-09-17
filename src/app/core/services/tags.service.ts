@@ -1,14 +1,15 @@
-import { dbKeysConfig } from 'src/app/keys.config';
+import { dbKeys } from 'src/app/keys.config';
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, DocumentReference } from '@angular/fire/firestore';
-import Tag from 'src/app/shared/models/tag.model';
 import { Observable } from 'rxjs';
 import { firestore } from 'firebase/app';
+import { Tag } from 'src/app/shared/models/novels/tag.model';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class NovelService {
+export class TagsService {
 // tslint:disable: variable-name
   private _tags: AngularFirestoreCollection<Tag>;
 // tslint:enable: variable-name
@@ -16,7 +17,7 @@ export class NovelService {
   constructor(
     private afStore: AngularFirestore
   ) {
-    this._tags = this.afStore.collection<Tag>(dbKeysConfig.COLLECTION_TAGS, ref => ref.orderBy('name'));
+    this._tags = this.afStore.collection<Tag>(dbKeys.COLLECTION_TAGS, ref => ref.orderBy('name'));
   }
 
   get timestamp() {
