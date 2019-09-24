@@ -46,10 +46,12 @@ service cloud.firestore {
     }
 
     match /novels/{novelId} {
-      allow read;
+      allow read: if isPublic() || isAuthor();
       allow create: if properAuthor();
-      allow delete: if novelAuthor() || isAdmin() || isMod();
-      allow update: if consistentId() && (novelAuthor() || isEditor() || novelEditor());
+      allow delete: if isAuthor() || isAdmin() || isMod();
+      allow update: if
+        consistentId() &&
+        (isAuthor() || isEditor() || novelEditor());
 
       // Check if all author fields are properly set
       function properAuthor() {
@@ -60,15 +62,108 @@ service cloud.firestore {
         return request.resource.data.id == resource.data.id;
       }
       // Checks if current user is this novel's author
-      function novelAuthor() {
+      function isAuthor() {
         return request.auth.uid == resource.data.author.uid;
       }
       // Checks if current user belongs to this novel's editors
       function novelEditor() {
         return request.auth.uid == resource.data.editors
       }
+      function isPublished() {
+        return resource.data.published == true;
+      }
+
+      function validateStats() {
+        return getAfter(/databases/{database}/documents/novels/---STATS---).data.updatedAt == request.time;
+      }
     }
 
+    match /novels/---STATS--- {
+      allow read;
+      allow update: if // DELETE doc
+        // DELETE doc
+        deleting() &&
+        isIncreaseNDeleted() &&     // All deleted docs increase this counter
+        isReduceNAll() &&           // All deleted docs reduce this counter
+        (
+          (wasPublic() && isReduceN()) || isUntouchedN()
+        )
+      allow update: if // CREATE doc
+        creating() &&
+        isIncreaseNAll() &&         // All created docs increase this counter
+        isUntouchedNDeleted() &&    // Creating a doc mustn't touch this counter
+        (
+          (isPublic() && isIncreaseN()) || isUntouchedN()
+        )
+      allow update: if // UPDATE doc
+        isUntouchedNDeleted() &&
+        isUntouchedNAll() &&
+        (
+          (toPublic() && isIncreaseN()) || (toPrivate() && isReduceN())
+        )
+
+      function deleting() {
+        return !existsAfter(/databases/{database}/documents/novels/{novelId});
+      }
+      function creating() {
+        return !exists(/databases/{database}/documents/novels/{novelId});
+      }
+      // PUBLIC state
+      function wasPublic() {
+        return getNovelData().public;
+      }
+      function isPublic() {
+        return getAfterNovelData().public;
+      }
+      function toPublic() {
+        return !getNovelData().public &&
+               getAfterNovelData().public;
+      }
+      function toPrivate() {
+        return getNovelData().public &&
+               !getAfterNovelData().public;
+      }
+      function untouchedPublic() {
+        return getNovelData().public == getAfterNovelData().public;
+      }
+
+      function getNovelData() {
+        return get(/databases/{database}/documents/novels/{novelId}).data;
+      }
+      function getAfterNovelData() {
+        return getAfter(/databases/{database}/documents/novels/{novelId}).data;
+      }
+
+      // COUNTERS
+      // n
+      function isReduceN() {
+        return resource.data.n -1 == request.resource.data.n;
+      }
+      function isIncreaseN() {
+        return resource.data.n +1 == request.resource.data.n;
+      }
+      function isUntouchedN() {
+        return resource.data.n == request.resource.data.n;
+      }
+      // nAll
+      function isReduceNAll() {
+        return resource.data.nAll -1 == request.resource.data.nAll;
+      }
+      function isIncreaseNAll() {
+        return resource.data.nAll +1 == request.resource.data.nAll;
+      }
+      function isUntouchedNAll() {
+        return resource.data.nAll == request.resource.data.nAll;
+      }
+      // nDelete
+      function isIncreaseNDeleted() {
+        return resource.data.nDeleted +1 == request.resource.data.nDeleted;
+      }
+      function isUntouchedNDeleted() {
+        return resource.data.nDeleted == request.resource.data.nDeleted;
+      }
+
+    }
   }
 }
 

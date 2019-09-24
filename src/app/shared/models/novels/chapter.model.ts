@@ -6,7 +6,10 @@ export class Chapter {
     novel: NovelMeta;
 
     title: string;
+    iTitle: string;
     chapter: string;
+
+    public: boolean;
 
     createdAt?: firestore.Timestamp | firestore.FieldValue;
     updatedAt?: firestore.Timestamp | firestore.FieldValue;

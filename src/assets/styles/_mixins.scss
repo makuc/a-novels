@@ -1,0 +1,93 @@
+// MY OWN MIXINS
+@mixin angular-material-colors($theme) {
+  $p: map-get($theme, primary);
+  $a: map-get($theme, accent);
+  $w: map-get($theme, warn);
+  $b: map-get($theme, background);
+  $f: map-get($theme, foreground);
+  $primary: mat-color($p);
+  $accent: mat-color($a);
+  $warn: mat-color($w);
+  $background: mat-color($b, background);
+  $background-card: mat-color($b, card);
+  $foreground: mat-color($f, text);
+  $app-bar: mat-color($b, app-bar);
+  $primary-contrast: mat-color($p, default-contrast);
+  $accent-contrast: mat-color($a, default-contrast);
+  $warn-contrast: mat-color($w, default-contrast);
+  // As colors
+  .color.primary {
+    color: $primary;
+    border-color: $primary;
+  }
+  .color.accent {
+    color: $accent;
+    border-color: $accent;
+  }
+  .color.warn {
+    color: $warn;
+    border-color: $warn;
+  }
+  .color.primary-contrast {
+    color: $primary-contrast;
+    border-color: $primary-contrast;
+  }
+  .color.accent-contrast {
+    color: $accent-contrast;
+    border-color: $accent-contrast;
+  }
+  .color.warn-contrast {
+    color: $warn-contrast;
+    border-color: $warn-contrast;
+  }
+
+  .background.primary {
+    background-color: $primary;
+    color: $primary-contrast;
+    border-color: $primary-contrast;
+  }
+  .background.accent {
+    background-color: $accent;
+    color: $accent-contrast;
+    border-color: $accent-contrast;
+  }
+  .background.warn {
+    background-color: $warn;
+    color: $warn-contrast;
+    border-color: $warn-contrast;
+  }
+  .background.card {
+    background-color: $background-card;
+  }
+  .background.stacked {
+    background-color: $background;
+  }
+  .background.bar {
+    background-color: $app-bar;
+  }
+  .foreground,
+  text {
+    fill: $foreground;
+  }
+}
+
+@mixin angular-themes-array-deploy($themes) {
+  @each $thm in $themes {
+    $name: map-get($thm, name);
+    $theme-light: map-get($thm, light);
+    $theme-dark: map-get($thm, dark);
+
+    .#{$name} {
+      // Include the default theme styles.
+      @include angular-material-theme($theme-light);
+      // Custom classes for set colors
+      @include angular-material-colors($theme-light);
+
+      &.dark {
+        // The alternate version, when enclosed inside an HTML class tag
+        @include angular-material-theme($theme-dark);
+        @include angular-material-colors($theme-dark);
+      }
+    }
+  }
+}

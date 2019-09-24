@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>Update</h1>
+
+<div mat-dialog-content>
+  <mat-form-field class="full">
+    <mat-chip-list  #selGenre
+                    aria-label="Genres selection"
+                    [placeholder]="data.placeholder"
+                    multiple
+                    selectable
+                    autofocus
+                    color="primary"
+                    [formControl]="ctrl"
+                    [compareWith]="compareGenres">
+      <mat-chip *ngFor="let genre of genresList | async"
+                [value]="genre"
+                (click)="toggleGenre(genre)">
+        {{ genre.name }}
+        <mat-icon matChipRemove *ngIf="genreSelected(genre)" (click)="toggleGenre(genre)">done</mat-icon>
+        <mat-icon matChipRemove
+                  *ngIf="!genreSelected(genre)"
+                  (click)="toggleGenre(genre)">add</mat-icon>
+      </mat-chip>
+    </mat-chip-list>
+    <mat-error *ngIf="ctrl.hasError('required')">
+      At least one genre is <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <span fxFlex>
+    <button mat-flat-button color="primary" [disabled]="ctrl.hasError('required')" [mat-dialog-close]="ctrl.value">Ok</button>
+  </span>
+  <span fxFlex="none">
+    <button mat-button (click)="onNoClick()">Cancel</button>
+  </span>
+</div>

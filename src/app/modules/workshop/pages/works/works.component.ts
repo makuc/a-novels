@@ -22,7 +22,7 @@ export class WorksComponent implements OnInit {
     this.storage = storageKeys;
     this.novelsList = this.users.getMe()
       .pipe(
-        switchMap(user => this.novels.getNovelsBySnapshot(user.uid))
+        switchMap(user => this.novels.novelsGetSnapshotsBy(user.uid))
       );
   }
 

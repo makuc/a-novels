@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { UserProfile } from 'src/app/shared/models/user-profile.model';
+import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 

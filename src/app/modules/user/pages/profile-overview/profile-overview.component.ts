@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil, switchMap } from 'rxjs/operators';
-import { UserProfile } from 'src/app/shared/models/user-profile.model';
+import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 import { UserService } from 'src/app/core/services/user.service';
 
 @Component({

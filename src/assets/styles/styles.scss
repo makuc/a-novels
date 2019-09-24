@@ -1,42 +1,9 @@
 @import "variables.scss";
 @import "typography.scss";
+@import "mixins";
 
 // Plus imports for other components in your app.
 @include mat-core();
-
-
-// Include the default theme styles.
-.indigo {
-  @include angular-material-theme($indigo-light-theme);
-
-  // The alternate version, when enclosed inside an HTML class tag
-  &.dark {
-    @include angular-material-theme($indigo-dark-theme);
-  }
-}
-
-// Include the default theme styles.
-.purple {
-  @include angular-material-theme($purple-light-theme);
-
-  // The alternate version, when enclosed inside an HTML class tag
-  &.dark {
-    @include angular-material-theme($indigo-dark-theme);
-  }
-}
-
-
-
+@include angular-themes-array-deploy($themes); // From my `mixins`
 
 @import "custom.scss";
-
-:root {
-  --color-primary: #{mat-color($indigo-light-primary)};
-  --color-accent: #{mat-color($indigo-light-accent)};
-  //--color-warn: #{mat-color($default-app-warn)};
-  //--color-success: #{mat-color($default-app-success)};
-}
-
-.example-color-use {
-  background: var(--color-primary)
-}

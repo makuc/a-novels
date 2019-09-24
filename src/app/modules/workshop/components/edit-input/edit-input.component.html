@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Edit</h1>
+<div mat-dialog-content>
+  <mat-form-field class="full">
+    <input matInput [(ngModel)]="data.value" cdkFocusInitial [placeholder]="data.placeholder">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <span fxFlex>
+    <button mat-flat-button color="primary" [mat-dialog-close]="data.value">Ok</button>
+  </span>
+  <span fxFlex="none">
+    <button mat-button (click)="onNoClick()">Cancel</button>
+  </span>
+</div>

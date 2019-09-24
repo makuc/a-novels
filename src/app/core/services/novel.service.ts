@@ -4,12 +4,14 @@ import { AngularFirestore, AngularFirestoreCollection, DocumentReference, Docume
 import { Observable } from 'rxjs';
 import { firestore } from 'firebase/app';
 import { Novel, NovelMeta } from 'src/app/shared/models/novels/novel.model';
-import { UserMeta, UserProfile } from 'src/app/shared/models/user-profile.model';
+import { UserMeta, UserProfile } from 'src/app/shared/models/users/user-profile.model';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { map, first } from 'rxjs/operators';
 import { environment } from 'src/environments/environment.prod';
 import { Chapter } from 'src/app/shared/models/novels/chapter.model';
 import { UserService } from './user.service';
+import { NovelsStats } from 'src/app/shared/models/novels/novels-stats.model';
+import { Genre } from 'src/app/shared/models/novels/genre.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,15 +26,20 @@ export class NovelService {
     private afStorage: AngularFireStorage,
     private users: UserService
   ) {
-    this._novels = this.afStore.collection(dbKeys.COLLECTION_NOVELS);
+    this._novels = this.afStore.collection<Novel>(dbKeys.COLLECTION_NOVELS);
   }
 
   get timestamp() {
     return firestore.FieldValue.serverTimestamp();
   }
 
-  getNovel(id: string): Observable<Novel> {
-    return this._novels.doc<Novel>(id)
+  novelGet(id: string): Observable<Novel> {
+    return this.afStore
+      .collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => (
+        ref
+          .where('public', '==', true)
+      ))
+      .doc<Novel>(id)
       .snapshotChanges()
       .pipe(
         map(data => {
@@ -44,8 +51,8 @@ export class NovelService {
       );
   }
 
-  getNovels(lastNovel: Novel = null, limit: number = 5): Observable<Novel[]> {
-    if (lastNovel) {
+  novelsGet(lastNovel: Novel = null, limit: number = 5): Observable<Novel[]> {
+    /*if (lastNovel) {
       return this.afStore
         .collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => (
           ref
@@ -54,58 +61,24 @@ export class NovelService {
             .limit(limit)
         ))
         .valueChanges();
-    } else {
+    } else {*/
+      console.log('Really?');
       return this.afStore
-        .collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => (
-          ref
-            .orderBy('title')
-            .limit(limit)
-        ))
-        .valueChanges();
-    }
-  }
-  getNovelsPrev(firstNovel: Novel = null, limit: number = 5): Observable<Novel[]> {
-    if (firstNovel) {
-      return this.afStore
-        .collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => (
-          ref
-            .orderBy('title')
-            .endBefore(firstNovel.title)
-            .limit(limit)
-        ))
-        .valueChanges();
-    } else {
-      const last = this.afStore
-        .collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => (
-          ref
-            .orderBy('title', 'desc')
-            .limit(1)
-        )).get().toPromise().then(
-          snapshot => {
+        .collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => ref
+          .orderBy('title', 'asc')
+          .where('public', '==', true)
 
-          },
-          err => {
-            if (!environment.production) {
-              console.error('NovelsService.getNovelsPrev: get last novel in collection: ', err);
-            }
-          }
+          // .limit(limit)
         )
-      return this.afStore
-        .collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => (
-          ref
-            .orderBy('title', 'desc')
-            .endBefore(last)
-            .limit(limit)
-        ))
         .valueChanges();
-    }
+    // }
   }
 
-  getNovelsBy(uid: string): Observable<Novel[]> {
+  novelsGetBy(uid: string): Observable<Novel[]> {
     return this.afStore.collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => ref.where('author.uid', '==', uid)).valueChanges();
   }
 
-  getNovelsBySnapshot(uid: string): Observable<Novel[]> {
+  novelsGetSnapshotsBy(uid: string): Observable<Novel[]> {
     return this.afStore.collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => ref.where('author.uid', '==', uid))
       .snapshotChanges()
       .pipe(
@@ -118,62 +91,134 @@ export class NovelService {
       );
   }
 
-  addNovel(data: Novel, author?: UserMeta): Promise<string> {
-    if (author) {
-      const id = this.afStore.createId();
-      return this._novels.doc(id)
-        .set({
-          id,
-          author,
-          title: data.title,
-          description: data.description,
-          genres: data.genres,
-          tags: data.tags,
+  novelAdd(data: Novel): Promise<string> {
+    return this.users.currentUser
+      .pipe(
+        first()
+      )
+      .toPromise()
+      .then(
+        (user: UserProfile) => {
+          return this.addNovel(data, {
+            uid: user.uid,
+            displayName: user.displayName
+          });
+        },
+        (err) => err
+      );
+  }
+  private addNovel(data: Novel, author: UserMeta): Promise<string> {
+    // Get a new write batch
+    const batch = this.afStore.firestore.batch();
 
-          cover: false,
-          published: data.published || false,
+    const newStoryId = this.afStore.createId();
+    const storyRef = this._novels.doc(newStoryId).ref;
+    batch.set(storyRef, {
+      id: newStoryId,
+      author,
 
-          createdAt: this.timestamp,
-        })
-        .then(
-          () => id,
-          (err) => err
-        );
-    } else {
-      return this.users.currentUser
-        .pipe(
-          first()
-        )
-        .toPromise()
-        .then(
-          (user: UserProfile) => {
-            return this.addNovel(data, {
-              uid: user.uid,
-              displayName: user.displayName
-            });
-          },
-          (err) => err
-        );
-    }
+      title: data.title,
+      iTitle: this.caseFoldNormalize(data.title),
+
+      description: data.description,
+      genres: data.genres,
+      tags: data.tags,
+
+      cover: false,
+      public: data.public || false,
+
+      createdAt: this.timestamp,
+      updatedAt: this.timestamp
+    });
+
+    const statsRef = this._novels.doc<NovelsStats>(dbKeys.STATS_DOC).ref;
+    batch.update(statsRef, {
+      updatedAt: this.timestamp,
+      n: firestore.FieldValue.increment(1),
+      nAll: firestore.FieldValue.increment(data.public ? 1 : 0),
+      id: newStoryId
+    });
+
+    // Commit the batch
+    return batch.commit()
+      .then(
+        (val) => newStoryId,
+        (err) => err
+      );
   }
 
-  uploadCover(id: string, img: File): AngularFireUploadTask {
+  novelCoverUpload(id: string, img: File): AngularFireUploadTask {
     const path = `${storageKeys.NOVELS_COVER_PATH}/${id}/${storageKeys.NOVELS_COVER_ORIGINAL}`;
-    console.log('Path:', path);
     return this.afStorage.upload(path, img);
   }
+  novelCoverRemove(id: string) {
+    const path = `${storageKeys.NOVELS_COVER_PATH}/${id}/${storageKeys.NOVELS_COVER_ORIGINAL}`;
+    return this.afStorage.ref(path).delete().toPromise();
+  }
+  novelTitleEdit(id: string, title: string) {
+    return this._novels.doc<Novel>(id).update({
+      updatedAt: this.timestamp,
+      title,
+      iTitle: this.caseFoldNormalize(title)
+    });
+  }
+  novelDescriptionEdit(id: string, description: string) {
+    return this._novels.doc<Novel>(id).update({
+      updatedAt: this.timestamp,
+      description
+    });
+  }
+  novelGenresEdit(id: string, genres: Genre[]) {
+    return this._novels.doc<Novel>(id).update({
+      updatedAt: this.timestamp,
+      genres
+    });
+  }
+  novelPublicToggle(id: string, currentPublic: boolean) {
+    const batch = this.afStore.firestore.batch();
 
-  updateNovel(id: string, data: any) {
-    this._novels.doc(id).update({
-      ...data,
+    const novelRef = this._novels.doc<Novel>(id).ref;
+    batch.update(novelRef, {
+      updatedAt: this.timestamp,
+      public: !currentPublic
+    });
+
+    const statsRef = this._novels.doc<NovelsStats>(dbKeys.STATS_DOC).ref;
+    batch.update(statsRef, {
+      id,
+      updatedAt: this.timestamp,
+      n: firestore.FieldValue.increment(currentPublic ? -1 : 1)
+    });
+
+    return batch.commit();
+  }
+  novelTagsEdit(id: string, overwriteTags: string[]) {
+    return this._novels.doc<Novel>(id).update({
+      tags: overwriteTags,
+      updatedAt: this.timestamp
+    });
+  }
+  novelTagRemove(id: string, removeTag: string) {
+    return this._novels.doc<Novel>(id).update({
+      tags: firestore.FieldValue.arrayRemove(removeTag),
       updatedAt: this.timestamp
     });
   }
 
-  removeNovel(id: string): Promise<void> {
+  novelRemove(id: string, currentPublic: boolean): Promise<void> {
     const batch = this.afStore.firestore.batch();
 
-    const novel = this.afStore.doc<Novel>(id);
+    const novelRef = this.afStore.doc<Novel>(id).ref;
+    batch.delete(novelRef);
+
+    const statsRef = this.afStore.doc<NovelsStats>(dbKeys.STATS_DOC).ref;
+    batch.set(statsRef, {
+      updatedAt: this.timestamp,
+      id,
+      n: firestore.FieldValue.increment(currentPublic ? -1 : 0),
+      nAll: firestore.FieldValue.increment(-1),
+      nDeleted: firestore.FieldValue.increment(1)
+    });
 
     return batch.commit();
   }
@@ -189,12 +234,12 @@ export class NovelService {
    * Get chapters of a novel!
    * @param novelId Id of the novel's chapters requested
    */
-  getChapters(novelId: string) {
+  chaptersGet(novelId: string) {
     return this._novels
       .doc<Novel>(novelId)
       .valueChanges();
   }
-  addChapter(novelMeta: NovelMeta, chapter: Chapter) {
+  chapterAdd(novelMeta: NovelMeta, chapter: Chapter) {
     const id = this.afStore.createId();
     return this._novels
       .doc<Novel>(novelMeta.id)
@@ -205,7 +250,10 @@ export class NovelService {
         novel: novelMeta,
 
         title: chapter.title,
+        iTitle: this.caseFoldNormalize(chapter.title),
         chapter: chapter.chapter,
+
+        public: chapter.public || false,
 
         createdAt: this.timestamp
       })
@@ -214,16 +262,23 @@ export class NovelService {
         (err) => err
       );
   }
-  updateChapter(novelId: string, chapterId, chapter: Chapter) {
+  chapterUpdate(novelId: string, chapterId, chapter: Chapter) {
     return this._novels
       .doc<Novel>(novelId)
       .collection(dbKeys.COLLECTION_NOVELS_CHAPTERS)
       .doc<Chapter>(chapterId)
       .update({
         title: chapter.title,
+        iTitle: this.caseFoldNormalize(chapter.title),
         chapter: chapter.chapter,
+
+        public: chapter.public,
 
         updatedAt: this.timestamp
       });
+  }
+
+  private caseFoldNormalize(value: string) {
+    return value.normalize('NFKC').toLowerCase().toUpperCase().toLowerCase();
   }
 }

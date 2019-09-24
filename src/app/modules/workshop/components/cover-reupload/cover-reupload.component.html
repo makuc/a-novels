@@ -1,0 +1,99 @@
+<label class="reupload" (mouseenter)="hover=true" (mouseleave)="hover=false">
+
+  <ng-container *ngIf="uploadPercent | async as progress">
+    <div class="hover-overlay msg" fxLayout="column" fxLayoutAlign="center center">
+      <span>
+        <mat-icon inline>refresh</mat-icon>
+      </span>
+      <span>Uploading</span>
+      <span>{{ progress.toFixed(1) }}%</span>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="msg">
+    <div class="hover-overlay msg" fxLayout="column" fxLayoutAlign="center center">
+      <span *ngIf="msgIcon">
+        <mat-icon inline>{{ msgIcon }}</mat-icon>
+      </span>
+      <span>{{ msg }}</span>
+    </div>
+  </ng-container>
+
+  <div class="hover-overlay v1" fxLayout="column" fxLayoutAlign="center center" [@hover]="hover">
+    <span>
+      <mat-icon inline>cloud_upload</mat-icon>
+    </span>
+    <span style="font-size:1rem;line-height:1em;text-align: center">
+      Replace cover
+    </span>
+  </div>
+
+  <div class="hover-overlay v2">
+    <mat-icon inline>edit</mat-icon>
+  </div>
+
+  <ng-container *ngIf="changed && src">
+    <img  alt="Novel's cover picture''" [src]="src">
+  </ng-container>
+  <ng-container *ngIf="!changed">
+    <img  alt="Novel's cover picture''"
+          [src]="coverUrl()">
+  </ng-container>
+
+  <input  #sCover
+          type="file"
+          accept="image/*"
+          class="inputfile"
+          (change)="readImage()">
+</label>
+
+<div class="ctrls" fxLayout="row wrap" fxLayoutAlign="center center">
+  <button mat-icon-button
+          *ngIf="changed"
+          [disabled]="busy"
+          matTooltip="Upload cover"
+          matTooltipClass="icon"
+          aria-label="Upload cover"
+          (click)="reuploadCover()">
+    <mat-icon>done</mat-icon>
+  </button>
+  <button mat-icon-button
+          *ngIf="changed"
+          [disabled]="busy"
+          matTooltip="Clear replace cover"
+          matTooltipClass="icon"
+          aria-label="Clear replace cover"
+          (click)="clearSelected()">
+    <mat-icon>clear</mat-icon>
+  </button>
+
+  <button mat-icon-button
+          *ngIf="!changed"
+          [disabled]="busy"
+          matTooltip="Replace cover"
+          matTooltipClass="icon"
+          aria-label="Replace cover"
+          (click)="sCover.click()">
+    <mat-icon>edit</mat-icon>
+  </button>
+
+  <a  mat-icon-button
+      *ngIf="cover"
+      [disabled]="busy"
+      matTooltip="Save cover"
+      matTooltipClass="icon"
+      aria-label="Save cover"
+      target="_blank"
+      download
+      [href]="s.GEN_URL(s.BASIC_URL, s.NOVELS_COVER_PATH, novelId, s.NOVELS_COVER_THUMBNAIL)">
+    <mat-icon>save_alt</mat-icon>
+  </a>
+  <button mat-icon-button
+          *ngIf="cover && !changed"
+          [disabled]="busy"
+          matTooltip="Remove cover"
+          matTooltipClass="icon"
+          aria-label="Remove cover"
+          (click)="removeCover()">
+    <mat-icon>delete</mat-icon>
+  </button>
+</div>

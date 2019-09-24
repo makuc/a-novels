@@ -22,7 +22,7 @@ export class BrowseComponent implements OnDestroy {
     private novels: NovelService
   ) {
     this.storage = storageKeys;
-    this.novels.getNovels()
+    this.novels.novelsGet()
       .pipe(
         take(1)
       )
@@ -31,18 +31,23 @@ export class BrowseComponent implements OnDestroy {
           this.novelsListData = novelsList;
         }
       );
-    
+
     fromEvent(window, 'scroll')
       .pipe(
         takeUntil(this.destroyer)
       )
       .subscribe(
         event => {
-          console.log('body.scrollHeight: ', document.body.scrollHeight);
-          console.log('window.scrollY: ', window.scrollY);
-          console.log('el.scrollingHeight: ', this.el.nativeElement.scrollHeight);
-          console.log('el.offsetHeight', this.el.nativeElement.offsetHeight);
-          console.log('window.height: ', window);
+          const yLimit = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          const xLimit = document.documentElement.scrollWidth - document.documentElement.clientWidth;
+          const yScrollAmount = window.pageYOffset;
+          const xScrollAmount = window.pageXOffset;
+
+          if (yScrollAmount >= yLimit) {
+            console.log('end-of-page');
+          } else if (yScrollAmount === 0) {
+            console.log('top-of-page');
+          }
         }
       );
   }
@@ -58,7 +63,7 @@ export class BrowseComponent implements OnDestroy {
 
   nextPage(last?: Novel) {
     return console.log( 'dela!!' );
-    this.novels.getNovels(
+    this.novels.novelsGet(
       this.novelsList[this.novelsListData.length - 1]
     );
   }

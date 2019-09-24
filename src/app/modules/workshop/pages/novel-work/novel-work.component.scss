@@ -1,0 +1,67 @@
+:host {
+  font-size: 1rem;
+}
+mat-icon {
+  vertical-align: middle;
+}
+.novel-details {
+  margin: 1em auto 1em auto;
+
+  span {
+    padding: 0.2em 0 0.2em 0;
+  }
+  .mat-button-base {
+    padding: 0 0.5em 0 0.5em;
+    min-width: 2em;
+    //border: thin solid #ddd;
+    margin-right: 0.2em;
+  }
+}
+.cover {
+  max-width: 11em;
+  min-width: 2em;
+}
+.actions {
+  margin: 0.5em 0;
+}
+.tab-icon {
+  margin-right: 0.2em;
+}
+.wrapper {
+  padding: 0 1em 0 1em;
+}
+.edit-btn {
+  float: right;
+  margin: 0.2em 0 0.2em 0.5em;
+}
+.edit-btn-inline {
+  font-size: 1rem;
+  display: inline-block;
+  border: solid thin;
+  border-radius: .3em;
+  background: none;
+  line-height: 1em;
+  cursor: pointer;
+  padding: .1em;
+  vertical-align: top;
+}
+.dscr {
+  overflow: hidden;
+  .edit-btn-inline {
+    float: right;
+    margin: 0 0 .2em .5em;
+  }
+}
+.glist {
+  padding: 0;
+
+  li {
+    margin-top: 0;
+  }
+  .genre {
+    font-size: 0.7rem;
+    line-height: 1em;
+    border-radius: 0.3em;
+    padding: .4em .7em;
+  }
+}

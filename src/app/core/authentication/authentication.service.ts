@@ -7,7 +7,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestoreCollection } from '@angular/fire/firestore';
 import { auth, User } from 'firebase/app';
 import { MatSnackBar } from '@angular/material';
-import { UserProfile } from 'src/app/shared/models/user-profile.model';
+import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 
 @Injectable({
   providedIn: 'root'

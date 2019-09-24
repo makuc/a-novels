@@ -3,7 +3,7 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/r
 import { UserService } from 'src/app/core/services/user.service';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { UserProfile } from 'src/app/shared/models/user-profile.model';
+import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 
 @Injectable()
 export class UserResolver implements Resolve<UserProfile> {

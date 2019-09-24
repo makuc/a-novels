@@ -34,7 +34,7 @@ export class NovelAddComponent implements OnInit {
       tags: [([]), [Validators.required]],
       description: ['', [Validators.required]],
       genres: [([]), ArrayValidators.required],
-      published: [false],
+      public: [false],
       cover: [null]
     });
   }
@@ -65,35 +65,36 @@ export class NovelAddComponent implements OnInit {
     }
     this.loading = true;
 
-    this.novels.addNovel({
+    this.novels.novelAdd({
       title: this.form.title.value,
       description: this.form.description.value,
       genres: this.form.genres.value,
       tags: this.form.tags.value,
-      published: this.form.published.value
+      public: this.form.public.value
     })
     .then(
       (id: string) => {
-        if (this.form.cover.value.length > 0) {
+        if (this.form.cover.value && this.form.cover.value.length > 0) {
           this.uploadCover(id, this.form.cover.value[0]);
+        } else {
+          // this.router.navigate([`/novel/${id}`]);
         }
-        this.router.navigate([`/novel/${id}`]);
       },
       (err) => {if (!environment.production) { console.error('Error adding novel:', err); }}
     );
   }
   private uploadCover(id: string, coverImg: File) {
-    const task = this.novels.uploadCover(id, coverImg)
-      .then(
-        (completeTask) => {
-          this.router.navigate([`/novel/${id}`]);
-        },
-        (err) => {if (!environment.production) { console.error('Error uploading cover:', err); }}
-      );
+    const task = this.novels.novelCoverUpload(id, coverImg);
+    task.then(
+      (completeTask) => {
+        this.router.navigate([`/novel/${id}`]);
+      },
+      (err) => {if (!environment.production) { console.error('Error uploading cover:', err); }}
+    );
   }
 
   toggleGenre(genre: Genre) {
-    const val: Array<Genre> = this.form.genres.value;
+    const val: Genre[] = this.form.genres.value;
     const i = val.indexOf(genre);
     if (i < 0) {
       val.push(genre);

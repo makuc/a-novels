@@ -29,3 +29,9 @@
 .clean-link:hover {
   text-decoration: underline;
 }
+.non-interactive .mat-chip-disabled{
+  opacity: 1 !important;
+}
+.interactive {
+  cursor: pointer !important;
+}

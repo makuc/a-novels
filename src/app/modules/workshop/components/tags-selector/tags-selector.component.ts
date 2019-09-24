@@ -29,7 +29,6 @@ export class TagsSelectorComponent {
   @Input() possibleTags: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
 
   inputCtrl = new FormControl();
-  searchTags: Observable<string[]>;
 
   @ViewChild('tagInput', { static: false }) tagInput: ElementRef<HTMLInputElement>;
   @ViewChild('tagSelector', { static: false }) matAutocomplete: MatAutocomplete;

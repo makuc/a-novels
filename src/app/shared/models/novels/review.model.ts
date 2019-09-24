@@ -1,4 +1,4 @@
-import { UserMeta } from '../user-profile.model';
+import { UserMeta } from '../users/user-profile.model';
 import { firestore } from 'firebase/app';
 
 export class Review {

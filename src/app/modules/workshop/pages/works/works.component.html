@@ -23,26 +23,33 @@
           <span>Add</span>
         </a>
       </mat-toolbar>
-      <div class="center">
-        <ul class="horizontal-list fixed">
 
-          <li *ngFor="let novel of novelsList | async">
-            <a class="clean-link" href="/novel/{{ novel.id }}">
-              <mat-card>
-                <mat-card-title>{{ novel.title }}</mat-card-title>
-                <img mat-card-image *ngIf="!novel.cover"
-                    src="/assets/img/novels/01/cover.jpg">
-                <img mat-card-image *ngIf="novel.cover"
-                    [src]="storage.GEN_URL(storage.BASIC_URL, storage.NOVELS_COVER_PATH, novel.id, storage.NOVELS_COVER_THUMBNAIL)">
-                <mat-card-content>
-                  Chapter 1321/9999
-                </mat-card-content>
-              </mat-card>
-            </a>
+      <div>
+        <ul class="vertical-list">
+
+          <li *ngFor="let novel of novelsList | async; let last = last">
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayout.xs="column">
+              <div>
+                <img *ngIf="!novel.cover" class="cover-img"
+                      src="/assets/img/novels/01/cover.jpg">
+                <img *ngIf="novel.cover" class="cover-img"
+                      [src]="storage.GEN_URL(storage.BASIC_URL, storage.NOVELS_COVER_PATH, novel.id, storage.NOVELS_COVER_THUMBNAIL)">
+              </div>
+
+              <div>
+                <a class="clean-link" href="/workshop/novel/{{ novel.id }}">
+                  <h2>{{ novel.title }}</h2>
+                </a>
+                <div [innerHTML]="novel.description">
+
+                </div>
+              </div>
+            </div>
           </li>
 
         </ul>
       </div>
+
     </section>
   </div>
 

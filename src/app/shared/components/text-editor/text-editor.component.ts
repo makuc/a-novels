@@ -145,7 +145,7 @@ export class TextEditorComponent
     public ngControl: NgControl,
     private fm: FocusMonitor,
     private renderer: Renderer2,
-    private sanitizer: DomSanitizer,
+    private sanitizer: DomSanitizer
   ) {
     fm.monitor(elRef.nativeElement, true).subscribe(origin => {
       this.focused = !!origin;
@@ -172,7 +172,7 @@ export class TextEditorComponent
   onContainerClick(event: MouseEvent) {
     const el = event.target as Element;
     if (el.getAttribute('class') && el.getAttribute('class').toLowerCase() !== 'txe-field') {
-      // this.txe.nativeElement.focus();
+      this.txe.nativeElement.focus();
     }
   }
 

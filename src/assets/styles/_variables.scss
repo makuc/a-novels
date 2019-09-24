@@ -1,36 +1,41 @@
 @import '~@angular/material/theming';
 
+$themes: (); // Empty THEMES array, populate later as you set them up
 
 // Define the default theme
-$indigo-light-primary: mat-palette($mat-indigo);
-$indigo-light-accent: mat-palette($mat-blue, A200, A100, A400);
-$indigo-light-warn: mat-palette($mat-pink, 700); // Optional. Defaults to: red
-$indigo-light-background: map_get($mat-blue-grey, 50);
-
-$indigo-light-theme: mat-light-theme($indigo-light-primary, $indigo-light-accent, $indigo-light-warn);
-
-// Insert custom background color
-$background: map-get($indigo-light-theme, background);
-$background: map_merge($background, (background: $indigo-light-background));
-$indigo-light-theme: map_merge($indigo-light-theme, (background: $background));
+$light-primary: mat-palette($mat-indigo);
+$light-accent: mat-palette($mat-blue, A200, A100, A400);
+$light-warn: mat-palette($mat-pink, 700); // Optional. Defaults to: red
+$light-background: map_get($mat-blue-grey, 50);
+// Setup main colors
+$light: mat-light-theme($light-primary, $light-accent, $light-warn);
+// Now apply background colors
+$background: map-get($light, background);
+$background: map_merge($background, (background: $light-background));
+$light: map_merge($light, (background: $background));
 
 // Define an alternate dark theme for indigo.
-$indigo-dark-primary: mat-palette($mat-blue-grey);
-$indigo-dark-accent: mat-palette($mat-amber);
-$indigo-dark-warn: mat-palette($mat-deep-orange);
-$indigo-dark-background: map_get($mat-blue-grey, 900);
-$indigo-dark-background-card: map_get($mat-blue-grey, 800);
+$dark-primary: mat-palette($mat-blue-grey);
+$dark-accent: mat-palette($mat-amber);
+$dark-warn: mat-palette($mat-deep-orange);
+$dark-background: map_get($mat-blue-grey, 900);
+$dark-background-card: map_get($mat-blue-grey, 800);
+// Setup main colors
+$dark: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+// Now apply background colors
+$background: map-get($dark, background);
+$background: map_merge($background, (background: $dark-background));
+$dark: map_merge($dark, (background: $background));
 
-$indigo-dark-theme: mat-dark-theme($indigo-dark-primary, $indigo-dark-accent, $indigo-dark-warn);
+// Append INDIGO Theme
+$themes: append($themes, (name: 'indigo', light: $light, dark: $dark ));
 
-// Insert custom background color
-$background: map-get($indigo-dark-theme, background);
-$background: map_merge($background, (background: $indigo-dark-background));
-
-$indigo-dark-theme: map_merge($indigo-dark-theme, (background: $background));
 
 // Define the default theme (same as the example above).
-$purple-light-primary: mat-palette($mat-purple);
-$purple-light-accent: mat-palette($mat-pink, A200, A100, A400);
-$purple-light-warn: mat-palette($mat-red, A700);
-$purple-light-theme: mat-light-theme($purple-light-primary, $purple-light-accent, $purple-light-warn);
+$light-primary: mat-palette($mat-purple);
+$light-accent: mat-palette($mat-pink, A200, A100, A400);
+$light-warn: mat-palette($mat-red, A700);
+$light: mat-light-theme($light-primary, $light-accent, $light-warn);
+
+// Append PURPLE Theme
+$themes: append($themes, (name: 'purple', light: $light, dark: $dark));

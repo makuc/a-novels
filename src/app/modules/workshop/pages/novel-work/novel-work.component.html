@@ -1,0 +1,116 @@
+<section class="novel-details wrapper" fxLayout="column" *ngIf="novel | async as novelData">
+  <div>
+    <ul class="horizontal-list fixed glist">
+      <li *ngFor="let genre of novelData.genres" class="background primary genre">{{ genre.name }}</li>
+      <li>
+        <button aria-label="Edit genres" matTooltip="Edit genres"
+                class="edit-btn-inline color accent"
+                (click)="openEditGenres(novelData.id, novelData.genres)">
+          <mat-icon inline>edit</mat-icon>
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <h1>
+      {{ novelData.title }}
+      <button aria-label="Edit title" matTooltip="Edit title"
+              class="edit-btn-inline color accent"
+              (click)="openEditTitle(novelData.id, novelData.title)">
+        <mat-icon inline>edit</mat-icon>
+      </button>
+    </h1>
+  </div>
+
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start center" fxLayoutGap=".6em">
+
+    <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center" fxLayoutGap=".6em">
+      <app-cover-reupload [cover]="novelData.cover" [novelId]="novelData.id"></app-cover-reupload>
+      <!--<app-ratings [novel]="novel"></app-ratings>-->
+    </div>
+
+    <div fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+
+      <div class="dscr">
+        <button aria-label="Edit description" matTooltip="Edit description"
+                class="edit-btn-inline color accent float-right"
+                (click)="openEditDescription(novelData.id, novelData.description)">
+          <mat-icon inline>edit</mat-icon>
+        </button>
+        <div [innerHTML]="novelData.description"></div>
+      </div>
+      <div>
+        <mat-slide-toggle [checked]="novelData.public"
+                          [disabled]="togglingPublic"
+                          (change)="togglePublic(novelData.id, novelData.public)">
+          Published
+        </mat-slide-toggle>
+      </div>
+
+      <div class="actions" fxLayout="row wrap" fxLayoutAlign="end center">
+
+        <a mat-flat-button color="primary" matTooltip="Add a new chapter"
+           routerLink="/workshop/novel/{{ novelData.id }}/chapter-add">
+          <mat-icon>add</mat-icon>
+          Chapter
+        </a>
+
+        <a mat-stroked-button matTooltip="Permanently delete this novel"
+           routerLink="/novel/{{ novelData.id }}/chapter-add">
+          <mat-icon>visibility</mat-icon>
+          View
+        </a>
+
+        <button mat-flat-button color="warn" matTooltip="Permanently delete this novel">
+          <mat-icon>delete_forever</mat-icon>
+          Delete
+        </button>
+
+      </div>
+
+      <mat-chip-list aria-label="Selected tags" disabled class="non-interactive">
+        <mat-chip *ngFor="let tag of novelData.tags">
+          {{ tag }}
+          <mat-icon matChipRemove class="interactive" (click)="removeTag(tag)">cancel</mat-icon>
+        </mat-chip>
+        <button aria-label="Edit tags" matTooltip="Edit tags"
+                class="edit-btn-inline color accent float-right"
+                (click)="openEditTags(novelData.id, novelData.tags)">
+          <mat-icon inline>edit</mat-icon>
+        </button>
+      </mat-chip-list>
+
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <!--<app-full-statistic></app-full-statistic>-->
+  <mat-tab-group mat-stretch-tabs dynamicHeight>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">toc</mat-icon>
+        Chapters
+      </ng-template>
+
+      <!--<app-toc [toc]="toc" pagination="true"></app-toc>-->
+      <app-chapters-work></app-chapters-work>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">grade</mat-icon>
+        Reviews
+      </ng-template>
+      <div class="wrapper">
+        <h1>Some more tab content</h1>
+        <p>...</p>
+      </div>
+      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </mat-tab>
+
+  </mat-tab-group>
+</section>

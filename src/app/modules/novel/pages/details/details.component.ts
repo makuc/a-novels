@@ -75,7 +75,7 @@ export class DetailsComponent implements OnInit {
     this.storage = storageKeys;
     this.novel = this.route.paramMap
       .pipe(
-        switchMap(params => this.novels.getNovel(params.get('id')))
+        switchMap(params => this.novels.novelGet(params.get('id')))
       );
   }
 

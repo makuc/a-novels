@@ -1,7 +1,7 @@
 import { keysConfig, dbKeys } from 'src/app/keys.config';
 import { Injectable, OnInit } from '@angular/core';
 import { User, auth } from 'firebase/app';
-import { UserProfile } from 'src/app/shared/models/user-profile.model';
+import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 
 import { Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from '@angular/fire/firestore';
