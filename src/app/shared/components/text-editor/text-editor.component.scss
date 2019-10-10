@@ -18,7 +18,7 @@ app-text-editor {
     [contenteditable=true] {
       padding: .5em;
       display: block;
-      width: 100%;
+      width: calc(100% - 1px);
       min-height: 8em;
       border: none;
 

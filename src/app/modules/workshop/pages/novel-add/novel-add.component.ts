@@ -72,12 +72,12 @@ export class NovelAddComponent implements OnInit {
       tags: this.form.tags.value,
       public: this.form.public.value
     })
-    .then(
+    .subscribe(
       (id: string) => {
         if (this.form.cover.value && this.form.cover.value.length > 0) {
           this.uploadCover(id, this.form.cover.value[0]);
         } else {
-          // this.router.navigate([`/novel/${id}`]);
+          this.router.navigate([`/novel/${id}`]);
         }
       },
       (err) => {if (!environment.production) { console.error('Error adding novel:', err); }}

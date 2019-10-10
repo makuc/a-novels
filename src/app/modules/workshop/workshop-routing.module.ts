@@ -8,9 +8,9 @@ import { ChapterAddComponent } from './pages/chapter-add/chapter-add.component';
 const routes: Routes = [
   { path: '', component: WorksComponent},
   { path: 'novel-add', component: NovelAddComponent},
-  { path: 'novel/:novelId', component: NovelWorkComponent},
-  { path: 'novel/:novelId/chapter-add', component: ChapterAddComponent},
-  { path: 'novel/:novelId/:chapterId/edit', component: ChapterAddComponent}
+  { path: 'novel/:novelID', component: NovelWorkComponent},
+  { path: 'novel/:novelID/chapter-add', component: ChapterAddComponent},
+  { path: 'novel/:novelID/:chapterID/edit', component: ChapterAddComponent}
 ];
 
 @NgModule({

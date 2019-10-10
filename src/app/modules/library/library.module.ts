@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LibraryComponent } from './library.component';
-
 import { LibraryRoutingModule } from './library-routing.module';
+import { LibraryComponent } from './pages/library/library.component';
 
 @NgModule({
   imports: [

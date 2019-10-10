@@ -6,7 +6,7 @@ import { firestore } from 'firebase/app';
 import { Novel, NovelMeta } from 'src/app/shared/models/novels/novel.model';
 import { UserMeta, UserProfile } from 'src/app/shared/models/users/user-profile.model';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
-import { map, first } from 'rxjs/operators';
+import { map, first, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment.prod';
 import { Chapter } from 'src/app/shared/models/novels/chapter.model';
 import { UserService } from './user.service';
@@ -91,62 +91,56 @@ export class NovelService {
       );
   }
 
-  novelAdd(data: Novel): Promise<string> {
+  novelAdd(data: Novel): Observable<string> {
     return this.users.currentUser
       .pipe(
-        first()
-      )
-      .toPromise()
-      .then(
-        (user: UserProfile) => {
-          return this.addNovel(data, {
-            uid: user.uid,
-            displayName: user.displayName
-          });
-        },
-        (err) => err
+        first(),
+        switchMap(
+          user => {
+            // Get a new write batch
+            const batch = this.afStore.firestore.batch();
+
+            const newStoryId = this.afStore.createId();
+            const storyRef = this._novels.doc(newStoryId).ref;
+            batch.set(storyRef, {
+              id: newStoryId,
+              author: {
+                uid: user.uid,
+                displayName: user.displayName
+              },
+
+              title: data.title,
+              iTitle: this.caseFoldNormalize(data.title),
+
+              description: data.description,
+              genres: data.genres,
+              tags: data.tags,
+
+              cover: false,
+              public: data.public || false,
+
+              createdAt: this.timestamp,
+              updatedAt: this.timestamp
+            });
+
+            const statsRef = this._novels.doc<NovelsStats>(dbKeys.STATS_DOC).ref;
+            batch.set(statsRef, {
+              updatedAt: this.timestamp,
+              n: firestore.FieldValue.increment(1),
+              nAll: firestore.FieldValue.increment(data.public ? 1 : 0),
+              id: newStoryId
+            }, { merge: true });
+
+            // Commit the batch
+            return batch.commit()
+              .then(
+                (val) => newStoryId,
+                (err) => Promise.reject(err)
+              );
+          }
+        )
       );
   }
-  private addNovel(data: Novel, author: UserMeta): Promise<string> {
-    // Get a new write batch
-    const batch = this.afStore.firestore.batch();
-
-    const newStoryId = this.afStore.createId();
-    const storyRef = this._novels.doc(newStoryId).ref;
-    batch.set(storyRef, {
-      id: newStoryId,
-      author,
-
-      title: data.title,
-      iTitle: this.caseFoldNormalize(data.title),
-
-      description: data.description,
-      genres: data.genres,
-      tags: data.tags,
-
-      cover: false,
-      public: data.public || false,
-
-      createdAt: this.timestamp,
-      updatedAt: this.timestamp
-    });
-
-    const statsRef = this._novels.doc<NovelsStats>(dbKeys.STATS_DOC).ref;
-    batch.update(statsRef, {
-      updatedAt: this.timestamp,
-      n: firestore.FieldValue.increment(1),
-      nAll: firestore.FieldValue.increment(data.public ? 1 : 0),
-      id: newStoryId
-    });
-
-    // Commit the batch
-    return batch.commit()
-      .then(
-        (val) => newStoryId,
-        (err) => err
-      );
-  }
-
   novelCoverUpload(id: string, img: File): AngularFireUploadTask {
     const path = `${storageKeys.NOVELS_COVER_PATH}/${id}/${storageKeys.NOVELS_COVER_ORIGINAL}`;
     return this.afStorage.upload(path, img);
@@ -227,57 +221,6 @@ export class NovelService {
     return novels.filter()
   }
 */
-
-  // Chapters management here!!
-
-  /**
-   * Get chapters of a novel!
-   * @param novelId Id of the novel's chapters requested
-   */
-  chaptersGet(novelId: string) {
-    return this._novels
-      .doc<Novel>(novelId)
-      .valueChanges();
-  }
-  chapterAdd(novelMeta: NovelMeta, chapter: Chapter) {
-    const id = this.afStore.createId();
-    return this._novels
-      .doc<Novel>(novelMeta.id)
-      .collection(dbKeys.COLLECTION_NOVELS_CHAPTERS)
-      .doc<Chapter>(id)
-      .set({
-        id,
-        novel: novelMeta,
-
-        title: chapter.title,
-        iTitle: this.caseFoldNormalize(chapter.title),
-        chapter: chapter.chapter,
-
-        public: chapter.public || false,
-
-        createdAt: this.timestamp
-      })
-      .then(
-        () => id,
-        (err) => err
-      );
-  }
-  chapterUpdate(novelId: string, chapterId, chapter: Chapter) {
-    return this._novels
-      .doc<Novel>(novelId)
-      .collection(dbKeys.COLLECTION_NOVELS_CHAPTERS)
-      .doc<Chapter>(chapterId)
-      .update({
-        title: chapter.title,
-        iTitle: this.caseFoldNormalize(chapter.title),
-        chapter: chapter.chapter,
-
-        public: chapter.public,
-
-        updatedAt: this.timestamp
-      });
-  }
-
   private caseFoldNormalize(value: string) {
     return value.normalize('NFKC').toLowerCase().toUpperCase().toLowerCase();
   }

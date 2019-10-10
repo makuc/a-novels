@@ -31,7 +31,7 @@ export class NovelWorkComponent implements OnInit {
   ) {
     this.novel = this.route.paramMap
       .pipe(
-        switchMap(params => this.novels.novelGet(params.get('novelId')))
+        switchMap(params => this.novels.novelGet(params.get('novelID')))
       );
   }
 
