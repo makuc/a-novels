@@ -1,30 +1,31 @@
 :host {
   font-size: 1rem;
+  line-height: 1.4em;
+}
+
+h1 {
+  font-size: 1.5em;
+  margin: 0;
+  line-height: 1em;
+}
+.d-title {
+  padding: 1.5em 0;
+  .d-author {
+    font-size: .8em;
+    margin: 0;
+    line-height: 1.4em;
+  }
 }
 
 mat-icon {
   vertical-align: middle;
 }
-
 .novel-details {
-  margin: 1em auto 1em auto;
-
-  span {
-    padding: 0.2em 0 0.2em 0;
-  }
-
-  .mat-button {
-    padding: 0 0.5em 0 0.5em;
-    min-width: 2em;
-    border: thin solid #ddd;
-    margin-right: 0.2em;
-  }
+  margin: 1em auto 0 auto;
 }
-
 .cover {
-  max-width: 10em;
+  max-width: 11em;
   min-width: 2em;
-  width: 100%;
 
   img {
     width: 100%;
@@ -33,42 +34,52 @@ mat-icon {
   }
 }
 
-.inline {
-  display: inline !important;
-  min-width: 7.9em;
+.dscr {
+  overflow: hidden;
 }
 
-.cover-xs {
-  max-width: 15em;
+.glist {
+  li {
+    margin: 0 .4em .4em 0;
+  }
+  .genre {
+    font-size: 0.7rem;
+    line-height: 1em;
+    border-radius: 0.3em;
+    padding: .4em .7em;
+  }
 }
 
-.xs-width {
-  width: 100%;
+$actions-height: 3em;
+.actions-container {
+
+  .actions {
+    padding: 1em 0 0 0;
+
+    .mat-button-base {
+      margin-left: .5em;
+      &:first-child {
+        margin-left: 0;
+      }
+      .fav {
+        color: rgba($color: #ff6666, $alpha: 1.0);
+      }
+    }
+  }
 }
 
-.actions {
-  padding: 0.5em 0 0 0;
+app-ratings {
+  margin: 1em 0 0 0;
 }
 
 .tab-icon {
   margin-right: 0.2em;
 }
 
-.wrapper {
-  padding: 0 1em 0 1em;
+.margin {
+  padding-top: 1rem;
 }
 
-.nowrap {
-  padding: 0;
-}
-
-.centered {
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-h4 a,
-mat-card-subtitle a {
-  vertical-align: middle !important;
+.tags {
+  margin-top: 1em;
 }

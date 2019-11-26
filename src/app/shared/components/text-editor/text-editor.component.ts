@@ -48,6 +48,7 @@ export class TextEditorComponent
   private _tabindex = '0';
   private _disabled: boolean;
   private _id: string;
+  _value: string;
   // tslint:enable: variable-name
 
   focused = false;
@@ -59,7 +60,7 @@ export class TextEditorComponent
   @HostBinding('attr.tabindex') hostTabindex = null;
   @HostBinding('class.floating')
   get shouldLabelFloat() {
-    return this.focused || !this.empty;
+    return !this.touched && (this.focused || !this.empty);
   }
   @HostBinding('attr.aria-describedby') describedBy = '';
 
@@ -93,12 +94,13 @@ export class TextEditorComponent
 
   @Input()
   set value(value: string) {
-    this.renderer.setProperty(this.txe.nativeElement, 'innerHTML', this.sanitizer.sanitize(SecurityContext.HTML, value));
+    this._value = value;
+    this.renderer.setProperty(this.txe.nativeElement, 'innerHTML', this._value);
     this.onChange(this.value);
     this.stateChanges.next();
   }
   get value() {
-    return xss.filterXSS(this.txe.nativeElement.innerHTML);
+    return xss.filterXSS(this._value);
     // return this.sanitizer.sanitize(SecurityContext.HTML, this.txe.nativeElement.innerHTML);
   }
 
@@ -121,11 +123,7 @@ export class TextEditorComponent
   }
 
   get empty() {
-    const isEmpty = this.txe.nativeElement.innerText.trim().length <= 0;
-    if (isEmpty) {
-      this.renderer.setAttribute(this.txe.nativeElement, 'innerHTML', '');
-    }
-    return isEmpty;
+    return this._value.length < 1;
   }
 
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
@@ -222,6 +220,12 @@ export class TextEditorComponent
       child = this.renderer.nextSibling(child);
     }
 
+    const isEmpty = this.txe.nativeElement.innerText.trim().length <= 0;
+    if (isEmpty) {
+      this.renderer.setAttribute(this.txe.nativeElement, 'innerHTML', '');
+    }
+
+    this._value = this.txe.nativeElement.innerHTML;
     this.valueChange.emit();
     this.onChange(this.value);
     this.stateChanges.next();
@@ -253,6 +257,16 @@ export class TextEditorComponent
     // event.preventDefault();
     document.execCommand('italic');
     this.txe.nativeElement.focus();
+  }
+
+  public toggleUnderline(event: any) {
+    // event.preventDefault();
+    document.execCommand('underline');
+    this.txe.nativeElement.focus();
+  }
+
+  public chg() {
+    console.log('change?');
   }
 
 }

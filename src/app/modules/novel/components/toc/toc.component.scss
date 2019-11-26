@@ -1,3 +1,45 @@
-mat-list {
-  padding-top: 0;
+.v-list {
+  display: block;
+  border-bottom: thin solid;
+}
+.small {
+  font-size: 0.6em;
+  line-height: 1.2em;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.ch {
+  height: 2.9em;
+  padding: .3em;
+  padding-right: 0;
+  display: flex;
+  flex-flow: row nowrap; // <flex-direction> <flex-warp>
+  justify-content: flex-start;
+  align-items: center;
+
+  .ch-i {
+    min-width: 3em;
+    text-align: right;
+    margin-right: .5em;
+  }
+
+  &.private {
+    opacity: .5;
+  }
+
+  .ch-c {
+    display: flex;
+    flex-flow: column;
+    overflow: hidden;
+
+    .l-dec, .small {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
 }

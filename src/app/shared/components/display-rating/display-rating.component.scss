@@ -1,0 +1,28 @@
+.rating {
+  font-size: 10px;
+  line-height: 1em;
+  display: flex;
+  flex-direction: row;
+
+  svg {
+    width: 100%;
+    //border: solid 1px red;
+  }
+
+  .mat-icons {
+    font-family: 'Material Icons';
+  }
+
+  .text {
+    font-size: 6px;
+    font-family: 'Courier New', Courier, monospace;
+
+    &.b {
+      font-size: 8.5px;
+    }
+  }
+
+  .help {
+    cursor: help;
+  }
+}

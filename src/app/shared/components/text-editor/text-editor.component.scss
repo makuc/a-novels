@@ -6,21 +6,20 @@
 }
 
 app-text-editor {
-  display: block;
   margin: 0;
 
-  .text-editor {
     .txe-header {
-      height: 2.5em;
+      height: 45px;
       padding: 0 4px;
     }
 
     [contenteditable=true] {
       padding: .5em;
-      display: block;
       width: calc(100% - 1px);
-      min-height: 8em;
       border: none;
+      min-height: inherit;
+      max-height: inherit;
+      overflow: auto;
 
       *:first-child {
         margin-top: 0 !important;
@@ -32,6 +31,5 @@ app-text-editor {
         padding-bottom: 0 !important;
       }
     }
-  }
 
 }

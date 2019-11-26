@@ -11,6 +11,8 @@ import { EditTXEComponent } from '../../components/edit-txe/edit-txe.component';
 import { Genre } from 'src/app/shared/models/novels/genre.model';
 import { EditGenresComponent } from '../../components/edit-genres/edit-genres.component';
 import { EditTagsComponent } from '../../components/edit-tags/edit-tags.component';
+import { Chapter } from 'src/app/shared/models/novels/chapter.model';
+import { ChaptersService } from 'src/app/core/services/chapters.service';
 
 @Component({
   selector: 'app-novel-work',

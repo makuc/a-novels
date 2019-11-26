@@ -5,6 +5,8 @@ export const keysConfig = {
   FONT_SIZE_DEFAULT: 1, // To set font-size: 10px => 62.5%
   FONT_SIZE_STEP: 0.05,
 
+  TOC_SIZE: 10,
+
   RETURN_URL_KEY: 'return-url',
 
   // Themes
@@ -12,9 +14,6 @@ export const keysConfig = {
   SELECTED_THEME: 'theme',
   SELECTED_THEME_DARK_MODE: 'dark-mode',
   THEMES: ['indigo', 'purple'],
-
-  // API
-  // API_URL: 'http://localhost:4000',
 
   // Authentication
   CURRENT_USER_KEY: 'user',
@@ -26,15 +25,29 @@ export const keysConfig = {
 export const dbKeys = {
   STATS_DOC: '---STATS---',
 
-  COLLECTION_TAGS: 'tags',
+  C_TAGS: 'tags',
 
-  COLLECTION_GENRES: 'genres',
+  C_GENRES: 'genres',
 
-  COLLECTION_USERS: 'users',
+  CUsers: 'users',
 
-  COLLECTION_NOVELS: 'novels',
-  COLLECTION_NOVELS_CHAPTERS: 'chapters',
-  COLLECTION_NOVELS_REVIEWS: 'reviews',
+  C_NOVELS: 'novels',
+  C_FAVS: 'favourites',
+  C_Likes: 'likes',
+  C_NOVELS_CHAPTERS: 'chapters',
+  C_NOVELS_CHAPTERS_PUBLIC_DOC: '---PUBLIC---',
+  C_NOVELS_CHAPTERS_PRIVATE_DOC: '---PRIVATE---',
+  C_NOVELS_REVIEWS: 'reviews',
+
+  C_STATS: 'stats',
+  C_STATS_Reviews: 'reviews',
+  C_STATS_Chapters: 'chapters',
+
+  C_library: 'libraries',
+  C_library_novels: 'novels',
+
+  C_history: 'histories',
+  C_history_novels: 'novels',
 };
 
 export const storageKeys = {
@@ -44,6 +57,7 @@ export const storageKeys = {
   NOVELS_COVER_FULL: 'cover-full.jpg?alt=media',
   NOVELS_COVER_THUMBNAIL: 'cover-full.jpg?alt=media',
   NOVELS_COVER_ORIGINAL: 'cover-full.jpg',
+  NOVELS_COVER_DEFAULT_NAME: 'default',
 
   GEN_URL: (base: string, ...data: string[]) => {
     return base + data.join('%2F');

@@ -1,0 +1,10 @@
+<div class="rev-container" *ngIf="reviews$ | async as reviewsList; else noReviews">
+  <ng-container *ngIf="reviewsList.length > 0; else noReviews">
+    <div *ngFor="let review of reviewsList">
+      <app-render-review [novelID]="novelID" [review]="review"></app-render-review>
+    </div>
+  </ng-container>
+</div>
+<ng-template #noReviews>
+  <p class="nodata">No reviews yet</p>
+</ng-template>

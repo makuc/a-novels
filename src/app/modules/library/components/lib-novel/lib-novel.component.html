@@ -1,0 +1,25 @@
+<ng-container *ngIf="{
+  h: history$ | async,
+  n: novel$ | async,
+  t: toc$ | async
+} as d; else loading">
+
+  <a  *ngIf="d.n"
+      class="l l-inner"
+      routerLink="/novel/{{ novelID }}/{{ d.h ? d.h.chapterID : '' }}"
+      title="{{ d.n.title }}">
+
+    <h3 class="l-dec background stacked ell2row">{{ d.n.title }}</h3>
+    <div class="l-crop">
+      <ul class="overlay">
+        <li *ngFor="let g of d.n.genres">{{ g.name }}</li>
+      </ul>
+      <img [src]="coverURL(d.n.cover, d.n.id)">
+    </div>
+    <div class="progress">
+        <span class="label">Read</span>
+        <span>{{ d.h && d.t ? properProgress(d.t, d.h.index) : 0 }}/{{ d.t ? d.t.indexes.length : 0 }}</span>
+    </div>
+  </a>
+</ng-container>
+<ng-template #loading>Loading...</ng-template>

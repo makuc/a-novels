@@ -1,4 +1,5 @@
 @import "~@angular/material/theming";
+@import "src/assets/styles/variables";
 
 $custom-typography: mat-typography-config( //
   $font-family: 'Roboto, monospace',
@@ -23,7 +24,11 @@ app-header {
 mat-sidenav-container {
   /* When the sidenav is fixed, don't constrain the height of the sidenav container. This allows the
      `<body>` to be our scrolling element for mobile layouts. */
-  flex: 1 0 auto;
+  margin-top: $header-height;
+
+  mat-sidenav {
+    top: $header-height !important;
+  }
 }
 mat-sidenav-content {
   overflow-x: hidden;

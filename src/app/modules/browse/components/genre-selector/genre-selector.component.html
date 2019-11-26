@@ -1,0 +1,17 @@
+<mat-chip-list  #selGenre
+                aria-label="Genres selection"
+                multiple
+                selectable
+                color="primary"
+                [(ngModel)]="selectedGenres"
+                [compareWith]="compareGenres"
+                (change)="doChange($event)">
+  <mat-chip *ngFor="let genre of genresList | async"
+            [value]="genre"
+            (click)="toggleGenre(genre)">
+    {{ genre.name }}
+    <mat-icon matChipRemove (click)="toggleGenre(genre)">
+      {{ genreSelected(genre) ? 'done' : 'add' }}
+    </mat-icon>
+  </mat-chip>
+</mat-chip-list>

@@ -1,0 +1,22 @@
+<div class="rating-selector" #rs>
+
+  <button #rs1 type="button" class="rate-btn" [class.selected]="val(1)" (click)="rate(1)">
+    <mat-icon inline>{{ val(1) ? 'star' : 'star_outline' }}</mat-icon>
+  </button>
+  <button #rs2 type="button" class="rate-btn" [class.selected]="val(2)" (click)="rate(2)">
+    <mat-icon inline>{{ val(2) ? 'star' : 'star_outline' }}</mat-icon>
+  </button>
+  <button #rs3 type="button" class="rate-btn" [class.selected]="val(3)" (click)="rate(3)">
+    <mat-icon inline>{{ val(3) ? 'star' : 'star_outline' }}</mat-icon>
+  </button>
+  <button #rs4 type="button" class="rate-btn" [class.selected]="val(4)" (click)="rate(4)">
+    <mat-icon inline>{{ val(4) ? 'star' : 'star_outline' }}</mat-icon>
+  </button>
+  <button #rs5 type="button" class="rate-btn" [class.selected]="val(5)" (click)="rate(5)">
+    <mat-icon inline>{{ val(5) ? 'star' : 'star_outline' }}</mat-icon>
+  </button>
+
+  <button #rsreset type="button" class="rate-btn clear" (click)="rate(0)">
+    Clear
+  </button>
+</div>

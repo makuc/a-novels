@@ -8,3 +8,9 @@ export class Comment {
     createdAt?: firestore.Timestamp | firestore.FieldValue;
     updatedAt?: firestore.Timestamp | firestore.FieldValue;
 }
+
+export class CommentsStats {
+  updatedAt?: firestore.Timestamp | firestore.FieldValue;
+
+  nComments: number | firestore.FieldValue;
+}

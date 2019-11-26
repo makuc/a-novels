@@ -1,0 +1,23 @@
+.chs {
+  font-size: 1rem;
+  line-height: 1em;
+  padding: 2em 1em;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  .chs-sep {
+    //background: ;
+    flex: 1 1 auto;
+    height: .1em;
+    border-radius: 50%;
+  }
+  .chs-icon {
+    font-size: 2em;
+    line-height: 1em;
+    width: 1em;
+    height: 1em;
+    margin: 0 1em;
+    overflow: hidden;
+  }
+}

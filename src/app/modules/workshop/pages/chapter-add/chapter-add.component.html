@@ -2,7 +2,7 @@
   <h4>{{ novelData.author.displayName }}</h4>
   <h1>{{ novelData.title }}</h1>
 
-  <form [formGroup]="fgroup" (ngSubmit)="onSubmit(novelData.id)">
+  <form *ngIf="fgroup" [formGroup]="fgroup" (ngSubmit)="onSubmit(novelData.id)">
 
     <div>
       <mat-form-field [ngClass]="['half']" [ngClass.xs]="['full']">

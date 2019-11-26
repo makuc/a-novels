@@ -18,7 +18,7 @@ import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFireAuthGuardModule,
-    AngularFirestoreModule.enablePersistence(),
+    AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
     AngularFireStorageModule
   ],
   declarations: [],

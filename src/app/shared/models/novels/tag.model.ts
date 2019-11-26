@@ -6,3 +6,9 @@ export class Tag {
     updatedAt?: firestore.Timestamp | firestore.FieldValue;
     description?: string;
 }
+
+export class TagsStats {
+  updatedAt?: firestore.Timestamp | firestore.FieldValue;
+
+  nTags: number | firestore.FieldValue;
+}

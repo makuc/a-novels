@@ -1,0 +1,77 @@
+<div class="review">
+  <div class="r-title background primary">
+    <div class="r-author">
+      <span class="ra-date">By&nbsp;</span>
+      <a class="l" routerLink="/user/{{ review.author.uid }}">
+        <h5>{{ review.author.displayName }}</h5>
+      </a>
+      <span class="ra-date">
+        | {{ (review.updatedAt || review.updatedAt).toDate() | date }}
+      </span>
+    </div>
+    <h2>{{ review.title }}</h2>
+  </div>
+
+  <div class="r">
+    <div class="r-rate" *ngIf="{ state: state$ | async, stats: stats$ | async} as d">
+      <button type="button"
+              class="mat-button mat-button-base"
+              [class.mat-primary]="d.state && d.state.value == true"
+              (click)="toggleLike(d.state)">
+        <span class="up">{{ d.stats ? shortNum(d.stats.pos) : 0 }}</span>
+        <mat-icon>thumb_up</mat-icon>
+      </button>
+      <span>{{ d.stats ? shortSumNum(d.stats.pos, d.stats.neg) : 0 }}</span>
+      <button type="button"
+              class="mat-button mat-button-base"
+              [class.mat-warn]="d.state && d.state.value == false"
+              (click)="toggleDislike(d.state)">
+        <mat-icon>thumb_down</mat-icon>
+        <span class="down">{{ d.stats ? shortNum(d.stats.neg) : 0 }}</span>
+      </button>
+    </div>
+
+    <div class="r-content">
+      <div class="r-entry">
+        <div class="re-title background neutral">
+          <h3>Story Progression</h3>
+          <div class="re-stars"><app-display-rating short [rating]="review.storyRating"></app-display-rating></div>
+        </div>
+        <div class="re-content border neutral" [innerHTML]="review.storyReview"></div>
+      </div>
+
+      <div class="r-entry">
+        <div class="re-title background neutral">
+          <h3>Author's Writing Style</h3>
+          <div class="re-stars"><app-display-rating short [rating]="review.styleRating"></app-display-rating></div>
+        </div>
+        <div class="re-content border neutral" [innerHTML]="review.styleReview"></div>
+      </div>
+
+      <div class="r-entry">
+        <div class="re-title background neutral">
+          <h3>Characters' Development</h3>
+          <div class="re-stars"><app-display-rating short [rating]="review.charsRating"></app-display-rating></div>
+        </div>
+        <div class="re-content border neutral" [innerHTML]="review.charsReview"></div>
+      </div>
+
+      <div class="r-entry">
+        <div class="re-title background neutral">
+          <h3>World Building</h3>
+          <div class="re-stars"><app-display-rating short [rating]="review.worldRating"></app-display-rating></div>
+        </div>
+        <div class="re-content border neutral" [innerHTML]="review.worldReview"></div>
+      </div>
+
+      <div class="r-entry">
+        <div class="re-title background neutral">
+          <h3>Grammar and Structure</h3>
+          <div class="re-stars"><app-display-rating short [rating]="review.grammRating"></app-display-rating></div>
+        </div>
+        <div class="re-content border neutral" [innerHTML]="review.grammReview"></div>
+      </div>
+    </div>
+
+  </div>
+</div>

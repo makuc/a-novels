@@ -1,0 +1,7 @@
+.rev-sep {
+  border-bottom: solid 1px;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}

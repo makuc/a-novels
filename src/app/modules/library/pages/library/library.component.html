@@ -1,3 +1,12 @@
-<p>
-  library works!
-</p>
+<section id="lib" class="full">
+
+  <h1>Library</h1>
+
+  <ul class="h-list" *ngIf="novels$ | async as novels">
+
+    <li class="book" *ngFor="let nid of novels">
+      <app-lib-novel [novelID]="nid"></app-lib-novel>
+    </li>
+
+  </ul>
+</section>

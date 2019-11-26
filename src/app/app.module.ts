@@ -1,4 +1,3 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './core/imports/material.module';
@@ -10,6 +9,8 @@ import { CoreModule } from './core/core.module';
 import { HomeModule } from './modules/home/home.module';
 import { SharedModule } from './shared/shared.module';
 import { UserModule } from './modules/user/user.module';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowseModule } from './modules/browse/browse.module';
 
 
 @NgModule({

@@ -1,0 +1,45 @@
+.l {
+  text-decoration: inherit;
+  color: inherit;
+
+  img {
+    width: 100%;
+    transition: transform .4s; /* Animation */
+  }
+  &:hover {
+  text-decoration: underline;
+
+    &.l-inner {
+      text-decoration: inherit;
+    }
+    .l-dec {
+      text-decoration: underline;
+    }
+    img {
+      transform: scale(1.1); /* Note: if the zoom is too large, it will go outside of the viewport) */
+    }
+  }
+
+  .l-crop {
+    overflow: hidden;
+    width: 100%;
+    font-size: 0;
+    line-height: 0;
+    position: relative;
+
+    .overlay {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      opacity: .75;
+      font-size: .7rem;
+      line-height: 1.2em;
+      color: white;
+      background: black;
+      padding: .5em;
+      z-index: 1;
+      vertical-align: bottom;
+    }
+  }
+}

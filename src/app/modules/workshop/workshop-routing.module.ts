@@ -10,7 +10,8 @@ const routes: Routes = [
   { path: 'novel-add', component: NovelAddComponent},
   { path: 'novel/:novelID', component: NovelWorkComponent},
   { path: 'novel/:novelID/chapter-add', component: ChapterAddComponent},
-  { path: 'novel/:novelID/:chapterID/edit', component: ChapterAddComponent}
+  { path: 'novel/:novelID/:chapterID/edit', component: ChapterAddComponent}, // Editing chapter
+  { path: 'novel/:novelID/:chapterID', component: ChapterAddComponent}, // Change to View Comments, etc.
 ];
 
 @NgModule({

@@ -1,0 +1,31 @@
+a {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
+  flex-basis: 6em;
+
+  h3 {
+    font-size: .8em;
+    font-weight: bold;
+    line-height: 1.3em;
+    padding: .2em 0;
+    margin: 0 0 .4em 0;
+    text-align: center;
+    height: 2.9em;
+  }
+
+  .progress {
+    margin-top: .5em;
+    padding: .1em;
+    font-size: .8em;
+    line-height: 1em;
+    display: flex;
+    flex-flow: row nowrap;// <flex-direction> <flex-wrap>
+    justify-content: space-between;
+
+    .label {
+      padding: 0;
+      padding-right: .3em;
+    }
+  }
+}

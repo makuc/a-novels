@@ -36,7 +36,7 @@
   </ng-container>
   <ng-container *ngIf="!changed">
     <img  alt="Novel's cover picture''"
-          [src]="coverUrl()">
+          [src]="coverURL()">
   </ng-container>
 
   <input  #sCover
@@ -84,7 +84,7 @@
       aria-label="Save cover"
       target="_blank"
       download
-      [href]="s.GEN_URL(s.BASIC_URL, s.NOVELS_COVER_PATH, novelId, s.NOVELS_COVER_THUMBNAIL)">
+      [href]="s.GEN_URL(s.BASIC_URL, s.NOVELS_COVER_PATH, novelID, s.NOVELS_COVER_THUMBNAIL)">
     <mat-icon>save_alt</mat-icon>
   </a>
   <button mat-icon-button

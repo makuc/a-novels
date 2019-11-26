@@ -3,12 +3,15 @@ import { CommonModule } from '@angular/common';
 
 import { NovelRoutingModule } from './novel-routing.module';
 import { DetailsComponent } from './pages/details/details.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FullStatisticComponent } from './components/full-statistic/full-statistic.component';
-import { RatingsComponent } from './components/ratings/ratings.component';
 import { TocComponent } from './components/toc/toc.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/core/imports/material.module';
+import { ReviewComponent } from './pages/review/review.component';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { ListReviewsComponent } from './components/list-reviews/list-reviews.component';
+import { ChapterComponent } from './pages/chapter/chapter.component';
+import { ChSeparatorComponent } from './components/ch-separator/ch-separator.component';
 
 
 @NgModule({
@@ -16,17 +19,20 @@ import { MaterialModule } from 'src/app/core/imports/material.module';
     CommonModule,
     NovelRoutingModule,
     MaterialModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ],
   declarations: [
     DetailsComponent,
     FullStatisticComponent,
-    RatingsComponent,
+    TocComponent,
+    ListReviewsComponent,
 
-    TocComponent
+    ReviewComponent,
+
+    ChapterComponent,
+    ChSeparatorComponent
   ],
-  exports: [
-    RatingsComponent
-  ]
+  exports: [ ]
 })
 export class NovelModule { }

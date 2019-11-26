@@ -1,56 +1,55 @@
-<div class="container full" fxLayout="row" fxLayout.xs="column">
+<section>
+  <div class="container full" fxLayout="row" fxLayout.xs="column">
 
-  <!--<div fxFlex="none">
-    <mat-nav-list>
-      <mat-list-item>
-        Novels
-      </mat-list-item>
-      <mat-list-item>
-        Reviews
-      </mat-list-item>
-    </mat-nav-list>
-  </div>-->
+    <!--<div fxFlex="none">
+      <mat-nav-list>
+        <mat-list-item>
+          Novels
+        </mat-list-item>
+        <mat-list-item>
+          Reviews
+        </mat-list-item>
+      </mat-nav-list>
+    </div>-->
 
-  <div fxFlex>
-    <section>
-      <h1>Workshop</h1>
-    </section>
-    <section id="novels">
-      <mat-toolbar class="mat-elevation-z1">
-        <span>Novels</span>
-        <a mat-stroked-button routerLink="/workshop/novel-add">
-          <mat-icon>add_circle_outline</mat-icon>
-          <span>Add</span>
-        </a>
-      </mat-toolbar>
+    <div fxFlex>
+      <section>
+        <h1>Workshop</h1>
+      </section>
 
-      <div>
-        <ul class="vertical-list">
+      <section id="novels">
 
-          <li *ngFor="let novel of novelsList | async; let last = last">
-            <div fxLayout="row" fxLayoutAlign="start start" fxLayout.xs="column">
-              <div>
-                <img *ngIf="!novel.cover" class="cover-img"
-                      src="/assets/img/novels/01/cover.jpg">
-                <img *ngIf="novel.cover" class="cover-img"
-                      [src]="storage.GEN_URL(storage.BASIC_URL, storage.NOVELS_COVER_PATH, novel.id, storage.NOVELS_COVER_THUMBNAIL)">
-              </div>
+        <mat-toolbar class="mat-elevation-z1">
+          <span>Novels</span>
+          <a mat-stroked-button routerLink="/workshop/novel-add">
+            <mat-icon>add_circle_outline</mat-icon>
+            <span>Add</span>
+          </a>
+        </mat-toolbar>
 
-              <div>
-                <a class="clean-link" href="/workshop/novel/{{ novel.id }}">
-                  <h2>{{ novel.title }}</h2>
-                </a>
-                <div [innerHTML]="novel.description">
+        <div>
+          <ul class="v-list">
+            <li *ngFor="let novel of novelsList | async; let last = last">
+              <div fxLayout="row" fxLayoutAlign="start start" fxLayout.xs="column">
+                <div>
+                  <img class="cover-img" [src]="coverURL(novel.cover, novel.id)">
+                </div>
 
+                <div>
+                  <a class="l" routerLink="/workshop/novel/{{ novel.id }}">
+                    <h2>{{ novel.title }}</h2>
+                  </a>
+                  <div [innerHTML]="novel.description">
+
+                  </div>
                 </div>
               </div>
-            </div>
-          </li>
+            </li>
+          </ul>
+        </div>
 
-        </ul>
-      </div>
+      </section>
+    </div>
 
-    </section>
   </div>
-
-</div>
+</section>

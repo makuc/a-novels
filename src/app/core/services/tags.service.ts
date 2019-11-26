@@ -17,7 +17,7 @@ export class TagsService {
   constructor(
     private afStore: AngularFirestore
   ) {
-    this._tags = this.afStore.collection<Tag>(dbKeys.COLLECTION_TAGS, ref => ref.orderBy('name'));
+    this._tags = this.afStore.collection<Tag>(dbKeys.C_TAGS, ref => ref.orderBy('name'));
   }
 
   get timestamp() {

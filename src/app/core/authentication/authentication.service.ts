@@ -8,6 +8,7 @@ import { AngularFirestoreCollection } from '@angular/fire/firestore';
 import { auth, User } from 'firebase/app';
 import { MatSnackBar } from '@angular/material';
 import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
+import { shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -24,10 +25,16 @@ export class AuthenticationService {
   ) { }
 
   get getUser(): Observable<User> {
-    return this.afAuth.user;
+    return this.afAuth.user
+      .pipe(
+        shareReplay(1)
+      );
   }
   get tokenResults(): Observable<auth.IdTokenResult> {
-    return this.afAuth.idTokenResult;
+    return this.afAuth.idTokenResult
+      .pipe(
+        shareReplay(1)
+      );
   }
 
   loginEmail(email: string, password: string) {

@@ -1,9 +1,11 @@
-@import "variables.scss";
-@import "typography.scss";
+@import "themes";
+@import "variables";
+@import "typography";
 @import "mixins";
 
 // Plus imports for other components in your app.
 @include mat-core();
+
 @include angular-themes-array-deploy($themes); // From my `mixins`
 
-@import "custom.scss";
+@import "custom";

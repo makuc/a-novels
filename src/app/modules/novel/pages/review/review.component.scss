@@ -1,0 +1,77 @@
+@import '~@angular/material/theming';
+
+$config: mat-typography-config( //
+  $font-family: 'Roboto, "Helvetica Neue", sans-serif',
+  $display-4: mat-typography-level(7rem, 7em, 300),
+  $display-3: mat-typography-level(3.5rem, 3.5em, 400),
+  $display-2: mat-typography-level(2.81rem, 3em, 400),
+  $display-1: mat-typography-level(2.13rem, 2.5em, 400),
+  $headline: mat-typography-level(1.5rem, 2em, 400),
+  $title: mat-typography-level(1.75rem, 1.2em, 500),
+  $subheading-2: mat-typography-level(1rem, 1.75em, 400),
+  $subheading-1: mat-typography-level(0.75rem, 1.5em, 400),
+  $body-2: mat-typography-level(0.88rem, 1.5em, 500),
+  $body-1: mat-typography-level(0.88rem, 1.25em, 400),
+  $button: mat-typography-level(0.88rem, 0.88em, 500) //
+);
+
+section {
+  margin: 0;
+  padding-top: 2rem;
+
+  h1 {
+    @include mat-typography-level-to-styles($config, title);
+    margin: 0;
+  }
+
+  h2 {
+    @include mat-typography-level-to-styles($config, subheading-1);
+    margin: 0;
+  }
+
+  @include mat-typography-level-to-styles($config, body-1);
+
+  .mat-button,
+  .mat-raised-button,
+  .mat-flat-button,
+  .mat-stroked-button {
+    margin: 0 0.5em;
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+button mat-spinner {
+  display: inline-block;
+}
+
+.half {
+  width: 50%;
+}
+
+.full {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.txe-size {
+  min-height: 8em;
+  max-height: 14em;
+}
+
+mat-slide-toggle {
+  margin: 1.25em;
+}
+
+app-rating-selector {
+  font-size: 1.3rem;
+}
+
+.actions {
+  margin: 1rem 0;
+}

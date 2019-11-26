@@ -1,109 +1,108 @@
-<section class="novel-details" ngClass.xs="xs-width" fxLayout="column" *ngIf="novel | async as novelData">
-  <div fxHide.gt-xs>
-    <h1>{{ novelData.title }}</h1>
-    <h4>
-      <mat-icon inline matTooltip="Author of the novel" matTooltipClass="dscr-tooltip">
-        perm_identity
-      </mat-icon>
-      <a class="clean-link" routerLink="/user/{{ novelData.author?.uid }}"> {{ novelData.author.displayName }}</a>
-      |
-      <mat-icon inline matTooltip="Number of released chapters" matTooltipClass="dscr-tooltip">
-        library_books
-      </mat-icon>
-      1331 |
-      <mat-icon inline matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">
-        trending_up
-      </mat-icon>13
-      chs/w
-    </h4>
+<section class="novel-details wrapper" fxLayout="column" *ngIf="novel | async as novelData">
+  <div>
+    <ul class="h-list dynamic glist">
+      <li *ngFor="let genre of novelData.genres"
+          class="background primary genre mat-elevation-z2">
+        {{ genre.name }}
+      </li>
+    </ul>
   </div>
 
-  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start center"
-       fxLayoutGap=".6em">
+  <div class="d-title">
+    <h1>{{ novelData.title }}</h1>
+    <span class="d-author">
+      By <a class="l" routerLink="/user/{{ novelData.author.uid }}">{{ novelData.author.displayName }}</a>
+    </span>
+  </div>
 
-    <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center"
-         fxLayoutGap=".6em">
-      <a class="clean-link"
-         href="/assets/img/novels/01/cover.jpg">
-        <img *ngIf="!novelData.cover" alt="Cover picture of '{{ novelData.title}}''"
-             src="/assets/img/novels/01/cover.jpg">
-      </a>
-      <a class="clean-link"
-         [href]="storage.GEN_URL(storage.BASIC_URL, storage.NOVELS_COVER_PATH, novelData.id, storage.NOVELS_COVER_THUMBNAIL)">
-        <img *ngIf="novelData.cover" alt="Cover picture of '{{ novelData.title}}''"
-             [src]="storage.GEN_URL(storage.BASIC_URL, storage.NOVELS_COVER_PATH, novelData.id, storage.NOVELS_COVER_THUMBNAIL)">
-      </a>
-      <app-ratings [novel]="novel"></app-ratings>
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start stretch" fxLayoutAlign.xs="start center" fxLayoutGap=".6em">
+
+    <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center" fxLayoutGap=".6em">
+      <img alt="Novel's cover picture''" [src]="coverURL(novelData.cover, novelData.id)">
+      <app-ratings [novelID]="novelData.id"></app-ratings>
     </div>
 
+    <div class="actions-container" fxFlex fxLayout="column" fxLayoutAlign="start stretch">
 
-    <div fxFlex fxLayout="column" fxLayoutAlign="start start">
-      <mat-card-title fxShow.gt-xs fxHide>{{ novelData.title }}</mat-card-title>
-      <mat-card-subtitle fxShow.gt-xs fxHide>
-        <mat-icon inline matTooltip="Author of the novel" matTooltipClass="dscr-tooltip">perm_identity</mat-icon>
-        <a class="mat-h4 clean-link" routerLink="/user/{{ novelData.author?.uid }}"> {{ novelData.author.displayName }}</a> |
-        <mat-icon inline matTooltip="Number of released chapter" matTooltipClass="dscr-tooltip">library_books</mat-icon>
-        1331 |
-        <mat-icon inline matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">trending_up
-        </mat-icon>13
-        chs /
-        week
-      </mat-card-subtitle>
+      <div class="dscr">
+        <div [innerHTML]="novelData.description"></div>
+      </div>
 
-      <mat-card-content [innerHTML]="novelData.description"></mat-card-content>
+      <mat-chip-list aria-label="Selected tags" disabled class="non-interactive tags">
+        <mat-chip *ngFor="let tag of novelData.tags">
+          {{ tag }}
+        </mat-chip>
+      </mat-chip-list>
 
-      <div class="actions" fxLayout="row" fxLayoutAlign="start start">
-        <button mat-button (click)="addFavorites()" *ngIf="!isFavorite"
-                matTooltip="Number of released chapter">
-          <mat-icon>favorite_border</mat-icon>
-        </button>
-        <button mat-button (click)="removeFavorites()" *ngIf="isFavorite">
-          <mat-icon>favorite</mat-icon>
-        </button>
-        <button mat-button *ngIf="!inLibrary" (click)="addToLibrary()">
-          <mat-icon>playlist_add</mat-icon>
+      <div class="actions" fxLayout="row wrap" fxLayoutAlign="center center">
+
+        <a  mat-raised-button
+            *ngIf="{ progress: history$ | async } as his"
+            routerLink="/novel/{{ novelData.id }}{{ his.progress ? '/'+his.progress.chapterID : '' }}"
+            matTooltip="Read novel"
+            matTooltipClass="t-closer"
+            color="primary">
+          <!-- visibility, send, menu_book  -->
+          <mat-icon>menu_book</mat-icon>
+          {{ his.progress ? 'Continue' : 'Read' }}
+        </a>
+        <button mat-raised-button
+                (click)="toggleLibrary()"
+                matTooltip="Add to library"
+                matTooltipClass="t-closer"
+                color="primary"
+                [disabled]="busyLib"
+                *ngIf="{val: islib$ | async} as data">
+          <mat-icon>{{ data.val ? 'playlist_add_check' : 'playlist_add' }}</mat-icon>
           LIBRARY
         </button>
-        <button mat-button *ngIf="inLibrary" (click)="removeFromLibrary()">
-          <mat-icon>playlist_add_check</mat-icon>
-          LIBRARY
+        <button mat-mini-fab
+                matTooltip="Mark as favorite"
+                matTooltipClass="t-closer"
+                color="primary"
+                [disabled]="busyFav"
+                *ngIf="{state: likeState$ | async} as d"
+                (click)="like(d.state)">
+          <mat-icon [class.fav]="d.state && d.state.value">
+            {{ d.state && d.state.value ? 'favorite' : 'favorite_border' }}
+          </mat-icon>
         </button>
+        <a  mat-raised-button
+            routerLink="/novel/{{ novelData.id }}/review"
+            matTooltip="Write a review"
+            matTooltipClass="t-closer"
+            color="primary">
+          <mat-icon>rate_review</mat-icon>
+          Review
+        </a>
+
       </div>
     </div>
 
   </div>
-
-  <!--<app-full-statistic></app-full-statistic>-->
-
 </section>
 
-<mat-card class="novel-details nowrap" ngClass.xs="xs-width" fxLayout="column">
-  <mat-card-content>
-    <mat-tab-group mat-stretch-tabs dynamicHeight>
+<section style="min-height: 250px;">
+  <!--<app-full-statistic></app-full-statistic>-->
+  <mat-tab-group mat-stretch-tabs dynamicHeight>
 
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">grade</mat-icon>
+        <strong>Reviews</strong>
+      </ng-template>
+      <app-list-reviews [novelID]="novelID"></app-list-reviews>
+    </mat-tab>
 
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon class="tab-icon">toc</mat-icon>
-          Chapters
-        </ng-template>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">toc</mat-icon>
+        <strong>Chapters</strong>
+      </ng-template>
+      <div class="toc">
+        <app-toc [novelID]="novelID" pagination></app-toc>
+      </div>
+    </mat-tab>
 
-        <app-toc [toc]="toc" pagination="true"></app-toc>
-      </mat-tab>
-
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon class="tab-icon">grade</mat-icon>
-          Reviews
-        </ng-template>
-        <div class="wrapper">
-          <h1>Some more tab content</h1>
-          <p>...</p>
-        </div>
-
-        <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-      </mat-tab>
-
-    </mat-tab-group>
-  </mat-card-content>
-</mat-card>
+  </mat-tab-group>
+</section>

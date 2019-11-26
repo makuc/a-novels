@@ -17,38 +17,31 @@ import { NavIdResolver } from './resolvers/nav-id.resolver';
 const routes: Routes = [
     {
         path: ':uid',
-        component: ProfileOverviewComponent,
-        ...canActivate(redirectUnauthorizedToLogin)
+        component: ProfileOverviewComponent
     },
     {
         path: 'me/edit',
-        component: EditProfileComponent,
-        ...canActivate(redirectUnauthorizedToLogin)
+        component: EditProfileComponent
     },
     {
         path: ':uid/archive',
-        component: ProfileArchiveComponent,
-        ...canActivate(redirectUnauthorizedToLogin)
+        component: ProfileArchiveComponent
     },
     {
         path: ':uid/workshop',
-        component: ProfileWorkshopComponent,
-        ...canActivate(redirectUnauthorizedToLogin)
+        component: ProfileWorkshopComponent
     },
     {
         path: ':uid/reviews',
-        component: ProfileReviewsComponent,
-        ...canActivate(redirectUnauthorizedToLogin)
+        component: ProfileReviewsComponent
     },
     {
         path: ':uid/reading-history',
-        component: ProfileReadingHistoryComponent,
-        ...canActivate(redirectUnauthorizedToLogin)
+        component: ProfileReadingHistoryComponent
     },
     {
         path: ':uid/favorites',
-        component: ProfileFavoritesComponent,
-        ...canActivate(redirectUnauthorizedToLogin)
+        component: ProfileFavoritesComponent
     },
 ];
 

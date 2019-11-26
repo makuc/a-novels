@@ -1,0 +1,152 @@
+<section *ngIf="(novel | async) as novelData">
+  <h2>
+    Novel:
+    <a class="l" routerLink="/novel/{{ novelData.id }}">{{ novelData.title }}</a>
+  </h2>
+  <h1>Write review</h1>
+
+    <mat-vertical-stepper linear
+              *ngIf="fgroup && storyGroup && styleGroup && charsGroup && worldGroup && grammGroup">
+
+        <mat-step [stepControl]="fgroup">
+          <form [formGroup]="fgroup">
+            <ng-template matStepLabel>Title your review</ng-template>
+
+            <mat-form-field class="full">
+              <input type="text" matInput placeholder="Review title" formControlName="title">
+              <mat-error *ngIf="fg['title'].hasError('required')">
+                Review title is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <div>
+              <button mat-flat-button color="primary" matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+
+      <mat-step *ngIf="storyGroup" [stepControl]="storyGroup">
+        <form [formGroup]="storyGroup">
+          <ng-template matStepLabel>Overall story progression and development</ng-template>
+          <mat-form-field class="half" floatLabel="always">
+            <app-rating-selector placeholder="Story rating" formControlName="rating"></app-rating-selector>
+            <mat-error *ngIf="story['rating'].errors">
+              Rating is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full">
+            <app-text-editor class="txe-size" placeholder="Story review" formControlName="review">
+            </app-text-editor>
+            <mat-error *ngIf="story['review'].errors">
+              Review is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <div>
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-flat-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step *ngIf="styleGroup" [stepControl]="styleGroup">
+        <form [formGroup]="styleGroup">
+          <ng-template matStepLabel>Author's writing style</ng-template>
+          <mat-form-field class="half" floatLabel="always">
+            <app-rating-selector placeholder="Style rating" formControlName="rating"></app-rating-selector>
+            <mat-error *ngIf="style['rating'].errors">
+              Rating is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full">
+            <app-text-editor class="txe-size" placeholder="Style review" formControlName="review">
+            </app-text-editor>
+            <mat-error *ngIf="style['review'].errors">
+              Review is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <div>
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-flat-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step *ngIf="charsGroup" [stepControl]="charsGroup">
+        <form [formGroup]="charsGroup">
+          <ng-template matStepLabel>Characters' development</ng-template>
+          <mat-form-field class="half" floatLabel="always">
+            <app-rating-selector placeholder="Characters' rating" formControlName="rating"></app-rating-selector>
+            <mat-error *ngIf="story['rating'].errors">
+              Rating is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full">
+            <app-text-editor class="txe-size" placeholder="Characters' review" formControlName="review">
+            </app-text-editor>
+            <mat-error *ngIf="story['review'].errors">
+              Review is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <div>
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-flat-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step *ngIf="worldGroup" [stepControl]="worldGroup">
+        <form [formGroup]="worldGroup">
+          <ng-template matStepLabel>World development</ng-template>
+          <mat-form-field class="half" floatLabel="always">
+            <app-rating-selector placeholder="World rating" formControlName="rating"></app-rating-selector>
+            <mat-error *ngIf="world['rating'].errors">
+              Rating is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full">
+            <app-text-editor class="txe-size" placeholder="World review" formControlName="review">
+            </app-text-editor>
+            <mat-error *ngIf="world['review'].errors">
+              Review is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <div>
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-flat-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step *ngIf="grammGroup" [stepControl]="grammGroup">
+        <form [formGroup]="grammGroup">
+          <ng-template matStepLabel>Grammary and sentences structure</ng-template>
+          <mat-form-field class="half" floatLabel="always">
+            <app-rating-selector placeholder="Grammary rating" formControlName="rating"></app-rating-selector>
+            <mat-error *ngIf="gramm['rating'].errors">
+              Rating is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full">
+            <app-text-editor class="txe-size" placeholder="Grammary review" formControlName="review">
+            </app-text-editor>
+            <mat-error *ngIf="gramm['review'].errors">
+              Review is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <div>
+            <button mat-stroked-button matStepperPrevious>Back</button>
+          </div>
+        </form>
+      </mat-step>
+
+    </mat-vertical-stepper>
+
+    <div class="actions">
+      <button [disabled]="loading" mat-flat-button color="primary" (click)="onSubmit(novelData.id)">
+        <mat-spinner *ngIf="loading" [diameter]="15"></mat-spinner>
+        Submit
+      </button>
+      <a mat-stroked-button routerLink="/novel/{{ novelData.id }}" class="btn btn-link">Cancel</a>
+    </div>
+
+</section>

@@ -1,32 +1,61 @@
+import { environment } from 'src/environments/environment.prod';
 import { dbKeys, storageKeys } from 'src/app/keys.config';
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentReference, DocumentChangeAction, QueryDocumentSnapshot } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { firestore } from 'firebase/app';
-import { Novel, NovelMeta } from 'src/app/shared/models/novels/novel.model';
-import { UserMeta, UserProfile } from 'src/app/shared/models/users/user-profile.model';
+import { Novel, NovelsStats } from 'src/app/shared/models/novels/novel.model';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
-import { map, first, switchMap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment.prod';
-import { Chapter } from 'src/app/shared/models/novels/chapter.model';
+import { map, first, switchMap, tap, scan } from 'rxjs/operators';
 import { UserService } from './user.service';
-import { NovelsStats } from 'src/app/shared/models/novels/novels-stats.model';
 import { Genre } from 'src/app/shared/models/novels/genre.model';
+import { LikesService } from './likes.service';
+import { LikeStats, Like } from 'src/app/shared/models/like.model';
+import { LibraryService } from './library.service';
+import { PaginateCollectionService, QueryConfig } from './paginate-collection.service';
 
+export interface NovelsQueryConfig {
+  public: boolean;
+  authorID?: string;
+  sortField: 'iTitle' | 'createdAt' | 'updatedAt'; // field to orderBy
+  limit: number; // limit per query
+  reverse: boolean; // reverse order
+  prepend: boolean; // prepend to source
+}
 @Injectable({
   providedIn: 'root'
 })
-export class NovelService {
+export class NovelService extends PaginateCollectionService<Novel> {
 // tslint:disable: variable-name
-  private _novels: AngularFirestoreCollection<Novel>;
+  private novelID: string;
 // tslint:enable: variable-name
 
   constructor(
-    private afStore: AngularFirestore,
+    afs: AngularFirestore,
     private afStorage: AngularFireStorage,
-    private users: UserService
+    private users: UserService,
+    private ls: LikesService,
+    private libs: LibraryService
   ) {
-    this._novels = this.afStore.collection<Novel>(dbKeys.COLLECTION_NOVELS);
+    super(afs);
+  }
+
+  init(opts?: Partial<QueryConfig>) {
+    console.log('INIT');
+    const path = dbKeys.C_NOVELS;
+
+    const queryFunc = (ref: firestore.CollectionReference): firestore.Query => {
+      let query: firestore.Query = ref;
+      if (this.query.public) { query = query.where('public', '==', true); }
+      if (this.query.authorID) { query = query.where('author.uid', '==', this.query.authorID); }
+
+      if (this.query.genres && this.query.genres.length > 0) {
+        query = query.where('genres', 'array-contains', this.query.genres);
+      }
+      return query;
+    };
+    super.doInit(path, opts, queryFunc);
+    return null;
   }
 
   get timestamp() {
@@ -34,185 +63,158 @@ export class NovelService {
   }
 
   novelGet(id: string): Observable<Novel> {
-    return this.afStore
-      .collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => (
-        ref
-          .where('public', '==', true)
-      ))
+    this.novelID = id;
+
+    return this.afs
+      .collection<Novel>(dbKeys.C_NOVELS, ref => {
+        return ref.where('public', '==', true);
+      })
       .doc<Novel>(id)
-      .snapshotChanges()
-      .pipe(
-        map(data => {
-          const novel = data.payload.data() as Novel;
-          const docId = data.payload.id;
-
-          return novel;
-        })
-      );
-  }
-
-  novelsGet(lastNovel: Novel = null, limit: number = 5): Observable<Novel[]> {
-    /*if (lastNovel) {
-      return this.afStore
-        .collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => (
-          ref
-            .orderBy('title')
-            .startAfter(lastNovel.title)
-            .limit(limit)
-        ))
-        .valueChanges();
-    } else {*/
-      console.log('Really?');
-      return this.afStore
-        .collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => ref
-          .orderBy('title', 'asc')
-          .where('public', '==', true)
-
-          // .limit(limit)
-        )
-        .valueChanges();
-    // }
-  }
-
-  novelsGetBy(uid: string): Observable<Novel[]> {
-    return this.afStore.collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => ref.where('author.uid', '==', uid)).valueChanges();
-  }
-
-  novelsGetSnapshotsBy(uid: string): Observable<Novel[]> {
-    return this.afStore.collection<Novel>(dbKeys.COLLECTION_NOVELS, ref => ref.where('author.uid', '==', uid))
-      .snapshotChanges()
-      .pipe(
-        map(actions => actions.map(a => {
-          const data = a.payload.doc.data() as Novel;
-          const id = a.payload.doc.id;
-
-          return data;
-        }))
-      );
+      .valueChanges();
   }
 
   novelAdd(data: Novel): Observable<string> {
     return this.users.currentUser
       .pipe(
         first(),
-        switchMap(
-          user => {
-            // Get a new write batch
-            const batch = this.afStore.firestore.batch();
+        switchMap(user => {
+          // Prepare new entries
+          const newStoryId = this.afs.createId();
+          const newNovel: Novel = {
+            id: newStoryId,
+            author: {
+              uid: user.uid,
+              displayName: user.displayName
+            },
 
-            const newStoryId = this.afStore.createId();
-            const storyRef = this._novels.doc(newStoryId).ref;
-            batch.set(storyRef, {
-              id: newStoryId,
-              author: {
-                uid: user.uid,
-                displayName: user.displayName
-              },
+            title: data.title,
+            iTitle: this.caseFoldNormalize(data.title),
 
-              title: data.title,
-              iTitle: this.caseFoldNormalize(data.title),
+            description: data.description,
+            genres: data.genres,
+            tags: data.tags,
 
-              description: data.description,
-              genres: data.genres,
-              tags: data.tags,
+            cover: false,
+            public: data.public || false,
 
-              cover: false,
-              public: data.public || false,
+            createdAt: this.timestamp,
+            updatedAt: this.timestamp
+          };
+          const newStats: NovelsStats = {
+            updatedAt: this.timestamp,
+            n: firestore.FieldValue.increment(1),
+            nAll: firestore.FieldValue.increment(data.public ? 1 : 0),
+            id: newStoryId
+          };
 
-              createdAt: this.timestamp,
-              updatedAt: this.timestamp
-            });
+          // Get a new write batch
+          const batch = this.afs.firestore.batch();
+          const storyRef = this.afs.doc<Novel>(`${dbKeys.C_NOVELS}/${newStoryId}`).ref;
+          const statsRef = this.afs.doc<NovelsStats>(`${dbKeys.C_NOVELS}/${dbKeys.STATS_DOC}`).ref;
 
-            const statsRef = this._novels.doc<NovelsStats>(dbKeys.STATS_DOC).ref;
-            batch.set(statsRef, {
-              updatedAt: this.timestamp,
-              n: firestore.FieldValue.increment(1),
-              nAll: firestore.FieldValue.increment(data.public ? 1 : 0),
-              id: newStoryId
-            }, { merge: true });
+          batch.set(storyRef, newNovel);
+          batch.set(statsRef, newStats, { merge: true });
 
-            // Commit the batch
-            return batch.commit()
-              .then(
-                (val) => newStoryId,
-                (err) => Promise.reject(err)
-              );
-          }
-        )
+          // Commit the batch
+          return batch.commit().then(
+            () => newStoryId,
+            (err) => Promise.reject(err)
+          );
+        })
       );
   }
+
   novelCoverUpload(id: string, img: File): AngularFireUploadTask {
     const path = `${storageKeys.NOVELS_COVER_PATH}/${id}/${storageKeys.NOVELS_COVER_ORIGINAL}`;
     return this.afStorage.upload(path, img);
   }
+
   novelCoverRemove(id: string) {
     const path = `${storageKeys.NOVELS_COVER_PATH}/${id}/${storageKeys.NOVELS_COVER_ORIGINAL}`;
     return this.afStorage.ref(path).delete().toPromise();
   }
+
   novelTitleEdit(id: string, title: string) {
-    return this._novels.doc<Novel>(id).update({
+    const path = `${dbKeys.C_NOVELS}/${id}`;
+    return this.afs.doc<Novel>(path).update({
       updatedAt: this.timestamp,
       title,
       iTitle: this.caseFoldNormalize(title)
     });
   }
+
   novelDescriptionEdit(id: string, description: string) {
-    return this._novels.doc<Novel>(id).update({
+    const path = `${dbKeys.C_NOVELS}/${id}`;
+    return this.afs.doc<Novel>(path).update({
       updatedAt: this.timestamp,
       description
     });
   }
+
   novelGenresEdit(id: string, genres: Genre[]) {
-    return this._novels.doc<Novel>(id).update({
+    const path = `${dbKeys.C_NOVELS}/${id}`;
+    return this.afs.doc<Novel>(path).update({
       updatedAt: this.timestamp,
       genres
     });
   }
-  novelPublicToggle(id: string, currentPublic: boolean) {
-    const batch = this.afStore.firestore.batch();
 
-    const novelRef = this._novels.doc<Novel>(id).ref;
-    batch.update(novelRef, {
+  novelPublicToggle(id: string, currentPublic: boolean) {
+    // Prepare entries
+    const upNovel: Partial<Novel> = {
       updatedAt: this.timestamp,
       public: !currentPublic
-    });
-
-    const statsRef = this._novels.doc<NovelsStats>(dbKeys.STATS_DOC).ref;
-    batch.update(statsRef, {
+    };
+    const upStats: NovelsStats = {
       id,
       updatedAt: this.timestamp,
       n: firestore.FieldValue.increment(currentPublic ? -1 : 1)
-    });
+    };
+
+    // Process batch write
+    const batch = this.afs.firestore.batch();
+    const refNovel = this.afs.doc<Novel>(`${dbKeys.C_NOVELS}/${id}`).ref;
+    const refStats = this.afs.doc<NovelsStats>(`${dbKeys.C_NOVELS}/${dbKeys.STATS_DOC}`).ref;
+
+    batch.update(refNovel, upNovel);
+    batch.update(refStats, upStats);
 
     return batch.commit();
   }
+
   novelTagsEdit(id: string, overwriteTags: string[]) {
-    return this._novels.doc<Novel>(id).update({
+    const path = `${dbKeys.C_NOVELS}/${id}`;
+    return this.afs.doc<Novel>(path).update({
       tags: overwriteTags,
       updatedAt: this.timestamp
     });
   }
+
   novelTagRemove(id: string, removeTag: string) {
-    return this._novels.doc<Novel>(id).update({
+    const path = `${dbKeys.C_NOVELS}/${id}`;
+    return this.afs.doc<Novel>(path).update({
       tags: firestore.FieldValue.arrayRemove(removeTag),
       updatedAt: this.timestamp
     });
   }
 
   novelRemove(id: string, currentPublic: boolean): Promise<void> {
-    const batch = this.afStore.firestore.batch();
-
-    const novelRef = this.afStore.doc<Novel>(id).ref;
-    batch.delete(novelRef);
-
-    const statsRef = this.afStore.doc<NovelsStats>(dbKeys.STATS_DOC).ref;
-    batch.set(statsRef, {
+    // Prepare updated entries
+    const upStats: NovelsStats = {
       updatedAt: this.timestamp,
       id,
       n: firestore.FieldValue.increment(currentPublic ? -1 : 0),
       nAll: firestore.FieldValue.increment(-1),
       nDeleted: firestore.FieldValue.increment(1)
-    });
+    };
+
+    // Process batch write
+    const batch = this.afs.firestore.batch();
+    const refNovel = this.afs.doc<Novel>(`${dbKeys.C_NOVELS}/${id}`).ref;
+    const refStats = this.afs.doc<NovelsStats>(`${dbKeys.C_NOVELS}/${dbKeys.STATS_DOC}`).ref;
+
+    batch.delete(refNovel);
+    batch.set(refStats, upStats);
 
     return batch.commit();
   }
@@ -222,6 +224,45 @@ export class NovelService {
   }
 */
   private caseFoldNormalize(value: string) {
-    return value.normalize('NFKC').toLowerCase().toUpperCase().toLowerCase();
+    return value.normalize('NFKC').toLowerCase().toLowerCase();
+  }
+
+  // LIKE/DISLIKE SYSTEM
+  like(): Observable<void> {
+    const path = `${dbKeys.C_NOVELS}/${this.novelID}`;
+    return this.ls.like(path);
+  }
+  dislike(): Observable<void> {
+    const path = `${dbKeys.C_NOVELS}/${this.novelID}`;
+    return this.ls.dislike(path);
+  }
+  unlike(): Observable<void> {
+    const path = `${dbKeys.C_NOVELS}/${this.novelID}`;
+    return this.ls.reset(path);
+  }
+  getLikes(): Observable<LikeStats> {
+    const path = `${dbKeys.C_NOVELS}/${this.novelID}`;
+    return this.ls.stats(path);
+  }
+  likeState(): Observable<Like> {
+    const path = `${dbKeys.C_NOVELS}/${this.novelID}`;
+    return this.ls.state(path);
+  }
+
+  // LIBRARY SYSTEM
+  libNovels(uid: string) {
+    return this.libs.libraryField(uid, dbKeys.C_library_novels);
+  }
+  libMyNovels() {
+    return this.libs.myLibraryField(dbKeys.C_library_novels);
+  }
+  inLibrary(novelID: string) {
+    return this.libs.inLibrary(dbKeys.C_library_novels, novelID);
+  }
+  libAdd(novelID: string) {
+    return this.libs.add(dbKeys.C_library_novels, novelID);
+  }
+  libRemove(novelID: string) {
+    return this.libs.remove(dbKeys.C_library_novels, novelID);
   }
 }

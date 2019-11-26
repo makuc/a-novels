@@ -1,0 +1,30 @@
+:root {
+  --default-padding: 0px;
+  --header-height: 50px;
+}
+.sticky {
+  position: sticky;
+  top: 10px; /* adjust sentinel height/positioning based on this position. */
+  height: var(--header-height);
+  padding: 0 var(--default-padding);
+}
+.sticky_sentinel {
+  position: absolute;
+  left: 0;
+  right: 0; /* needs dimensions */
+  visibility: hidden;
+}
+.sticky_sentinel--top {
+  /* Adjust the height and top values based on your on your sticky top position.
+  e.g. make the height bigger and adjust the top so observeHeaders()'s
+  IntersectionObserver fires as soon as the bottom of the sentinel crosses the
+  top of the intersection container. */
+  height: 40px;
+  top: -24px;
+}
+.sticky_sentinel--bottom {
+  /* Height should match the top of the header when it's at the bottom of the
+  intersection container. */
+  height: calc(var(--header-height) + var(--default-padding));
+  bottom: 0;
+}

@@ -17,4 +17,13 @@ export class Chapter {
 export class ChapterMeta {
   id: string;
   title: string;
+  createdAt?: firestore.Timestamp | firestore.FieldValue;
+  public: boolean;
+
+  constructor(id: string, title: string, chPublic: boolean, createdAt: firestore.Timestamp | firestore.FieldValue) {
+    this.id = id;
+    this.title = title;
+    this.public = chPublic;
+    this.createdAt = createdAt;
+  }
 }

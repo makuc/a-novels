@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { NovelService } from 'src/app/core/services/novel.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, first } from 'rxjs/operators';
 import { ChaptersService } from 'src/app/core/services/chapters.service';
+import { Chapter } from 'src/app/shared/models/novels/chapter.model';
 
 @Component({
   selector: 'app-chapter-add',
@@ -17,27 +18,44 @@ export class ChapterAddComponent implements OnInit {
   loading = false;
   submitted = false;
   novel: Observable<Novel>;
+  chapter: Chapter;
 
   constructor(
     private fb: FormBuilder,
     private novels: NovelService,
-    private chapters: ChaptersService,
+    private cs: ChaptersService,
     private router: Router,
     private route: ActivatedRoute
   ) {
-    this.novel = this.route.paramMap
-      .pipe(
-        switchMap(params => this.novels.novelGet(params.get('novelID')))
+    this.novel = this.route.paramMap.pipe(
+      switchMap(params => this.novels.novelGet(params.get('novelID')))
+    );
+    this.route.paramMap.pipe(
+        first()
+      ).subscribe(
+        params => this.cs.init(params.get('novelID'), params.get('chapterID'))
       );
+    this.cs.data.pipe(
+          first()
+        ).subscribe(
+          chapters => {
+            if (chapters.length > 0) {
+              this.chapter = chapters[0];
+            } else {
+              this.chapter = new Chapter();
+            }
+
+            this.fgroup = this.fb.group({
+              title: [this.chapter.title, [Validators.required]],
+              chapter: [this.chapter.content, [Validators.required]],
+              public: [this.chapter.public]
+            });
+          },
+          (err) => console.error('Getting ch:', err)
+        );
   }
 
-  ngOnInit() {
-    this.fgroup = this.fb.group({
-      title: ['', [Validators.required]],
-      chapter: ['', [Validators.required]],
-      public: [false]
-    });
-  }
+  ngOnInit() { }
 
   get form() {
     return this.fgroup.controls;
@@ -59,21 +77,20 @@ export class ChapterAddComponent implements OnInit {
 
     this.validateAllFormFields(this.fgroup);
 
-    // return;
-
     // stop here if form is invalid
     if (this.fgroup.invalid) {
       return;
     }
     this.loading = true;
 
-    this.chapters.chapterAdd(novelID, {
+    this.cs.chapterAddTransactional({
+      ...this.chapter,
       title: this.form.title.value,
       content: this.form.chapter.value,
       public: this.form.public.value
-    }).subscribe(
-      chapterID => this.router.navigate([`/workshop/novel/${novelID}`]),
-      (err) => console.error('Add chapter:', err)
+    }).then(
+      () => this.router.navigate([`/workshop/novel/${novelID}`]),
+      (err) => console.error('Adding chapter:', err)
     );
   }
 }

@@ -6,17 +6,18 @@
 @import 'custom/horizontal-list';
 @import 'custom/vertical-list';
 @import 'custom/mat-toolbar-buttons';
+@import 'custom/tooltip';
+@import 'custom/multi-ellipsis';
+@import 'custom/links';
+@import 'custom/sticky';
+@import 'variables';
 
 app-header .navbar {
   border-radius: 0 !important;
 }
 
-.mat-tooltip {
-  font-size: 0.75rem;
-  margin-top: .9em !important;
-  &.icon {
-    margin-top: .2em !important;
-  }
+img {
+  font-size: 0;
 }
 
 .content {
@@ -27,4 +28,19 @@ app-header .navbar {
 
 .headerless-mat-tabs-group mat-tab-group mat-tab-header {
   display: none;
+}
+
+.indigo.dark .mat-stepper-horizontal, .indigo.dark .mat-stepper-vertical {
+  background: inherit !important;
+
+  .mat-vertical-stepper-header {
+    padding: 15px 24px;
+  }
+}
+.mat-paginator {
+  background: inherit !important;
+}
+
+app-headbar mat-toolbar {
+  height: $header-height !important;
 }

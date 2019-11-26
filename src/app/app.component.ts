@@ -57,7 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
   // Implementation
   applyFontSize(fontSize: number) {
     if (fontSize) {
-      //this.elem.nativeElement.style.fontSize = fontSize.toString() + 'rem';
+      // this.elem.nativeElement.style.fontSize = fontSize.toString() + 'rem';
       document.documentElement.style.fontSize = fontSize.toString() + 'rem';
     }
   }

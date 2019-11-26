@@ -1,10 +1,9 @@
-ul.vertical-list {
+ul.v-list {
   list-style-type: none;
   padding: 0;
-  padding-bottom: 0.6rem;
   margin: 0;
   display: flex;
-  flex-direction: column;
+  flex-flow: column nowrap;
 
   li {
     margin: 0;

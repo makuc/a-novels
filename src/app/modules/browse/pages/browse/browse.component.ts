@@ -1,75 +1,76 @@
 import { storageKeys } from 'src/app/keys.config';
-import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NovelService } from 'src/app/core/services/novel.service';
 import { Observable, Subject, fromEvent } from 'rxjs';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
-import { environment } from 'src/environments/environment';
-import { take, takeUntil } from 'rxjs/operators';
+import { takeUntil, first, switchMap, tap } from 'rxjs/operators';
+import { ScrollService } from 'src/app/core/services/scroll.service';
+import { MatSelectChange } from '@angular/material';
+import { QueryConfig } from 'src/app/core/services/paginate-collection.service';
 
 @Component({
   selector: 'app-browse',
   templateUrl: './browse.component.html',
   styleUrls: ['./browse.component.scss']
 })
-export class BrowseComponent implements OnDestroy {
-  destroyer = new Subject<void>();
-  storage: any;
+export class BrowseComponent implements OnInit, OnDestroy {
+  end: Subject<void> = new Subject<void>();
+
+  queryChange: Subject<Partial<QueryConfig>> = new Subject();
   novelsList: Observable<Novel[]>;
-  novelsListData: Novel[];
+  queryConfig: Partial<QueryConfig> = {
+    sortField: 'iTitle',
+    genres: []
+  };
 
   constructor(
-    private el: ElementRef,
-    private novels: NovelService
+    private ns: NovelService,
+    private scroll: ScrollService
   ) {
-    this.storage = storageKeys;
-    this.novels.novelsGet()
-      .pipe(
-        take(1)
-      )
-      .subscribe(
-        novelsList => {
-          this.novelsListData = novelsList;
-        }
-      );
-
-    fromEvent(window, 'scroll')
-      .pipe(
-        takeUntil(this.destroyer)
-      )
-      .subscribe(
-        event => {
-          const yLimit = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-          const xLimit = document.documentElement.scrollWidth - document.documentElement.clientWidth;
-          const yScrollAmount = window.pageYOffset;
-          const xScrollAmount = window.pageXOffset;
-
-          if (yScrollAmount >= yLimit) {
-            console.log('end-of-page');
-          } else if (yScrollAmount === 0) {
-            console.log('top-of-page');
-          }
-        }
-      );
+    this.ns.init(this.queryConfig);
+    this.novelsList = this.ns.data;
   }
 
+  ngOnInit() {
+    this.initScroll();
+    this.initSort();
+  }
   ngOnDestroy() {
-    this.destroyer.next();
-    this.destroyer.complete();
+    this.end.next();
+    this.end.complete();
   }
 
-  scrollHandler(e) {
-    console.log(e);
+  initSort() {
+    this.queryChange.pipe(
+      tap(q => this.ns.init(q)),
+      takeUntil(this.end)
+    ).subscribe();
   }
 
-  nextPage(last?: Novel) {
-    return console.log( 'dela!!' );
-    this.novels.novelsGet(
-      this.novelsList[this.novelsListData.length - 1]
+  initScroll() {
+    this.scroll.offset(50, 100);
+    this.scroll.scrollPosition.pipe(
+      takeUntil(this.end)
+    ).subscribe(e => this.scrollHandler(e));
+  }
+
+  scrollHandler(pos: 'bottom' | 'top') {
+    if (pos === 'bottom') {
+      this.ns.more();
+    }
+  }
+
+  coverURL(custom: boolean, novelID: string): string {
+    return storageKeys.GEN_URL(
+      storageKeys.BASIC_URL,
+      storageKeys.NOVELS_COVER_PATH,
+      custom ? novelID : storageKeys.NOVELS_COVER_DEFAULT_NAME,
+      storageKeys.NOVELS_COVER_THUMBNAIL
     );
   }
 
-  prevPage(first: Novel) {
-    // this.novelsList = this.novels.getNovelsPrev(first);
+  updateQuery() {
+    this.queryChange.next(this.queryConfig);
+    console.log('Query:', this.queryConfig);
   }
-
 }

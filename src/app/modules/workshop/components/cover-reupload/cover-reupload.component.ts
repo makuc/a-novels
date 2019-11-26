@@ -38,7 +38,7 @@ export class CoverReuploadComponent implements OnInit {
 
   s = storageKeys;
   @Input() cover = false;
-  @Input() novelId: string;
+  @Input() novelID: string;
   uploadPercent: Observable<number>;
 
   hover = false;
@@ -60,18 +60,19 @@ export class CoverReuploadComponent implements OnInit {
     return (this.elCover.nativeElement.files.length > 0);
   }
 
-  coverUrl() {
-    if (this.cover) {
-      return this.s.GEN_URL(storageKeys.BASIC_URL, storageKeys.NOVELS_COVER_PATH, this.novelId, storageKeys.NOVELS_COVER_THUMBNAIL);
-    } else {
-      return '/assets/img/novels/01/cover.jpg';
-    }
+  coverURL(): string {
+    return storageKeys.GEN_URL(
+      storageKeys.BASIC_URL,
+      storageKeys.NOVELS_COVER_PATH,
+      this.cover ? this.novelID : storageKeys.NOVELS_COVER_DEFAULT_NAME,
+      storageKeys.NOVELS_COVER_THUMBNAIL
+    );
   }
 
   reuploadCover() {
     if (this.elCover.nativeElement.files.length > 0) {
       this.busy = true;
-      const task = this.novels.novelCoverUpload(this.novelId, this.elCover.nativeElement.files[0]);
+      const task = this.novels.novelCoverUpload(this.novelID, this.elCover.nativeElement.files[0]);
       this.uploadPercent = task.percentageChanges();
       task.snapshotChanges()
       .pipe(
@@ -88,7 +89,7 @@ export class CoverReuploadComponent implements OnInit {
 
   removeCover() {
     this.busy = true;
-    this.novels.novelCoverRemove(this.novelId).then(
+    this.novels.novelCoverRemove(this.novelID).then(
       () => {
         this.busy = false;
         this.displayMessage('Removed', 'done');
@@ -111,7 +112,7 @@ export class CoverReuploadComponent implements OnInit {
   readImage() {
     const img = this.elCover.nativeElement.files[0];
     if (!img || img.type.match(/image\/*/) == null) {
-      return console.error('Not image');
+      return console.error('Not valid image');
     }
     const reader = new FileReader();
     reader.onload = (e: any) => {

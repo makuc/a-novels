@@ -22,16 +22,19 @@
   text-align: center;
 }
 
-.clean-link {
-  text-decoration: inherit;
-  color: inherit;
-}
-.clean-link:hover {
-  text-decoration: underline;
-}
 .non-interactive .mat-chip-disabled{
   opacity: 1 !important;
 }
+
 .interactive {
   cursor: pointer !important;
+}
+
+.full {
+  width: 100%;
+}
+
+.nodata {
+  font-size: 1.2rem;
+  padding: 2em;
 }

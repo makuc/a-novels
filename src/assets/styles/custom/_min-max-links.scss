@@ -8,11 +8,11 @@ $custom-typography: mat-typography-config( //
 mat-nav-list,
 mat-tab-header {
     .min {
-    display: flex !important;
-    flex-direction: column !important;
-    flex-wrap: wrap !important;
-    align-items: center !important;
-    width: 100% !important;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
     @include mat-base-typography($custom-typography);
   }
 

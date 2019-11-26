@@ -73,6 +73,10 @@ const pckgs = [
     MatChipsModule,
     MatSlideToggleModule,
     MatDialogModule,
+    MatStepperModule,
+    MatBadgeModule,
+
+    DragDropModule,
 
     // Dependency for some
     ReactiveFormsModule,

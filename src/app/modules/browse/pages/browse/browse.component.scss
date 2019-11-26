@@ -1,109 +1,122 @@
 :host {
     font-size: 1rem;
+    line-height: 1.2em;
 }
 
-.container {
+h1 {
+  font-size: 2em;
+  padding: 1.5em 1em 0 1em;
+  margin: 0 0 .5em 0;
+}
+.g-select {
+  padding: 0 50px 1em 50px;
+  h2 {
+    font-size: 1.3em;
+    line-height: 1em;
+    margin: 0;
+    padding: .5em 0 .5em .7em;
+  }
+}
+.sort-select {
+  width: 10em;
+  margin-left: auto;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+li {
+  padding: 0 0.5em 0.5em 0.5em;
+
+  mat-card {
     width: 100%;
-    height: auto;
-    padding: 2em 1em 0 1em;
+    //max-width: 8rem;
+    //min-width: 6rem;
+  }
 }
 
-#novels {
-    ul {
-        list-style: none;
-        padding: 0;
-    }
-    li {
-        padding: 0 0.5em 0.5em 0.5em;
+.not-published {
+  -webkit-filter: grayscale(1);
+  -moz-filter: grayscale(1);
+  -o-filter: grayscale(1);
+  filter: grayscale(0.8) brightness(0.5);
+}
 
-        mat-card {
-            width: 100%;
-            //max-width: 8rem;
-            //min-width: 6rem;
-        }
-    }
+mat-icon {
+  vertical-align: middle;
+}
 
-    .not-published {
-        -webkit-filter: grayscale(1);
-        -moz-filter: grayscale(1);
-        -o-filter: grayscale(1);
-        -ms-filter: grayscale(1);
-        filter: grayscale(0.8) brightness(0.5);
-    }
+.novel-details {
+  margin: 1em auto 1em auto;
 
-    mat-icon {
-        vertical-align: middle;
-      }
-      
-    .novel-details {
-        margin: 1em auto 1em auto;
-        
-        span {
-            padding: 0.2em 0 0.2em 0;
-        }
-        
-        .mat-button {
-            padding: 0 0.5em 0 0.5em;
-            min-width: 2em;
-            border: thin solid #ddd;
-            margin-right: 0.2em;
-        }
-    }
-    
-    .cover {
-        max-width: 10em;
-        min-width: 2em;
-        width: 100%;
-        
-        img {
-            width: 100%;
-            display: block;
-            text-align: left;
-        }
-    }
-    
-    .inline {
-        display: inline !important;
-        min-width: 7.9em;
-    }
-    
-    .cover-xs {
-        max-width: 15em;
-    }
-    
-    .xs-width {
-        width: 100%;
-    }
-    
-    .actions {
-        padding: 0.5em 0 0 0;
-    }
-    
-    .tab-icon {
-        margin-right: 0.2em;
-    }
-    
-    .wrapper {
-        padding: 0 1em 0 1em;
-    }
-    
-    .nowrap {
-        padding: 0;
-    }
-    
-    .centered {
-        position: relative;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    mat-card-subtitle a {
-        vertical-align: middle !important;
-    }
-      
+  span {
+    padding: 0.2em 0 0.2em 0;
+  }
 
+  .mat-button {
+    padding: 0 0.5em 0 0.5em;
+    min-width: 2em;
+    border: thin solid #ddd;
+    margin-right: 0.2em;
+  }
+}
+
+.cover {
+  max-width: 10em;
+  min-width: 2em;
+  width: 100%;
+
+  img {
+    width: 100%;
+    display: block;
+    text-align: left;
+  }
+}
+
+.inline {
+  display: inline !important;
+  min-width: 7.9em;
+}
+
+.cover-xs {
+  max-width: 15em;
+}
+
+.xs-width {
+  width: 100%;
+}
+
+.actions {
+  padding: 0.5em 0 0 0;
+}
+
+.tab-icon {
+  margin-right: 0.2em;
+}
+
+.wrapper {
+  padding: 0 1em 0 1em;
+}
+
+.nowrap {
+  padding: 0;
+}
+
+.centered {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+mat-card-subtitle a {
+  vertical-align: middle !important;
+}
+mat-card-title {
+  font-size: 1.5rem;
+  line-height: 1.2em;
 }
 
 .subtitle-fix {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }

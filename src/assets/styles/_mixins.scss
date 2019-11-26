@@ -15,7 +15,11 @@
   $primary-contrast: mat-color($p, default-contrast);
   $accent-contrast: mat-color($a, default-contrast);
   $warn-contrast: mat-color($w, default-contrast);
+
   // As colors
+  .color.inherit {
+    color: inherit;
+  }
   .color.primary {
     color: $primary;
     border-color: $primary;
@@ -56,11 +60,20 @@
     color: $warn-contrast;
     border-color: $warn-contrast;
   }
-  .background.card {
+  .background.neutral {
     background-color: $background-card;
+  }
+  .border.neutral {
+    border: $background-card solid thin;
   }
   .background.stacked {
     background-color: $background;
+    &::after {
+      background: $background;
+    }
+    &::before {
+      background: $background;
+    }
   }
   .background.bar {
     background-color: $app-bar;

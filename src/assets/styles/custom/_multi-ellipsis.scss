@@ -1,0 +1,33 @@
+.ell2row {
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: normal;
+  position: relative;
+
+  &:after {
+    content: "\02026";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 1.1em;
+    height: 1.3em;
+    padding-right: .5em;
+    text-align: right;
+    //background: red !important;
+  }
+
+  @supports (-webkit-line-clamp: 2) {
+    text-overflow: ellipsis;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    overflow: hidden;
+
+    &:after {
+      content: none;
+    }
+  }
+
+}

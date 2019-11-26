@@ -8,7 +8,7 @@ const routes: Routes = [
   {
     path: '',
     component: LibraryComponent,
-    ...canActivate(redirectUnauthorizedToLogin)
+    // ...canActivate(redirectUnauthorizedToLogin)
   },
 ];
 

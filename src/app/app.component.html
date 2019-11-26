@@ -1,14 +1,14 @@
 <app-header (sidenavToggle)="toggleSidenav()"></app-header>
 
-<mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 64" autosize>
+<mat-sidenav-container class="sidenav-container" autosize>
   <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [opened]="sideOpen" role="navigation"
-               fixedInViewport fixedTopGap="{{mobileQuery.matches ? 56 : 64}}">
+               fixedInViewport>
 
     <app-sidenav [isMobile]="mobileQuery.matches"></app-sidenav>
 
   </mat-sidenav>
 
-  <mat-sidenav-content>
+  <mat-sidenav-content scrollInit id="scroll-container">
     <main>
       <app-shortcuts></app-shortcuts>
       <router-outlet></router-outlet>

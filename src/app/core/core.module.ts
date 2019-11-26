@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { MyHammerConfig } from 'src/app/shared/configs/hammerjs.config';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from './imports/material.module';
 import { FirebaseModule } from './imports/firebase.module';
 
@@ -37,6 +36,11 @@ import { RegisterComponent } from './authentication/pages/register/register.comp
 import { NovelService } from './services/novel.service';
 import { UserService } from './services/user.service';
 import { GenresService } from './services/genres.service';
+import { LibraryService } from './services/library.service';
+import { HistoryService } from './services/history.service';
+import { ChaptersService } from './services/chapters.service';
+import { ReviewsService } from './services/reviews.service';
+import { LikesService } from './services/likes.service';
 
 @NgModule({
   imports: [
@@ -57,9 +61,14 @@ import { GenresService } from './services/genres.service';
     AlertService,
     // { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorHandlerInterceptor, multi: true },
-    NovelService,
     UserService,
-    GenresService
+    LikesService,
+    NovelService,
+    HistoryService,
+    GenresService,
+    LibraryService,
+    ChaptersService,
+    ReviewsService
   ],
   declarations: [
     HeaderComponent,

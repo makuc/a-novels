@@ -1,77 +1,15 @@
 @import '~@angular/material/theming';
 
-ul.horizontal-list {
-    list-style-type: none;
-    padding: 0;
-    padding-bottom: 0.6rem;
-    margin: 0;
-    overflow: hidden;
-    display: flex;
-    flex-wrap: wrap;
-    //justify-content: space-around;
-    /*
+ul.h-list {
     list-style-type: none;
     padding: 0;
     margin: 0;
     overflow: hidden;
-    text-align: left;
-    margin: 0 auto;
-    */
-    &.fixed {
-        li {
-            flex: initial !important;
-        }
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8em, 1fr));
+
+    &.dynamic {
+      display: flex;
+      flex-flow: row wrap;
     }
-
-    li {
-        margin: 0.4rem 0.2rem 0 0.2rem;
-        flex: 1 1 auto;
-        //display:inline-block;
-        //*display:inline; /*IE7*/
-        //*zoom:1; /*IE7*/
-        //margin: 10px;
-        //text-align: left;
-        //vertical-align: bottom;
-
-        // Make the card more compact !!
-        $mat-card-padding: 0.3rem;
-        $mat-card-border-radius: 4px;
-        $mat-card-header-size: 20px;
-
-        .mat-card {
-            padding: ($mat-card-padding) ($mat-card-padding / 2) 0 ($mat-card-padding / 2);
-
-            .mat-card-image {
-                margin: 0 (-($mat-card-padding / 2)) 0 (-($mat-card-padding / 2));
-                width: calc(100% + #{$mat-card-padding / 2} * 2);
-            }
-            .mat-card-content {
-                margin-top: -4px;
-            }
-        }
-
-        $custom: mat-typography-config( //
-            $headline: mat-typography-level(0.7rem, 1.2em, 400), // .mat-card-title
-            $title: mat-typography-level(0.8rem, 1.2em, 500), // .mat-card-header .mat-card-title
-            $body-1: mat-typography-level(0.6rem, 1.5em, 400), // .mat-card-subtitle, .mat-card-content
-        );
-
-        @include mat-card-typography($custom);
-        .mat-card-title {
-            line-height: mat-line-height($custom, headline) !important;
-            margin-bottom: 0.1rem;
-            font-weight: bold;
-        }
-
-        .mat-card-header .mat-card-title {
-            line-height: mat-line-height($custom, title) !important;
-        }
-
-        .mat-card-subtitle,
-        .mat-card-content {
-            line-height: mat-line-height($custom, body-1) !important;
-        }
-    }
-
-
 }

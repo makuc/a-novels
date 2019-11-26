@@ -1,17 +1,18 @@
-<div class="text-editor">
-
-  <mat-toolbar class="txe-header mat-elevation-z2">
+<mat-toolbar class="txe-header mat-elevation-z2">
     <button type="button" mat-icon-button tabindex="-1" aria-label="Make selection bold" mat-tooltip="Make selection bold"
             (click)="toggleBold($event)">
       <mat-icon>format_bold</mat-icon>
     </button>
-    <button type="button" mat-icon-button tabindex="-1" aria-label="Make selection bold" mat-tooltip="Make selection italic"
+    <button type="button" mat-icon-button tabindex="-1" aria-label="Make selection italic" mat-tooltip="Make selection italic"
             (click)="toggleItalic($event)">
       <mat-icon>format_italic</mat-icon>
+    </button>
+    <button type="button" mat-icon-button tabindex="-1" aria-label="Underline selection" mat-tooltip="Underline selection"
+            (click)="toggleUnderline($event)">
+      <mat-icon>format_underline</mat-icon>
     </button>
   </mat-toolbar>
 
   <div #txe class="txe-field" contenteditable="true" [attr.placeholder]="placeholder" (keypress)="keyPress($event)"
-       (input)="process($event)" (focus)="doFocus($event)" (blur)="doBlur($event)">
+       (input)="process($event)" (focus)="doFocus($event)" (blur)="doBlur($event)" (change)="chg()">
   </div>
-</div>

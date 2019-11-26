@@ -1,3 +1,44 @@
-<p>
-  chapters-work works!
-</p>
+<ng-container *ngIf="toc | async as chs">
+  <ul class="v-list full"
+      *ngIf="chs.indexes.slice().reverse() as dchs"
+      cdkDropList
+      (cdkDropListDropped)="drop($event, dchs)"
+      cdkDropListOrientation="vertical"
+      cdkDropListLockAxis="y"
+      [cdkDropListDisabled]="chsBusy">
+
+    <li *ngFor="let i of dchs" cdkDrag>
+      <div class="ch-placeholder" *cdkDragPlaceholder></div>
+      <div class="ch-content">
+        <div class="index" [class.private]="!chs.toc[i].public">{{ displayIndex(i) }}</div>
+
+        <a fxFlex class="l l-inner title"
+           [class.private]="!chs.toc[i].public"
+           routerLink="/workshop/novel/{{ novelID }}/{{ chs.toc[i].id }}">
+          <div class="l-dec">{{ chs.toc[i].title }}</div>
+          <div class="small-print" *ngIf="chs.toc[i].createdAt">{{ chs.toc[i].createdAt?.toMillis() | date }}</div>
+        </a>
+
+        <div class="actions">
+          <button class="edit-btn-inline color primary" aria-label="Edit chapter" matTooltip="Edit chapter"
+                  routerLink="/workshop/novel/{{ novelID }}/{{ chs.toc[i].id }}/edit">
+            <mat-icon inline>edit</mat-icon>
+          </button>
+          <button class="edit-btn-inline color primary"
+                  aria-label="tt"
+                  (click)="togglePrivate(chs.toc[i].id, chs.toc[i].public)"
+                  matTooltip="{{ chs.toc[i].public ? 'Make private' : 'Make public' }}">
+            <mat-icon inline>{{ chs.toc[i].public ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          <button class="edit-btn-inline color warn" aria-label="Delete chapter" matTooltip="Delete chapter">
+            <mat-icon inline>delete</mat-icon>
+          </button>
+        </div>
+        <div class="ch-handle" [class.disabled]="chsBusy" cdkDragHandle>
+          <mat-icon inline>drag_indicator</mat-icon>
+        </div>
+      </div>
+    </li>
+
+  </ul>
+</ng-container>

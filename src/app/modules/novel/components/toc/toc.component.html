@@ -1,36 +1,21 @@
-<!--
-<mat-list>
-  <mat-list-item *ngIf="toc.length == 0">No chapters released yet.</mat-list-item>
-
-  <ng-container *ngFor="let ch of toc">
-    <a href="#" matRipple>
-      <mat-list-item>Pepper</mat-list-item>
-    </a>
-    <mat-divider></mat-divider>
-  </ng-container>
-
-  <mat-paginator *ngIf="(pagination && toc.length > 0)" [length]="100" [pageSize]="10"
-                 [pageSizeOptions]="[5, 10, 25, 100]" (page)="chapterPageEvent = $event"></mat-paginator>
-</mat-list>
--->
-
-<table mat-table [dataSource]="toc">
-  <!-- Index Column -->
-  <ng-container matColumnDef="index">
-    <th mat-header-cell *matHeaderCellDef>No.</th>
-    <td mat-cell *matCellDef="let element">{{element.index}}</td>
-  </ng-container>
-
-  <!-- Name Column -->
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>Name</th>
-    <td mat-cell *matCellDef="let element">
-      <a href="{{ element.url }}">{{ element.name }}</a>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-
-<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+<ng-container *ngIf="toc; else noChs">
+  <ul class="v-list full" *ngIf="toc.indexes.length > 0; else noChs">
+    <li *ngFor="let i of tocPage">
+      <a class="ch l l-inner" routerLink="/novel/{{ novelID }}/{{ toc.toc[i].id }}">
+        <div class="ch-i">{{ displayIndex(i) }}</div>
+        <div class="ch-c">
+          <div class="l-dec">{{ toc.toc[i].title }}</div>
+          <div class="small" *ngIf="toc.toc[i].createdAt">{{ toc.toc[i].createdAt?.toMillis() | date }}</div>
+        </div>
+      </a>
+    </li>
+  </ul>
+  <mat-paginator *ngIf="pagination"
+                 [length]="toc.indexes.length"
+                 [pageSize]="limit"
+                 [pageSizeOptions]="[5, 10, 25, 100]"
+                 (page)="prepareTocPage($event)"></mat-paginator>
+</ng-container>
+<ng-template #noChs>
+  <p class="nodata">No chapters released yet</p>
+</ng-template>
