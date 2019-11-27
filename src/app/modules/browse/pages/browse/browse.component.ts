@@ -1,11 +1,10 @@
 import { storageKeys } from 'src/app/keys.config';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NovelService } from 'src/app/core/services/novel.service';
-import { Observable, Subject, fromEvent } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
-import { takeUntil, first, switchMap, tap } from 'rxjs/operators';
+import { takeUntil, switchMap, tap } from 'rxjs/operators';
 import { ScrollService } from 'src/app/core/services/scroll.service';
-import { MatSelectChange } from '@angular/material';
 import { QueryConfig } from 'src/app/core/services/paginate-collection.service';
 
 @Component({
@@ -71,6 +70,5 @@ export class BrowseComponent implements OnInit, OnDestroy {
 
   updateQuery() {
     this.queryChange.next(this.queryConfig);
-    console.log('Query:', this.queryConfig);
   }
 }

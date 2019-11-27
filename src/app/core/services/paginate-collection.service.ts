@@ -45,7 +45,6 @@ export class PaginateCollectionService<T> {
     this._done.next(false);
     this._loading.next(false);
     this._data.next([]);
-    console.log('reset');
 
     this.path = path;
     this.queryFunc = queryFunc;
