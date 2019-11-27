@@ -11,12 +11,12 @@ const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, ...canActivate(redirectLoggedInToHome) },
   { path: 'register', component: RegisterComponent, ...canActivate(redirectLoggedInToHome) },
-  { path: 'home', loadChildren: './modules/home/home.module#HomeModule' },
-  { path: 'novel', loadChildren: './modules/novel/novel.module#NovelModule' },
-  { path: 'user', loadChildren: './modules/user/user.module#UserModule', ...canActivate(redirectUnauthorizedToLogin)},
-  { path: 'browse', loadChildren: './modules/browse/browse.module#BrowseModule' },
-  { path: 'workshop', loadChildren: './modules/workshop/workshop.module#WorkshopModule', ...canActivate(redirectUnauthorizedToLogin)},
-  { path: 'library', loadChildren: './modules/library/library.module#LibraryModule', ...canActivate(redirectUnauthorizedToLogin)},
+  { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
+  { path: 'novel', loadChildren: () => import('./modules/novel/novel.module').then(m => m.NovelModule) },
+  { path: 'user', loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule), ...canActivate(redirectUnauthorizedToLogin)},
+  { path: 'browse', loadChildren: () => import('./modules/browse/browse.module').then(m => m.BrowseModule) },
+  { path: 'workshop', loadChildren: () => import('./modules/workshop/workshop.module').then(m => m.WorkshopModule), ...canActivate(redirectUnauthorizedToLogin)},
+  { path: 'library', loadChildren: () => import('./modules/library/library.module').then(m => m.LibraryModule), ...canActivate(redirectUnauthorizedToLogin)},
   // Default
   { path: '**', component: E404Component }
 ];

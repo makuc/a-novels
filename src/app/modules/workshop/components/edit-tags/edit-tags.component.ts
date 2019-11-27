@@ -22,7 +22,7 @@ export class EditTagsComponent {
 
   ctrl: FormControl;
   separatorKeysCodes: number[] = [SEMICOLON, ENTER, MAC_ENTER, COMMA, FF_SEMICOLON, SPACE];
-  @ViewChild('tagInput', { static: false }) tagInput: ElementRef<HTMLInputElement>;
+  @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
 
   constructor(
     public dialogRef: MatDialogRef<EditTagsComponent>,

@@ -41,7 +41,7 @@ import { AbstractControlValueAccessor } from '../utils/abstract-value-accessor';
   ]
 })
 export class MatSearchBarComponent extends AbstractControlValueAccessor<string> {
-  @ViewChild('input', { static: false }) inputElement: ElementRef;
+  @ViewChild('input') inputElement: ElementRef;
 
   @Output() onBlur = new EventEmitter<string>();
   @Output() onClose = new EventEmitter<void>();

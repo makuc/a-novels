@@ -21,7 +21,7 @@ export class EditGenresComponent {
 
   genresList: Observable<Genre[]>;
   ctrl: FormControl;
-  @ViewChild('selGenre', {static: false}) genreSelector: MatChipList;
+  @ViewChild('selGenre') genreSelector: MatChipList;
 
   constructor(
     public dialogRef: MatDialogRef<EditGenresComponent>,

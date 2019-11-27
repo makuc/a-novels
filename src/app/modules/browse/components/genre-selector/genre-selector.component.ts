@@ -16,7 +16,7 @@ export class GenreSelectorComponent {
   @Output() selectedGenresChange: EventEmitter<Genre[]> = new EventEmitter();
   @Output() selectedChange: EventEmitter<void> = new EventEmitter();
 
-  @ViewChild('selGenre', {static: false}) genreSelector: MatChipList;
+  @ViewChild('selGenre') genreSelector: MatChipList;
 
   constructor(
     private genres: GenresService

@@ -31,8 +31,8 @@ export class TagsSelectorComponent {
   tags: string[] = [];
   searchTags: Observable<string[]>;
 
-  @ViewChild('tagInput', { static: false }) tagInput: ElementRef<HTMLInputElement>;
-  @ViewChild('tagSelector', { static: false }) matAutocomplete: MatAutocomplete;
+  @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
+  @ViewChild('tagSelector') matAutocomplete: MatAutocomplete;
 
   constructor() {
     this.searchTags = this.tagsCtrl.valueChanges

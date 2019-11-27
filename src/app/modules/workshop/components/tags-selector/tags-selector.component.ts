@@ -30,8 +30,8 @@ export class TagsSelectorComponent {
 
   inputCtrl = new FormControl();
 
-  @ViewChild('tagInput', { static: false }) tagInput: ElementRef<HTMLInputElement>;
-  @ViewChild('tagSelector', { static: false }) matAutocomplete: MatAutocomplete;
+  @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
+  @ViewChild('tagSelector') matAutocomplete: MatAutocomplete;
 
   constructor() { }
 
