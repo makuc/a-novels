@@ -1,4 +1,4 @@
-<section class="full" *ngIf="user | async as userData">
+<section *ngIf="user | async as userData">
   <app-profile-header [user]="userData"></app-profile-header>
 
   <div fxLayout="row" fxLayoutGap="1em" id="profile-tabs">

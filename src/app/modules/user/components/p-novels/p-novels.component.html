@@ -1,0 +1,20 @@
+<div class="container" fxLayout="row" fxLayout.xs="column">
+  <ul class="v-list">
+    <li *ngFor="let novel of novelsList | async; let last = last">
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayout.xs="column">
+        <div>
+          <img class="cover-img" [src]="coverURL(novel.cover, novel.id)">
+        </div>
+
+        <div>
+          <a class="l" routerLink="/workshop/novel/{{ novel.id }}">
+            <h2>{{ novel.title }}</h2>
+          </a>
+          <div [innerHTML]="novel.description">
+
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

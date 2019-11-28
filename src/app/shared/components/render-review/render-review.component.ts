@@ -3,6 +3,7 @@ import { Review } from '../../models/novels/review.model';
 import { Observable } from 'rxjs';
 import { ReviewsService } from 'src/app/core/services/reviews.service';
 import { Like, LikeStats } from '../../models/like.model';
+import { firestore } from 'firebase';
 
 @Component({
   selector: 'app-render-review',
@@ -63,6 +64,10 @@ export class RenderReviewComponent implements OnInit {
     } else {
       this.rs.dislike(this.review.id).subscribe();
     }
+  }
+
+  timestampToDate(ts: firestore.Timestamp | firestore.FieldValue): Date {
+    return (ts as firestore.Timestamp).toDate();
   }
 
 }

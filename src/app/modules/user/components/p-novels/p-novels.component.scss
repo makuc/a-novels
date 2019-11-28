@@ -1,0 +1,25 @@
+@import '~@angular/material/theming';
+
+.container {
+    width: 100%;
+    padding: 0 1em 0 1em;
+}
+ul {
+  align-items: flex-end;
+  margin-top: 0em;
+}
+li {
+  width: 100%;
+  padding: 1em 0 .7em 0;
+
+  h2 {
+    text-align: left;
+    line-height: 1.2em;
+  }
+}
+.cover-img {
+  width: 8rem;
+  margin: 0 .7rem 0 0;
+  font-size: 0;
+  line-height: 0;
+}

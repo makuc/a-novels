@@ -42,17 +42,16 @@ export class NovelService extends PaginateCollectionService<Novel> {
 
   init(opts?: Partial<QueryConfig>) {
     const path = dbKeys.C_NOVELS;
-
     const queryFunc = (ref: firestore.CollectionReference): firestore.Query => {
       let query: firestore.Query = ref;
       if (this.query.public) { query = query.where('public', '==', true); }
       if (this.query.authorID) { query = query.where('author.uid', '==', this.query.authorID); }
-
       if (this.query.genres && this.query.genres.length > 0) {
         query = query.where('genres', 'array-contains-any', this.query.genres);
       }
       return query;
     };
+
     super.doInit(path, opts, queryFunc);
     return null;
   }

@@ -1,8 +1,8 @@
 import { keysConfig } from 'src/app/keys.config';
 import { Component, Input, Output, EventEmitter, Inject } from '@angular/core';
-import { MatBottomSheetRef, MatBottomSheet } from '@angular/material';
+import { MatBottomSheetRef, MatBottomSheet } from '@angular/material/bottom-sheet';
 import { Shortcuts } from '../shortcuts.model';
-import { MAT_BOTTOM_SHEET_DATA } from '@angular/material';
+import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'app-bottom-sheet',

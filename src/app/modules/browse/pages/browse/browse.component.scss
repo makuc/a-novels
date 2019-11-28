@@ -18,8 +18,11 @@ h1 {
   }
 }
 .sort-select {
-  width: 10em;
+  max-width: 10em;
   margin-left: auto;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
 }
 
 ul {

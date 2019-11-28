@@ -1,6 +1,6 @@
 import { keysConfig } from 'src/app/keys.config';
 import { Component, ViewEncapsulation, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { MatBottomSheet, MatBottomSheetRef } from '@angular/material';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { BottomSheetComponent } from './bottom-sheet/bottom-sheet.component';
 import { AppSettingsService } from 'src/app/core/services/app-settings.service';
 import { Subject } from 'rxjs';

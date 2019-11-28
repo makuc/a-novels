@@ -7,6 +7,9 @@
 
     &.userpic-gt-xs {
         padding-left: 6em;
+        img {
+          font-size: inherit;
+        }
     }
 
     img {
@@ -25,6 +28,9 @@
     h5, h6 {
       margin: 0;
       line-height: 1.3em;
+    }
+    h4 {
+      margin: 0;
     }
   }
 }

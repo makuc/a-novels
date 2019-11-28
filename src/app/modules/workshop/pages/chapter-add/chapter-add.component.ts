@@ -4,7 +4,7 @@ import { NovelService } from 'src/app/core/services/novel.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
-import { switchMap, first } from 'rxjs/operators';
+import { switchMap, first, filter } from 'rxjs/operators';
 import { ChaptersService } from 'src/app/core/services/chapters.service';
 import { Chapter } from 'src/app/shared/models/novels/chapter.model';
 
@@ -35,9 +35,11 @@ export class ChapterAddComponent implements OnInit {
       ).subscribe(
         params => this.cs.init(params.get('novelID'), params.get('chapterID'))
       );
-    this.cs.data.pipe(
-          first()
-        ).subscribe(
+    this.cs.loading.pipe(
+      filter(val => val === false),
+      switchMap(() => this.cs.data),
+      first()
+    ).subscribe(
           chapters => {
             if (chapters.length > 0) {
               this.chapter = chapters[0];

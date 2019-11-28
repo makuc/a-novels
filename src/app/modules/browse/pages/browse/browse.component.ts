@@ -71,4 +71,9 @@ export class BrowseComponent implements OnInit, OnDestroy {
   updateQuery() {
     this.queryChange.next(this.queryConfig);
   }
+
+  toggleSortDirection() {
+    this.queryConfig.reverse = !this.queryConfig.reverse;
+    this.updateQuery();
+  }
 }

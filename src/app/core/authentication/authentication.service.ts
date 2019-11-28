@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestoreCollection } from '@angular/fire/firestore';
 import { auth, User } from 'firebase/app';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 import { shareReplay } from 'rxjs/operators';
 

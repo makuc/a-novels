@@ -1,6 +1,6 @@
 import { dbKeys } from 'src/app/keys.config';
 import { Injectable, OnDestroy } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { firestore } from 'firebase/app';
 import { Novel, NovelMeta } from 'src/app/shared/models/novels/novel.model';
 import { first, switchMap, map, scan, tap, takeUntil } from 'rxjs/operators';
@@ -10,7 +10,6 @@ import { ChaptersStats, ChaptersList, TOC } from 'src/app/shared/models/novels/c
 import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
 import { HistoryService } from './history.service';
 import { HistoryNovel } from 'src/app/shared/models/history/history.model';
-import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
 
 interface TmpChStats {
   stats: ChaptersStats;
@@ -106,14 +105,17 @@ export class ChaptersService implements OnDestroy {
       }, 250);
       return;
     }
-    this.query.prepend = true;
+    if (!this._loading.value) {
+      this.query.prepend = true;
 
-    const newCursor = this.prevChapterID(this.cursorPrev);
+      const newCursor = this.prevChapterID(this.cursorPrev);
 
-    if (newCursor) {// New values
-      this.mapAndUpdate(newCursor);
+      if (newCursor) {// New values
+        this.mapAndUpdate(newCursor);
+      }
     }
   }
+
   more() {
     if (!this._done.value) {
       if (!this.readToc) {
@@ -133,6 +135,7 @@ export class ChaptersService implements OnDestroy {
       }
     }
   }
+
   prevChapterID(currentID: string): string {
     const chIndex = this.chapterID_to_index(this.readToc.toc, currentID);
     const index = this.readToc.indexes.indexOf(chIndex.toFixed(0)) - 1;

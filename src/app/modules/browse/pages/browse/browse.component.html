@@ -9,6 +9,9 @@
       <mat-option value="iTitle">Title</mat-option>
       <mat-option value="createdAt">Created</mat-option>
     </mat-select>
+    <button type="button" mat-icon-button (click)="toggleSortDirection()">
+      <mat-icon class="{{ queryConfig.reverse ? '' : 'icon-flip-y' }}">sort</mat-icon>
+    </button>
   </div>
   <ul *ngIf="novelsList | async as novelsListData">
     <li *ngFor="let novelData of novelsListData">

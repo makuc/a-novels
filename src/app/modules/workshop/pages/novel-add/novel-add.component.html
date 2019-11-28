@@ -6,7 +6,7 @@
   <form [formGroup]="fgroup" (ngSubmit)="onSubmit()">
 
     <div>
-      <mat-form-field [ngClass]="['half']" [ngClass.xs]="['full']">
+      <mat-form-field class="half" class.xs="full">
         <input type="text" matInput placeholder="Title" required formControlName="title">
         <mat-error *ngIf="form['title'].hasError('required')">
           Title is <strong>required</strong>

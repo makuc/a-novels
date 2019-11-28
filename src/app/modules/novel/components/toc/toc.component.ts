@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { TOC } from 'src/app/shared/models/novels/chapters-stats.model';
 import { ChaptersService } from 'src/app/core/services/chapters.service';
 import { map, takeUntil } from 'rxjs/operators';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 import { AppSettingsService } from 'src/app/core/services/app-settings.service';
 import { keysConfig } from 'src/app/keys.config';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';

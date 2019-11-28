@@ -3,16 +3,17 @@
 
   <div fxLayout="row" fxLayoutGap="1em" id="profile-tabs">
 
-    <app-profile-nav [navId]="navId" ngClass.xs="hidden" fxFlex="initial"></app-profile-nav>
+    <app-profile-nav [navId]="userData.uid" ngClass.xs="hidden" fxFlex="initial"></app-profile-nav>
     <div id="profile-nav"> </div>
 
     <div fxFlex fxLayout="column" style="overflow: hidden;">
 
       <mat-toolbar class="mat-elevation-z1">
-        <span>Reviews</span>
+        <span>Novels</span>
       </mat-toolbar>
 
-      <app-p-reviews [uid]="userData.uid"></app-p-reviews>
+      <app-p-novels [uid]="userData.uid"></app-p-novels>
+
     </div>
 
   </div>

@@ -29,7 +29,7 @@ export class ScrollService {
   scrollToBottom = this._scrollToBottom.asObservable();
 
   nextScrollable(value: boolean) {
-    if (this._scrollable.value <= value) {
+    if (this._scrollable.value !== value) {
       this._scrollable.next(value);
     }
   }

@@ -5,7 +5,7 @@ import { Genre } from 'src/app/shared/models/novels/genre.model';
 import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { ArrayValidators } from 'src/app/shared/validators/array.validators';
-import { MatChipList } from '@angular/material';
+import { MatChipList } from '@angular/material/chips';
 
 export interface DataInput {
   value: Genre[];

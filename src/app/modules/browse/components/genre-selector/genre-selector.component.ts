@@ -1,7 +1,7 @@
 import { Component, ViewChild, Output, Input, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Genre } from 'src/app/shared/models/novels/genre.model';
-import { MatChipList, MatChipListChange } from '@angular/material';
+import { MatChipList, MatChipListChange } from '@angular/material/chips';
 import { GenresService } from 'src/app/core/services/genres.service';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AngularFirestore, AngularFirestoreCollection, QueryFn } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, QueryGroupFn, AngularFirestoreCollectionGroup } from '@angular/fire/firestore';
 import { scan, tap, first } from 'rxjs/operators';
 import { dbKeys } from 'src/app/keys.config';
 import { firestore } from 'firebase';
@@ -18,16 +18,16 @@ export interface QueryConfig {
 @Injectable({
   providedIn: 'root'
 })
-export class PaginateCollectionService<T> {
+export class PaginateCollectionGroupService<T> {
 
 // tslint:disable: variable-name
   private _done = new BehaviorSubject(false);
   private _loading = new BehaviorSubject(false);
   private _data = new BehaviorSubject([]);
 // tslint:enable: variable-name
-  private path: string;
+  private colID: string;
   protected query: QueryConfig;
-  protected queryFunc: (ref: firestore.CollectionReference) => firestore.Query;
+  protected queryFunc: QueryGroupFn;
 
   // Observable data
   data: Observable<T[]> = this._data.asObservable();
@@ -41,23 +41,23 @@ export class PaginateCollectionService<T> {
 
   // Initial query sets options and defines the Observable
   // passing opts will override the defaults
-  doInit(path: string, opts?: Partial<QueryConfig>, queryFunc?: QueryFn) {
+  doInit(collectionID: string, opts?: Partial<QueryConfig>, queryFunc?: QueryGroupFn) {
     this._done.next(false);
     this._loading.next(false);
     this._data.next([]);
 
-    this.path = path;
+    this.colID = collectionID;
     this.queryFunc = queryFunc;
     this.query = {
       public: true,
       sortField: 'createdAt',
-      limit: 3,
+      limit: 2,
       reverse: false,
       prepend: false,
       ...opts
     };
 
-    const begin = this.afs.collection<T>(this.path, ref => {
+    const begin = this.afs.collectionGroup<T>(this.colID, ref => {
       if (!this.queryFunc) {
         return ref.orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
                   .limit(this.query.limit);
@@ -75,7 +75,7 @@ export class PaginateCollectionService<T> {
     if (!this._done.value) {
       const cursor = this.getCursor();
 
-      const more = this.afs.collection<T>(this.path, ref => {
+      const more = this.afs.collectionGroup<T>(this.colID, ref => {
         if (!this.queryFunc) {
           return ref.orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
                     .limit(this.query.limit)
@@ -102,7 +102,7 @@ export class PaginateCollectionService<T> {
   }
 
   // Maps the snapshot to usable format the updates source
-  private mapAndUpdate(col: AngularFirestoreCollection<T>) {
+  private mapAndUpdate(col: AngularFirestoreCollectionGroup<T>) {
     if (this._done.value || this._loading.value) { return; }
 
     // loading

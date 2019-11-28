@@ -13,6 +13,6 @@
     </button>
   </mat-toolbar>
 
-  <div #txe class="txe-field" contenteditable="true" [attr.placeholder]="placeholder" (keypress)="keyPress($event)"
+  <div id="{{ id }}" #txe class="txe-field" contenteditable="true" [attr.placeholder]="placeholder" (keypress)="keyPress($event)"
        (input)="process($event)" (focus)="doFocus($event)" (blur)="doBlur($event)" (change)="chg()">
   </div>

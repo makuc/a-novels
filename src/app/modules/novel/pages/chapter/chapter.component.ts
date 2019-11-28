@@ -4,7 +4,7 @@ import { ChaptersService } from 'src/app/core/services/chapters.service';
 import { Observable, fromEvent, Subject } from 'rxjs';
 import { Chapter } from 'src/app/shared/models/novels/chapter.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntil, filter, first, debounceTime, tap } from 'rxjs/operators';
+import { takeUntil, filter, first, debounceTime, tap, switchMap } from 'rxjs/operators';
 import { TOC } from 'src/app/shared/models/novels/chapters-stats.model';
 import { ScrollService } from 'src/app/core/services/scroll.service';
 import { StickyEvent } from 'src/app/shared/directives/observe-sticky.directive';
@@ -31,7 +31,6 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
     private scroll: ScrollService,
     private renderer: Renderer2
   ) {
-    // NEED TO ACTUALLY FETCH THE CHAPTER, and implement it beforehand
     this.route.paramMap.pipe(
       first()
     ).subscribe(
@@ -51,7 +50,9 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
     this.initScroll();
     this.keyboardSwitch();
 
-    this.scroll.scrollable.pipe(
+    this.cs.loading.pipe(
+      filter(val => val === false),
+      switchMap(() => this.scroll.scrollable),
       first()
     ).subscribe(
       val => {

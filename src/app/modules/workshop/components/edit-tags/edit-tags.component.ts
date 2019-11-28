@@ -5,7 +5,7 @@ import { Genre } from 'src/app/shared/models/novels/genre.model';
 import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { ArrayValidators } from 'src/app/shared/validators/array.validators';
-import { MatChipList, MatChipInputEvent } from '@angular/material';
+import { MatChipList, MatChipInputEvent } from '@angular/material/chips';
 import { SEMICOLON, ENTER, MAC_ENTER, COMMA, FF_SEMICOLON, SPACE } from '@angular/cdk/keycodes';
 
 export interface DataInput {

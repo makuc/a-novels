@@ -1,7 +1,7 @@
 import { storageKeys } from 'src/app/keys.config';
 import { Component, OnInit } from '@angular/core';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap, map, first, concatMap } from 'rxjs/operators';

@@ -6,7 +6,7 @@
         <h5>{{ review.author.displayName }}</h5>
       </a>
       <span class="ra-date">
-        | {{ (review.updatedAt || review.updatedAt).toDate() | date }}
+        |&nbsp;{{ timestampToDate(review.updatedAt || review.createdAt) | date }}
       </span>
     </div>
     <h2>{{ review.title }}</h2>

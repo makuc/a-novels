@@ -10,8 +10,7 @@ import {
   OnDestroy,
   DoCheck,
   HostBinding,
-  ViewEncapsulation,
-  SecurityContext
+  ViewEncapsulation
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
@@ -69,7 +68,6 @@ export class TextEditorComponent
   @Input()
   set id(value: string) {
     this._id = value;
-    this.renderer.setAttribute(this.txe.nativeElement, 'id', this._id);
   }
   get id() {
     return this._id;
@@ -101,7 +99,6 @@ export class TextEditorComponent
   }
   get value() {
     return xss.filterXSS(this._value);
-    // return this.sanitizer.sanitize(SecurityContext.HTML, this.txe.nativeElement.innerHTML);
   }
 
   @Input()
@@ -123,7 +120,11 @@ export class TextEditorComponent
   }
 
   get empty() {
-    return this._value.length < 1;
+    if (this._value) {
+      return this._value.length < 1;
+    } else {
+      return true;
+    }
   }
 
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();

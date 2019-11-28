@@ -1,5 +1,5 @@
 import { storageKeys } from 'src/app/keys.config';
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, AfterViewInit } from '@angular/core';
 import { NovelService, NovelsQueryConfig } from 'src/app/core/services/novel.service';
 import { UserService } from 'src/app/core/services/user.service';
 import { Observable, Subject } from 'rxjs';
@@ -9,45 +9,42 @@ import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 import { ScrollService } from 'src/app/core/services/scroll.service';
 
 @Component({
-  selector: 'app-works',
-  templateUrl: './works.component.html',
-  styleUrls: ['./works.component.scss']
+  selector: 'app-p-novels',
+  templateUrl: './p-novels.component.html',
+  styleUrls: ['./p-novels.component.scss']
 })
-export class WorksComponent implements OnDestroy, AfterViewInit {
+export class PNovelsComponent implements AfterViewInit, OnDestroy {
   private end: Subject<void> = new Subject();
 
-  novelsList: Observable<Novel[]>;
+  @Input() uid: string;
+
   init = false;
+  novelsList: Observable<Novel[]>;
   queryConfig: Partial<NovelsQueryConfig> = {
-    sortField: 'iTitle',
-    public: false
+    sortField: 'iTitle'
   };
 
   constructor(
     private ns: NovelService,
-    private us: UserService,
     private scroll: ScrollService
   ) {
-    this.us.currentUser.pipe(
+    this.queryConfig.authorID = this.uid;
+    this.ns.init(this.queryConfig);
+    this.novelsList = this.ns.data;
+    this.init = true;
+  }
+
+  ngAfterViewInit() {
+    this.initScroll();
+    this.ns.loading.pipe(
+      filter(val => val === false),
+      switchMap(() => this.scroll.scrollable),
       first()
     ).subscribe(
-      (user) => {
-        this.queryConfig.authorID = user.uid;
-        this.ns.init(this.queryConfig);
-        this.novelsList = this.ns.data;
-
-        // Check if there are enough novels display for scrolling!
-        this.ns.loading.pipe(
-          filter(val => val === false),
-          switchMap(() => this.scroll.scrollable),
-          first()
-        ).subscribe(
-          val => {
-            if (!val) {
-              this.ns.more();
-            }
-          }
-        );
+      val => {
+        if (!val) {
+          this.ns.more();
+        }
       }
     );
   }
@@ -55,10 +52,6 @@ export class WorksComponent implements OnDestroy, AfterViewInit {
   ngOnDestroy() {
     this.end.next();
     this.end.complete();
-  }
-
-  ngAfterViewInit() {
-    this.initScroll();
   }
 
   coverURL(custom: boolean, novelID: string): string {
