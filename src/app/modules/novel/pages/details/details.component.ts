@@ -10,6 +10,8 @@ import { LibraryService } from 'src/app/core/services/library.service';
 import { Like, LikeStats } from 'src/app/shared/models/like.model';
 import { HistoryNovel } from 'src/app/shared/models/history/history.model';
 import { ChaptersService } from 'src/app/core/services/chapters.service';
+import { firestore } from 'firebase';
+import { TOC } from 'src/app/shared/models/novels/chapters-stats.model';
 
 @Component({
   selector: 'app-details',
@@ -25,7 +27,8 @@ export class DetailsComponent implements OnInit {
   busyLib = false;
   busyFav = false;
   novelID: string;
-  novel: Observable<Novel>;
+  novel$: Observable<Novel>;
+  toc$: Observable<TOC>;
   likes$: Observable<LikeStats>;
   likeState$: Observable<Like>;
   islib$: Observable<boolean>;
@@ -37,13 +40,11 @@ export class DetailsComponent implements OnInit {
     private route: ActivatedRoute,
   ) {
     this.s = storageKeys;
-    this.route.paramMap.pipe(
-      map(params => params.get('novelID'))
-    ).subscribe(novelID => this.novelID = novelID);
+    this.novelID = this.route.snapshot.paramMap.get('novelID');
   }
 
   ngOnInit() {
-    this.novel = this.ns.novelGet(this.novelID);
+    this.novel$ = this.ns.novelGet(this.novelID);
     this.likes$ = this.ns.getLikes();
     this.likeState$ = this.ns.likeState();
     this.islib$ = this.ns.inLibrary(this.novelID);
@@ -56,12 +57,12 @@ export class DetailsComponent implements OnInit {
     if (like && !like.value) {
       this.ns.like().subscribe(
         () => this.busyFav = false,
-        console.error
+        err => console.error(err)
       );
     } else {
       this.ns.unlike().subscribe(
         () => this.busyFav = false,
-        console.error
+        err => console.error(err)
       );
     }
   }
@@ -92,6 +93,33 @@ export class DetailsComponent implements OnInit {
       custom ? novelID : storageKeys.NOVELS_COVER_DEFAULT_NAME,
       storageKeys.NOVELS_COVER_THUMBNAIL
     );
+  }
+
+  toDate(ts: firestore.Timestamp) {
+    return ts.toDate();
+  }
+
+  calcReleaseRate(toc: TOC) {
+    let rate = 0;
+    const date = new Date();
+    date.setDate(date.getDate() - 28);
+
+    for (let i = toc.indexes.length - 1; i >= 0; i--) {
+      const chDate = toc.toc[toc.indexes[i]].createdAt as firestore.Timestamp;
+      if (chDate.toDate() >= date) {
+        rate++;
+      } else {
+        break;
+      }
+    }
+    return (rate / 4).toFixed(2);
+  }
+
+  linkChapter(nid: string, cid: string) {
+    if (cid) {
+      return `/novel/${nid}/${cid}`;
+    }
+    return `/novel/${nid}/${this.cs.readToc ? this.cs.readToc.toc[this.cs.readToc.indexes[0]].id : ''}`;
   }
 
 }

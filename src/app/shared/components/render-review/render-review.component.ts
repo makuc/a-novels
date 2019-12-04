@@ -14,9 +14,8 @@ export class RenderReviewComponent implements OnInit {
 
   @Input() review: Review;
   @Input() novelID: string;
-  // tslint:disable: no-inferrable-types
 
-  rate: number = -1;
+  // tslint:disable: no-inferrable-types
   state$: Observable<Like>;
   stats$: Observable<LikeStats>;
 

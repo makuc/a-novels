@@ -6,6 +6,7 @@ import { BrowseComponent } from './pages/browse/browse.component';
 import { MaterialModule } from 'src/app/core/imports/material.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { GenreSelectorComponent } from './components/genre-selector/genre-selector.component';
+import { NovelEntryComponent } from './components/novel-entry/novel-entry.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { GenreSelectorComponent } from './components/genre-selector/genre-select
   ],
   declarations: [
     BrowseComponent,
-    GenreSelectorComponent
+    GenreSelectorComponent,
+    NovelEntryComponent
   ]
 })
 export class BrowseModule { }

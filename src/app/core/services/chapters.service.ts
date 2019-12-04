@@ -39,7 +39,7 @@ export class ChaptersService implements OnDestroy {
 // tslint:enable: variable-name
 
   // Observable data
-  data: Observable<Chapter[]>;
+  data: Observable<Chapter[]> = this._data.asObservable();
   done: Observable<boolean> = this._done.asObservable();
   loading: Observable<boolean> = this._loading.asObservable();
   readToc: TOC;
@@ -89,27 +89,17 @@ export class ChaptersService implements OnDestroy {
     ).subscribe(toc => this.readToc = toc);
 
     this.mapAndUpdate(chapterID);
-
-    // Create the Observable array for consumption in components
-    if (!this.data) {
-      this.data = this._data.asObservable().pipe(
-        scan( (acc, val) => this.query.prepend ? val.concat(acc) : acc.concat(val))
-      );
-    }
   }
 
   prev() {
     if (!this.readToc) {
-      setTimeout(() => {
-        this.prev();
-      }, 250);
+      setTimeout(() => this.prev(), 250);
       return;
     }
     if (!this._loading.value) {
       this.query.prepend = true;
 
       const newCursor = this.prevChapterID(this.cursorPrev);
-
       if (newCursor) {// New values
         this.mapAndUpdate(newCursor);
       }
@@ -119,9 +109,7 @@ export class ChaptersService implements OnDestroy {
   more() {
     if (!this._done.value) {
       if (!this.readToc) {
-        setTimeout(() => {
-          this.more();
-        }, 250);
+        setTimeout(() => this.more(), 250);
         return;
       }
       this.query.prepend = false;
@@ -161,7 +149,7 @@ export class ChaptersService implements OnDestroy {
 
   // Maps the snapshot to usable format the updates source
   private mapAndUpdate(chapterID: string) {
-    if (this._done.value || this._loading.value) { return; }
+    if (this._loading.value) { return; }
 
     const doc = this.ch(chapterID);
 
@@ -172,7 +160,8 @@ export class ChaptersService implements OnDestroy {
     return doc.valueChanges().pipe(
       tap(ch => {
         // Update source with new values, done loading
-        this._data.next([ch]);
+        // this._data.next([ch]);
+        this._data.next(this.query.prepend ? [ch].concat(this._data.value) : this._data.value.concat(ch));
         this._loading.next(false);
         if (this.query.prepend) {
           this.cursorPrev = chapterID;
@@ -192,9 +181,13 @@ export class ChaptersService implements OnDestroy {
   }
 
   toc(novelID = this.query.novelID): Observable<TOC> {
-    return this.tocAll(novelID).pipe(
+    const toc$ = this.tocAll(novelID).pipe(
       map(toc => this.tocFilterPublic(toc))
     );
+    toc$.pipe(
+      first()
+    ).subscribe(toc => this.readToc = toc);
+    return toc$;
   }
   tocAll(novelID = this.query.novelID): Observable<TOC> {
     return this.stats(novelID).valueChanges().pipe(

@@ -1,7 +1,7 @@
 <mat-card class="wrapper">
 
   <mat-card-header>
-    <mat-icon mat-card-avatar [inline]="true" class="avatar-size">account_circle</mat-icon>
+    <mat-icon mat-card-avatar inline class="avatar-size">account_circle</mat-icon>
     <mat-card-title>Login</mat-card-title>
     <mat-card-subtitle>Account already exists</mat-card-subtitle>
   </mat-card-header>
@@ -26,14 +26,15 @@
           <mat-error *ngIf="c['password'].invalid">Password is <strong>required</strong></mat-error>
         </mat-form-field>
       </div>
-      <mat-toolbar>
+      <a routerLink="/reset-password" class="l smaller"><i>Forgotten password?</i></a>
+      <div class="actions">
         <button [disabled]="loading" mat-flat-button color="primary">
           <mat-spinner *ngIf="loading" [diameter]="15"></mat-spinner>
           Login
         </button>
         <span class="spacer"></span>
-        <a mat-stroked-button routerLink="/register" class="btn btn-link">Register</a>
-      </mat-toolbar>
+        <a mat-stroked-button routerLink="/register">Register</a>
+      </div>
     </form>
 
     <div id="providers" fxLayout="column" fxLayoutAlign="center stretch">

@@ -35,6 +35,7 @@
     display: flex;
     flex-flow: column;
     overflow: hidden;
+    margin-right: 15px;
 
     .l-dec, .small {
       text-overflow: ellipsis;

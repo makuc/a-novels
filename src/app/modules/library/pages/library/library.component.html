@@ -1,12 +1,13 @@
 <section id="lib" class="full">
-
   <h1>Library</h1>
-
-  <ul class="h-list" *ngIf="novels$ | async as novels">
-
-    <li class="book" *ngFor="let nid of novels">
-      <app-lib-novel [novelID]="nid"></app-lib-novel>
-    </li>
-
-  </ul>
+  <div *ngIf="novels$ | async as novels; else noNovels">
+    <ul class="h-list" *ngIf="novels.length > 0; else noNovels">
+      <li class="book" *ngFor="let nid of novels">
+        <app-lib-novel [novelID]="nid"></app-lib-novel>
+      </li>
+    </ul>
+  </div>
+  <ng-template #noNovels>
+    <p class="nodata">No novels in library...</p>
+  </ng-template>
 </section>

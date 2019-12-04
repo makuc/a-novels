@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { UserRoutingModule } from './user-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/core/imports/material.module';
-import { EditProfileComponent } from './pages/edit-profile/edit-profile.component';
 import { ProfileOverviewComponent } from './pages/profile-overview/profile-overview.component';
 import { ProfileNavComponent } from './components/profile-nav/profile-nav.component';
 import { ProfileHeaderComponent } from './components/profile-header/profile-header.component';
@@ -26,8 +25,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
     SharedModule
   ],
   declarations: [
-    EditProfileComponent,
-
     ProfileHeaderComponent,
     ProfileNavComponent,
 
@@ -43,7 +40,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
     PNovelsComponent
   ],
   exports: [
-    EditProfileComponent,
     ProfileOverviewComponent
   ]
 })

@@ -15,4 +15,8 @@ export class ProfileHeaderComponent implements OnInit {
   ngOnInit() {
   }
 
+  profilePictureURL() {
+    return this.user.photoURL ? this.user.photoURL : '/assets/img/users/01/userpic.jpg';
+  }
+
 }

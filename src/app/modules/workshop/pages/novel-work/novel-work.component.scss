@@ -5,10 +5,11 @@ mat-icon {
   vertical-align: middle;
 }
 .novel-details {
-  margin: 1em auto 1em auto;
+  margin: 0 auto;
+  padding: 2em 1em;
 
   h1 {
-    margin-top: .5em;
+    margin: .5em 0 1em 0;
   }
 
   span {
@@ -17,8 +18,10 @@ mat-icon {
   .mat-button-base {
     padding: 0 0.5em 0 0.5em;
     min-width: 2em;
-    //border: thin solid #ddd;
-    margin-right: 0.2em;
+    margin-right: 0.3em;
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
 .cover {
@@ -26,41 +29,29 @@ mat-icon {
   min-width: 2em;
 }
 .actions {
-  margin: 0.5em 0;
+  margin: 0 0 2em 0;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
 .tab-icon {
   margin-right: 0.2em;
 }
-.wrapper {
-  padding: 0 1em 0 1em;
-}
-.edit-btn {
-  float: right;
-  margin: 0.2em 0 0.2em 0.5em;
-}
-.edit-btn-inline {
-  font-size: 1rem;
-  display: inline-block;
-  border: solid thin;
-  border-radius: .3em;
-  background: none;
-  line-height: 1em;
-  cursor: pointer;
-  padding: .1em;
-  vertical-align: top;
-}
 .dscr {
-  overflow: hidden;
-  .edit-btn-inline {
-    float: right;
-    margin: 0 0 .2em .5em;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+
+  button {
+    margin-left: .3em;
   }
 }
 .glist {
   padding: 0;
 
   li {
-    margin: 0 .5em;
+    margin: 0 .5em 0 0;
   }
   .genre {
     font-size: 0.7rem;
@@ -68,4 +59,7 @@ mat-icon {
     border-radius: 0.3em;
     padding: .4em .7em;
   }
+}
+.margin {
+  margin: 1em 0;
 }

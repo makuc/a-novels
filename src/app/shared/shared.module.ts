@@ -13,6 +13,9 @@ import { RatingsComponent } from './components/ratings/ratings.component';
 import { ScrollGlobalDirective } from './directives/scroll-global.directive';
 import { ObserveStickyDirective } from './directives/observe-sticky.directive';
 import { ObserveStickyFooterDirective } from './directives/observe-sticky-footer.directive';
+import { MinimizeBtnDirective } from './directives/minimize-btn.directive';
+import { IconComponent } from './components/icon/icon.component';
+import { BtnDirective } from './directives/btn.directive';
 
 @NgModule({
   imports: [
@@ -29,10 +32,13 @@ import { ObserveStickyFooterDirective } from './directives/observe-sticky-footer
     RenderReviewComponent,
     DisplayRatingComponent,
     RatingsComponent,
+    IconComponent,
+    BtnDirective,
 
     ScrollGlobalDirective,
     ObserveStickyDirective,
-    ObserveStickyFooterDirective
+    ObserveStickyFooterDirective,
+    MinimizeBtnDirective
   ],
   exports: [
     E404Component,
@@ -43,10 +49,13 @@ import { ObserveStickyFooterDirective } from './directives/observe-sticky-footer
     RenderReviewComponent,
     DisplayRatingComponent,
     RatingsComponent,
+    IconComponent,
+    BtnDirective,
 
     ScrollGlobalDirective,
     ObserveStickyDirective,
-    ObserveStickyFooterDirective
+    ObserveStickyFooterDirective,
+    MinimizeBtnDirective
   ]
 })
 export class SharedModule { }

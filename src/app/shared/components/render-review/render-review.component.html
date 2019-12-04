@@ -1,11 +1,11 @@
-<div class="review">
-  <div class="r-title background primary">
+<div class="review" appMinimizeBtn minimizedMaxHeight="20em">
+  <div class="r-title bckg-primary">
     <div class="r-author">
-      <span class="ra-date">By&nbsp;</span>
+      <span class="opaque">By&nbsp;</span>
       <a class="l" routerLink="/user/{{ review.author.uid }}">
         <h5>{{ review.author.displayName }}</h5>
       </a>
-      <span class="ra-date">
+      <span class="opaque">
         |&nbsp;{{ timestampToDate(review.updatedAt || review.createdAt) | date }}
       </span>
     </div>
@@ -72,6 +72,5 @@
         <div class="re-content border neutral" [innerHTML]="review.grammReview"></div>
       </div>
     </div>
-
   </div>
 </div>

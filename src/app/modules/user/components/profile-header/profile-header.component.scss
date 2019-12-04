@@ -6,12 +6,11 @@
     padding: 0 1em;
 
     &.userpic-gt-xs {
-        padding-left: 6em;
-        img {
-          font-size: inherit;
-        }
+      padding-left: 6em;
+      img {
+        font-size: inherit;
+      }
     }
-
     img {
       border-radius: 50%;
       max-width: 6.25em;
@@ -19,18 +18,19 @@
       width: 100%;
     }
   }
+}
+.userdetails {
+  padding: 0 1em;
 
-  .userdetails {
-    padding: 0 1em;
-
-    h1,
-    h3,
-    h5, h6 {
-      margin: 0;
-      line-height: 1.3em;
-    }
-    h4 {
-      margin: 0;
-    }
+  h1 {
+    margin: 0;
+    line-height: 1.3em;
   }
+  h4 {
+    margin: 0;
+  }
+}
+.uid {
+  font-size: .7em;
+  line-height: 1em;
 }

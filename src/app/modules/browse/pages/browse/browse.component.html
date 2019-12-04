@@ -13,65 +13,16 @@
       <mat-icon class="{{ queryConfig.reverse ? '' : 'icon-flip-y' }}">sort</mat-icon>
     </button>
   </div>
-  <ul *ngIf="novelsList | async as novelsListData">
-    <li *ngFor="let novelData of novelsListData">
 
-      <mat-card>
-        <mat-card-content>
-            <div fxHide.gt-xs>
-              <a class="l" routerLink="/novel/{{ novelData.id }}">
-                <h1>{{ novelData.title }}</h1>
-              </a>
-              <h4>
-                <mat-icon inline matTooltip="Author of the novel" matTooltipClass="dscr-tooltip">
-                  perm_identity
-                </mat-icon>
-                <a class="l" routerLink="/user/{{ novelData.author?.uid }}"> {{ novelData.author.displayName }}</a>
-                |
-                <mat-icon inline matTooltip="Number of released chapters" matTooltipClass="dscr-tooltip">
-                  library_books
-                </mat-icon>
-                1331 |
-                <mat-icon inline matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">
-                  trending_up
-                </mat-icon>13
-                chs/w
-              </h4>
-            </div>
+  <div *ngIf="novels$ | async as novels; else noNovels">
+    <ul *ngIf="novels.length > 0; else noNovels">
+      <li *ngFor="let novelData of novels">
+        <app-novel-entry [novel]="novelData"></app-novel-entry>
+      </li>
+    </ul>
+  </div>
+  <ng-template #noNovels>
+    <p class="nodata">No novels found...</p>
+  </ng-template>
 
-            <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start center"
-                  fxLayoutGap=".6em">
-
-              <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center"
-                    fxLayoutGap=".6em">
-                <img alt="Cover picture of '{{ novelData.title}}''" [src]="coverURL(novelData.cover, novelData.id)">
-              </div>
-
-
-              <div style="width: 100%" fxFlex fxLayout="column" fxLayoutAlign="start start">
-                <mat-card-title fxShow.gt-xs fxHide>
-                  <a class="l" routerLink="/novel/{{ novelData.id }}">{{ novelData.title }}</a>
-                </mat-card-title>
-                <mat-card-subtitle class="subtitle-fix" fxShow.gt-xs fxHide>
-                  <mat-icon inline matTooltip="Author of the novel" matTooltipClass="dscr-tooltip">perm_identity</mat-icon>
-                  <a class="mat-h4 l" routerLink="/user/{{ novelData.author?.uid }}"> {{ novelData.author.displayName }}</a> |
-                  <mat-icon inline matTooltip="Number of released chapter" matTooltipClass="dscr-tooltip">library_books</mat-icon>
-                  1331 |
-                  <mat-icon inline matTooltip="Release rate of chapters / week" matTooltipClass="dscr-tooltip">trending_up
-                  </mat-icon>13
-                  chs /
-                  week
-                </mat-card-subtitle>
-
-                <div [innerHTML]="novelData.description"></div>
-
-              </div>
-
-            </div>
-
-        </mat-card-content>
-      </mat-card>
-
-    </li>
-  </ul>
 </section>

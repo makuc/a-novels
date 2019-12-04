@@ -8,9 +8,9 @@
   margin-right: auto;
   margin-top: 1em;
 }
-
 .avatar-size {
   font-size: 2.6em;
+  line-height: 1em;
 }
 
 .full-width {
@@ -23,21 +23,19 @@ button mat-spinner {
   display: inline-block;
 }
 
-.spacer {
-  flex: 1 1 auto;
-}
+.actions {
+  width: 100%;
+  margin: 2em 0;
+  display: flex;
+  flex-flow: row nowrap;
 
-mat-toolbar {
-  margin: 0.5em 0 1.5em 0;
-  background: transparent !important;
-  height: auto !important;
-
-  button,
-  a {
-    line-height: 2em !important;
+  .spacer {
+    flex: 1 1 auto;
   }
 }
-
+.smaller {
+  font-size: .85em;
+}
 #providers {
   margin-top: 1em;
 

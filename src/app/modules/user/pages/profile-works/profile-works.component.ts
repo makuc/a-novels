@@ -12,7 +12,7 @@ import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 export class ProfileWorksComponent implements OnInit {
 
   navID: string;
-  user: Observable<UserProfile>;
+  user$: Observable<UserProfile>;
 
   constructor(
     private route: ActivatedRoute,
@@ -20,9 +20,9 @@ export class ProfileWorksComponent implements OnInit {
   ) {
     this.navID = this.route.snapshot.paramMap.get('uid');
     if (this.navID === 'me') {
-      this.user = this.us.getMe();
+      this.user$ = this.us.getMe();
     } else {
-      this.user = this.us.getUser(this.navID);
+      this.user$ = this.us.getUser(this.navID);
     }
   }
 

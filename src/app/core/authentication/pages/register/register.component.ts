@@ -22,7 +22,6 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirm: ['', [Validators.required]],
@@ -38,6 +37,7 @@ export class RegisterComponent implements OnInit {
 
   register() {
     this.submitted = true;
+    console.log('register?');
 
     // reset alerts on submit
     // this.alertService.clear();

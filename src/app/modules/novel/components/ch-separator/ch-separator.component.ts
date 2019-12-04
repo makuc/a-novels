@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-ch-separator',
@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./ch-separator.component.scss']
 })
 export class ChSeparatorComponent implements OnInit {
+
+  @Input() color = 'neutral';
 
   constructor() { }
 

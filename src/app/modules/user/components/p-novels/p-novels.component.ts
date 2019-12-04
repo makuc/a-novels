@@ -13,13 +13,13 @@ import { ScrollService } from 'src/app/core/services/scroll.service';
   templateUrl: './p-novels.component.html',
   styleUrls: ['./p-novels.component.scss']
 })
-export class PNovelsComponent implements AfterViewInit, OnDestroy {
+export class PNovelsComponent implements OnInit, AfterViewInit, OnDestroy {
   private end: Subject<void> = new Subject();
 
   @Input() uid: string;
 
   init = false;
-  novelsList: Observable<Novel[]>;
+  novels$: Observable<Novel[]>;
   queryConfig: Partial<NovelsQueryConfig> = {
     sortField: 'iTitle'
   };
@@ -27,10 +27,12 @@ export class PNovelsComponent implements AfterViewInit, OnDestroy {
   constructor(
     private ns: NovelService,
     private scroll: ScrollService
-  ) {
+  ) { }
+
+  ngOnInit() {
     this.queryConfig.authorID = this.uid;
     this.ns.init(this.queryConfig);
-    this.novelsList = this.ns.data;
+    this.novels$ = this.ns.data;
     this.init = true;
   }
 

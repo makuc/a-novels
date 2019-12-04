@@ -11,8 +11,12 @@
     padding-left: 0.5em;
     text-align: left;
   }
-}
 
+  input[type=text] {
+    border-radius: .3em;
+    padding: .2em .5em;
+  }
+}
 #profile-tabs {
   mat-nav-list {
     padding: 0;
@@ -22,4 +26,7 @@
     width: 100%;
     min-width: 0;
   }
+}
+.btn {
+  margin-left: .2em;
 }

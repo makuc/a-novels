@@ -1,3 +1,5 @@
+@import 'src/assets/styles/variables';
+
 :host {
   font-size: 1rem;
   line-height: 1.4em;
@@ -14,24 +16,12 @@ section {
   margin: 0 0 2em 0;
   line-height: 1.2em;
 
-  h1, h2 {
+  h1 {
     margin: 0;
     padding: 0;
     text-align: left;
-  }
-
-  h1 {
     font-size: 2em;
     line-height: 1.3em;
-  }
-  h2 {
-    font-size: .7em;
-    line-height: 1.2em;
-    padding-bottom: .4em;
-    opacity: .7;
-  }
-  small {
-    opacity: .7;
   }
 }
 .ch-content {
@@ -60,24 +50,21 @@ section {
     }
   }
 }
-
-.side-c {
-  //max-width: 70rem;
-  //display: grid;
-  grid-template-columns: 60% 40%;
-
-  .toc {
-    //padding-left: 1rem;
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    max-width: 25rem;
-    height: 100%;
-    display: none;
-  }
-}
 .end {
   height: 85vh;
   background: chocolate;
+}
+.toc {
+  //padding-left: 1rem;
+  top: $header-height;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  max-width: 25rem;
+  height: 100%;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-right: none !important;
+  overflow: auto;
 }

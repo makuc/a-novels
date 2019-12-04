@@ -1,56 +1,53 @@
-<section *ngIf="user | async as userData">
-  <app-profile-header [user]="userData"></app-profile-header>
+<section *ngIf="user$ | async as user">
+  <app-profile-header [user]="user"></app-profile-header>
 
-  <div fxLayout="row" fxLayoutGap="1em" id="profile-tabs">
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="1em" id="profile-tabs">
+    <app-profile-nav [navId]="user.uid" fxFlex="initial"></app-profile-nav>
 
-    <app-profile-nav [navId]="userData.uid" ngClass.xs="hidden" fxFlex="initial"></app-profile-nav>
-    <div id="profile-nav"> </div>
-
-    <div fxFlex fxLayout="column" style="overflow: hidden;">
-      <mat-tab-group #profileTabs animationDuration="0ms" mat-stretch-tabs>
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <div ngClass.xs="min" ngClass.gt-xs="max">
-              <mat-icon class="tab-icon">info</mat-icon>
-              <span>Details</span>
-            </div>
-          </ng-template>
-          <ng-template matTabContent>
-            <h2>Details</h2>
-            <div class="profile-details" fxLayout="row">
-              <span class="label">Display name:</span>
-              <span class="value">{{ userData.displayName }}</span>
-            </div>
-            <div class="profile-details" fxLayout="row" *ngIf="userData.birthday">
-              <span class="label">Birth date:</span>
-              <span class="value">{{ userData.birthday }}</span>
-            </div>
-            <div class="profile-details" fxLayout="row">
-              <span class="label">E-mail:</span>
-              <span class="value">{{ userData.email }}</span>
-            </div>
-            <div class="profile-details" fxLayout="row" *ngIf="userData.phoneNumber">
-              <span class="label">Phone number:</span>
-              <span class="value">{{ userData.phoneNumber }}</span>
-            </div>
-          </ng-template>
-        </mat-tab>
-
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <div ngClass.xs="min" ngClass.gt-xs="max">
-              <mat-icon class="tab-icon">assignment_turned_in</mat-icon>
-              <span>Achievements</span>
-            </div>
-          </ng-template>
-          <ng-template matTabContent>
-            The Second Content
-          </ng-template>
-        </mat-tab>
-      </mat-tab-group>
-
+    <div class="full">
       <mat-toolbar class="mat-elevation-z1">
-        <span>User's Library</span>
+        <span>Details</span>
+        <!--<button type="button" mat-stroked-button *ngIf="me">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>-->
+      </mat-toolbar>
+      <div class="profile-details">
+          <span class="label">Display name:</span>
+          <div class="inblock" *ngIf="!editingName; else nameEditor">
+            <span class="value">{{ user.displayName }}</span>
+            <button type="button"
+                  appBtn color="accent" label="Edit"
+                  (click)="toggleEditName()">
+              <app-icon>edit</app-icon>
+            </button>
+          </div>
+          <ng-template #nameEditor>
+            <input #name type="text" class="bckg-neutral brdr-primary" [value]="user.displayName">
+            <button type="button" (click)="saveName(name.value)"
+                    appBtn color="accent" label="Apply name change">
+              <app-icon inline>done</app-icon>
+            </button>
+            <button type="button" (click)="toggleEditName()"
+                    appBtn color="warn" label="Cancel name change">
+              <app-icon inline>close</app-icon>
+            </button>
+          </ng-template>
+        </div>
+        <div class="profile-details">
+          <span class="label">E-mail:</span>
+          <span class="value" *ngIf="user.email">{{ user.email }}</span>
+          <span class="value" *ngIf="!user.email"><i>&lt;Not set&gt;</i></span>
+        </div>
+        <!--<div class="profile-details" *ngIf="user.phoneNumber || me">
+          <span class="label">Phone number:</span>
+          <span class="value" *ngIf="user.phoneNumber">{{ user.phoneNumber }}</span>
+          <span class="value" *ngIf="!user.phoneNumber"><i>&lt;Not set&gt;</i></span>
+        </div>-->
+    </div>
+    <!--<div>
+      <mat-toolbar class="mat-elevation-z1">
+        <span>Achievements</span>
       </mat-toolbar>
       <div>
         <ul>
@@ -68,7 +65,6 @@
           </li>
         </ul>
       </div>
-    </div>
-
+    </div>-->
   </div>
 </section>

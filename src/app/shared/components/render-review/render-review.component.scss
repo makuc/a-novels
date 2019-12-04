@@ -1,4 +1,14 @@
 .review {
+  &.min {
+    height: 15em;
+    overflow: hidden;
+  }
+
+  &.max {
+    height: auto;
+    overflow: initial;
+  }
+
   //border: red solid thin;
   h1, h2, h3, h4, h5, h6 {
     margin: 0;
@@ -7,45 +17,48 @@
   }
   .r {
     display: flex;
+  }
+  .r-rate {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    padding: 2em 0;
+    align-self: flex-start;
+    position: sticky;
+    top: 0;
 
-    .r-rate {
+    button {
       display: flex;
       flex-flow: column wrap;
       align-items: center;
-      padding: 2em 0;
-      align-self: flex-start;
-      position: sticky;
-      top: 0;
+      padding: .5em;
 
-      button {
-        display: flex;
-        flex-flow: column wrap;
-        align-items: center;
-        padding: .5em;
-
-        span {
-          font-size: .6em;
-          line-height: 1em;
-          opacity: .6;
-
-          &.down {
-            padding-top: .5em;
-          }
-          &.up {
-            padding-bottom: .5em;
-          }
+      span {
+        font-size: .6em;
+        line-height: 1em;
+        opacity: .6;
+        &.down {
+          padding-top: .5em;
+        }
+        &.up {
+          padding-bottom: .5em;
         }
       }
     }
   }
   .r-title {
-      padding: .5em 1em;
+    padding: .5em 1em;
+    font-size: 1.3em;
+
+    h2 {
+      font-size: inherit;
+    }
   }
 
   .r-author {
     display: flex;
     flex-flow: row wrap;
-    font-size: .7em;
+    font-size: .5em;
     line-height: 1.2em;
 
     h5 {
@@ -53,9 +66,6 @@
       word-break: normal;
       font-size: inherit;
       padding-right: .2em;
-    }
-    .ra-date {
-      opacity: .7;
     }
   }
 
@@ -67,21 +77,27 @@
   .r-content {
     flex: 1 1 auto;
     //padding: .5em 0 .8em 0;
+    line-height: 1.2em;
   }
   .re-title {
+    font-size: 1em;
     width: 100%;
     text-align: left;
     padding: .5em 1em;
     border-radius: 0 1.5em 0 0;
 
+    h3 {
+      font-size: inherit;
+    }
+
     .re-stars {
-      max-width: 6rem;
+      max-width: 6em;
       margin-right: auto;
     }
   }
   .re-content {
     width: 100%;
-    font-size: .75em;
+    font-size: .8em;
     padding: .4em;
     border-width: .3em;
     border-top: none;

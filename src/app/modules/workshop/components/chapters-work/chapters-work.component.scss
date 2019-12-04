@@ -10,28 +10,8 @@ $chListItemHeight: 2.9em;
 .actions {
   padding-left: .5em;
 
-  .edit-btn-inline {
-    font-size: 1.1rem;
+  button {
     margin-left: .2em;
-
-    &:first-child {
-      margin-left: 0;
-    }
-  }
-}
-.edit-btn-inline {
-  font-size: 1rem;
-  display: inline-block;
-  border: solid thin;
-  border-radius: 0.3em;
-  background: none;
-  line-height: 1em;
-  cursor: pointer;
-  padding: 0.1em;
-  vertical-align: top;
-
-  mat-icon {
-    vertical-align: middle;
   }
 }
 .small-print {

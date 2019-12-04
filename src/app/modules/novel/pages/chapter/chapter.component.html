@@ -2,53 +2,41 @@
   <div class="ch" *ngFor="let ch of chs; let last = last">
     <div class="scrollTo" id="{{ ch.id }}">
       <div class="ch-title">
-        <h2>
-          <a class="l" routerLink="/user/{{ ch.author.uid }}">{{ ch.author.displayName }}</a>:
-          <a class="l" routerLink="/novel/{{ ch.novel.id }}">{{ ch.novel.title }}</a>
-        </h2>
         <h1>Chapter {{ showChapterIndex(ch.id) }}: {{ ch.title }}</h1>
-        <small>{{ ch.createdAt.toDate() | date }}</small>
+        <small class="opaque">{{ toDate(ch.createdAt) | date }}</small>
       </div>
 
       <div class="ch-content" [innerHTML]="ch.content"></div>
     </div>
 
-    <div class="ch-end"></div>
+    <!--<div class="ch-end"></div>-->
 
-    <app-ch-separator *ngIf="!last"></app-ch-separator>
+    <app-ch-separator *ngIf="!last" color="normal"></app-ch-separator>
   </div>
 
-  <div class="toc background neutral">
+  <div class="toc bckg-stacked brdr-neutral mat-elevation-z5" [class.hidden]="!tocOpen">
     <app-toc *ngIf="chs[0]" [novelID]="chs[0].novel.id"></app-toc>
   </div>
 
   <div id="no-ch" class="end scrollTo" *ngIf="done$ | async">
-    <p>
-      No more chapters...
-    </p>
-    <p>
-      You like this novel? Like it!
-    </p>
-    <p>
-      Reviewed yet? Or update your review!
-    </p>
+    <p>No more chapters...</p>
+    <p>You like this novel? Like it!</p>
+    <p>Reviewed yet? Or update your review!</p>
   </div>
 
   <div class="sticky">
-    <div class="background neutral">
+    <div class="bckg-neutral">
       <button type="button" mat-icon-button (click)="scrollToPrev()">
-        <!-- navigate_before, skip_previous -->
-        <mat-icon>skip_previous</mat-icon>
+        <mat-icon>skip_previous</mat-icon><!-- navigate_before, skip_previous -->
       </button>
-      <button type="button" mat-icon-button>
+      <button type="button" mat-icon-button (click)="toggleToc()">
         <mat-icon>toc</mat-icon>
       </button>
-      <button type="button" mat-icon-button>
+      <!--<button type="button" mat-icon-button>
         <mat-icon>comment</mat-icon>
-      </button>
+      </button>-->
       <button type="button" mat-icon-button (click)="scrollToNext()">
-        <!-- navigate_next, skip_next -->
-        <mat-icon>skip_next</mat-icon>
+        <mat-icon>skip_next</mat-icon><!-- navigate_next, skip_next -->
       </button>
     </div>
   </div>

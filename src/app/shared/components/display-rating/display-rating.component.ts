@@ -12,6 +12,7 @@ export class DisplayRatingComponent {
   private _short: boolean;
   // tslint:enable: variable-name
 
+  @Input() color = 'normal';
   @Input() rating: number;
   @Input() icon: string;
   @Input() tooltip: string;

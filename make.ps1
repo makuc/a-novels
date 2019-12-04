@@ -21,7 +21,6 @@ function serve {
 }
 
 
-
 # RUNS the COMMAND
 Clear-Host
 &$exeFunc

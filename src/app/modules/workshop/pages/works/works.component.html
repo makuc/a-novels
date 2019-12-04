@@ -27,19 +27,19 @@
           </a>
         </mat-toolbar>
 
-        <div>
-          <ul class="v-list">
-            <li *ngFor="let novel of novelsList | async; let last = last">
+        <div *ngIf="novels$ | async as novels; else noNovels">
+          <ul class="v-list" *ngIf="novels.length > 0; else noNovels">
+            <li *ngFor="let novel of novels; let last = last">
               <div fxLayout="row" fxLayoutAlign="start start" fxLayout.xs="column">
                 <div>
                   <img class="cover-img" [src]="coverURL(novel.cover, novel.id)">
                 </div>
 
-                <div>
+                <div class="full">
                   <a class="l" routerLink="/workshop/novel/{{ novel.id }}">
                     <h2>{{ novel.title }}</h2>
                   </a>
-                  <div [innerHTML]="novel.description">
+                  <div class="full" [innerHTML]="novel.description" appMinimizeBtn minimizedMaxHeight="10em">
 
                   </div>
                 </div>
@@ -47,7 +47,9 @@
             </li>
           </ul>
         </div>
-
+        <ng-template #noNovels>
+          <p class="nodata">You have no novels...</p>
+        </ng-template>
       </section>
     </div>
 

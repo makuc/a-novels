@@ -1,4 +1,31 @@
 // MY OWN MIXINS
+@mixin color($name, $color) {
+  .color-#{$name} {
+    color: $color;
+    fill: $color;
+    border-color: $color;
+  }
+}
+@mixin brdr($name, $color) {
+  .brdr-#{$name} {
+    border: $color solid thin;
+  }
+}
+@mixin bckg($name, $color, $contrast) {
+  .bckg-#{$name},
+  .bckg-#{$name}::after,
+  .bckg-#{$name}::before {
+    background-color: $color;
+    color: $contrast;
+    border-color: $contrast;
+  }
+}
+@mixin bckg-g($name, $angle, $pos1, $color1, $pos2: 100%, $color2: rgba(0,0,0,0)) {
+  .bckg-g-#{$name} {
+    background: $color1;
+    background: linear-gradient($angle, $color1 $pos1, $color2 $pos2);
+  }
+}
 @mixin angular-material-colors($theme) {
   $p: map-get($theme, primary);
   $a: map-get($theme, accent);
@@ -16,72 +43,37 @@
   $accent-contrast: mat-color($a, default-contrast);
   $warn-contrast: mat-color($w, default-contrast);
 
-  // As colors
-  .color.inherit {
-    color: inherit;
-  }
-  .color.primary {
-    color: $primary;
-    border-color: $primary;
-  }
-  .color.accent {
-    color: $accent;
-    border-color: $accent;
-  }
-  .color.warn {
-    color: $warn;
-    border-color: $warn;
-  }
-  .color.primary-contrast {
-    color: $primary-contrast;
-    border-color: $primary-contrast;
-  }
-  .color.accent-contrast {
-    color: $accent-contrast;
-    border-color: $accent-contrast;
-  }
-  .color.warn-contrast {
-    color: $warn-contrast;
-    border-color: $warn-contrast;
-  }
+  @include bckg('normal', $foreground, $primary-contrast);
+  @include bckg('primary', $primary, $primary-contrast);
+  @include bckg('accent', $accent, $accent-contrast);
+  @include bckg('warn', $warn, $warn-contrast);
+  @include bckg('neutral', $background-card, $foreground);
+  @include bckg('bar', $app-bar, $primary-contrast);
+  @include bckg('stacked', $background, $foreground);
 
-  .background.primary {
-    background-color: $primary;
-    color: $primary-contrast;
-    border-color: $primary-contrast;
-  }
-  .background.accent {
-    background-color: $accent;
-    color: $accent-contrast;
-    border-color: $accent-contrast;
-  }
-  .background.warn {
-    background-color: $warn;
-    color: $warn-contrast;
-    border-color: $warn-contrast;
-  }
-  .background.neutral {
-    background-color: $background-card;
-  }
-  .border.neutral {
-    border: $background-card solid thin;
-  }
-  .background.stacked {
-    background-color: $background;
-    &::after {
-      background: $background;
-    }
-    &::before {
-      background: $background;
-    }
-  }
-  .background.bar {
-    background-color: $app-bar;
-  }
-  .foreground,
-  text {
-    fill: $foreground;
-  }
+  @include brdr('normal', $foreground);
+  @include brdr('primary', $primary);
+  @include brdr('accent', $accent);
+  @include brdr('warn', $warn);
+  @include brdr('neutral', $background-card);
+  @include brdr('bar', $app-bar);
+  @include brdr('stacked', $background);
+
+  @include bckg-g('primary-0deg', 0deg, 40%, $primary);
+  @include bckg-g('accent-0deg', 0deg, 40%, $accent);
+  @include bckg-g('warn-0deg', 0deg, 40%, $warn);
+  @include bckg-g('neutral-0deg', 0deg, 40%, $background-card);
+  @include bckg-g('stacked-0deg', 0deg, 40%, $background);
+
+  // As colors
+  @include color('normal', $foreground);
+  @include color('primary', $primary);
+  @include color('accent', $accent);
+  @include color('warn', $warn);
+  @include color('neutral', $background-card);
+  @include color('primary-c', $primary-contrast);
+  @include color('accent-c', $accent-contrast);
+  @include color('warn-c', $warn-contrast);
 }
 
 @mixin angular-themes-array-deploy($themes) {

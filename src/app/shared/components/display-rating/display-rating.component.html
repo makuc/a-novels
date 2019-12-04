@@ -1,5 +1,5 @@
 <ng-container *ngIf="!icon && rating >= 0 && !short">
-  <div class="rating">
+  <div class="rating color-{{ color }}">
     <svg viewBox="0 0 71 10">
       <text class="mat-icons" x="0" y="10">{{ showStar(1) }}</text>
       <text class="mat-icons" x="10" y="10">{{ showStar(2) }}</text>
@@ -11,7 +11,7 @@
   </div>
 </ng-container>
 <ng-container *ngIf="!icon && rating >= 0 && short">
-  <div class="rating">
+  <div class="rating color-{{ color }}">
     <svg viewBox="0 0 61 10">
       <text class="mat-icons" x="0" y="10">{{ showStar(1) }}</text>
       <text class="mat-icons" x="10" y="10">{{ showStar(2) }}</text>
@@ -23,7 +23,7 @@
   </div>
 </ng-container>
 <ng-container *ngIf="icon && rating >= 0 && !short">
-  <div class="rating">
+  <div class="rating color-{{ color }}">
     <svg viewBox="0 0 88 10">
       <text class="mat-icons help" x="0" y="10" [matTooltip]="tooltip" matTooltipClass="dscr-tooltip">{{ icon }}</text>
       <text class="text" x="10" y="6.7">:</text>
@@ -37,7 +37,7 @@
   </div>
 </ng-container>
 <ng-container *ngIf="icon && number >= 0">
-    <div class="rating">
+    <div class="rating color-{{ color }}">
       <svg viewBox="0 0 88 10">
         <text class="mat-icons help" x="0" y="10" [matTooltip]="tooltip" matTooltipClass="dscr-tooltip">{{ icon }}</text>
         <text class="text" x="10" y="6.7">:</text>

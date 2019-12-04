@@ -1,0 +1,35 @@
+mat-card {
+  width: 100%;
+}
+
+mat-icon {
+  vertical-align: middle;
+}
+
+.cover {
+  max-width: 10em;
+  min-width: 2em;
+  width: 100%;
+
+  img {
+    width: 100%;
+    display: block;
+    text-align: left;
+  }
+}
+
+mat-card-subtitle {
+  text-align: left;
+  a {
+    vertical-align: middle !important;
+  }
+}
+
+mat-card-title {
+  font-size: 1.5rem;
+  line-height: 1.2em;
+}
+
+.subtitle-fix {
+  margin: .1em 0 0.5em 0 !important;
+}

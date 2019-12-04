@@ -8,6 +8,7 @@ import { takeUntil, filter, first, debounceTime, tap, switchMap } from 'rxjs/ope
 import { TOC } from 'src/app/shared/models/novels/chapters-stats.model';
 import { ScrollService } from 'src/app/core/services/scroll.service';
 import { StickyEvent } from 'src/app/shared/directives/observe-sticky.directive';
+import { firestore } from 'firebase';
 
 @Component({
   selector: 'app-chapter',
@@ -23,6 +24,8 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
   chapters$: Observable<Chapter[]>;
   done$: Observable<boolean>;
 
+  tocOpen = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -32,7 +35,7 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
     private renderer: Renderer2
   ) {
     this.route.paramMap.pipe(
-      first()
+      takeUntil(this.end)
     ).subscribe(
       params => {
         this.cs.init(params.get('novelID'), params.get('chapterID'));
@@ -53,7 +56,8 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
     this.cs.loading.pipe(
       filter(val => val === false),
       switchMap(() => this.scroll.scrollable),
-      first()
+      debounceTime(400),
+      takeUntil(this.end)
     ).subscribe(
       val => {
         if (!val) {
@@ -71,8 +75,11 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
   ngAfterViewChecked() {
     if (this.scrollTo) {
       const elem = document.getElementById(this.scrollTo);
-      elem.scrollIntoView();
-      this.scrollTo = undefined;
+      if (elem) {
+        elem.scrollIntoView();
+        this.activeChapter = this.scrollTo;
+        this.scrollTo = undefined;
+      }
     }
   }
 
@@ -119,7 +126,6 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
   }
   scrollBottomHandler(id: string) {
     if (id === 'no-ch' && this.activeChapter) {
-      console.log('Chapter wholly read:', this.activeChapter);
       this.cs.readSet(this.activeChapter, true).subscribe();
     }
   }
@@ -136,7 +142,7 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
           this.scrollToNext();
           break;
         case 'ArrowLeft':
-          console.log('Previous chapter');
+          this.scrollToPrev();
           break;
       }
     });
@@ -148,9 +154,10 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
   scrollToPrevID(id: string) {
     const elem = document.getElementById(id);
     if (elem) {
-      console.log('Scrolling back');
+      console.log('Scrolling back:', id);
       elem.scrollIntoView();
-    } else {
+      this.activeChapter = id;
+    } else if (id) {
       this.cs.prev();
       this.cs.loading.pipe(
         filter(val => val === false),
@@ -164,10 +171,11 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
   }
   scrollToNextID(id: string) {
     const elem = document.getElementById(id);
-    if (elem) {
-      console.log('Scrolling...');
+    if (elem && elem != null) {
+      console.log('Scrolling next:', id);
       elem.scrollIntoView();
-    } else {
+      this.activeChapter = id;
+    } else if (id) {
       this.cs.more();
       this.cs.loading.pipe(
         filter(val => val === false),
@@ -183,6 +191,15 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
       this.renderer[!e.detail.stuck ? 'addClass' : 'removeClass'](e.detail.target.firstChild, 'mat-elevation-z9');
       this.renderer[!e.detail.stuck ? 'addClass' : 'removeClass'](e.detail.target.firstChild, 'stuck');
     });
+  }
+
+  toDate(timestamp: firestore.Timestamp) {
+    return timestamp.toDate();
+  }
+
+  toggleToc() {
+    this.tocOpen = !this.tocOpen;
+    console.log('toggling TOC');
   }
 
 }

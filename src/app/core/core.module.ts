@@ -41,6 +41,7 @@ import { HistoryService } from './services/history.service';
 import { ChaptersService } from './services/chapters.service';
 import { ReviewsService } from './services/reviews.service';
 import { LikesService } from './services/likes.service';
+import { ResetPasswordComponent } from './authentication/pages/reset-password/reset-password.component';
 
 @NgModule({
   imports: [
@@ -83,6 +84,7 @@ import { LikesService } from './services/likes.service';
     BottomSheetComponent,
 
     LoginComponent,
+    ResetPasswordComponent,
     RegisterComponent
   ],
   entryComponents: [
@@ -94,6 +96,7 @@ import { LikesService } from './services/likes.service';
     ShortcutsComponent,
 
     LoginComponent,
+    ResetPasswordComponent,
     RegisterComponent,
 
     SidenavComponent

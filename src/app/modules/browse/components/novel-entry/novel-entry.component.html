@@ -1,0 +1,45 @@
+<mat-card *ngIf="novel; else loadNovel">
+  <mat-card-content>
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start center"
+          fxLayoutGap=".6em">
+
+      <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center"
+            fxLayoutGap=".6em">
+        <img alt="Cover picture of '{{ novel.title}}''" [src]="coverURL(novel.cover, novel.id)">
+      </div>
+
+
+      <div style="width: 100%" fxFlex fxLayout="column" fxLayoutAlign="start start">
+        <mat-card-title>
+          <a class="l" routerLink="/novel/{{ novel.id }}">{{ novel.title }}</a>
+        </mat-card-title>
+
+        <mat-card-subtitle class="subtitle-fix">
+          <div class="inblock cursor-help" matTooltip="Author of the novel" matTooltipClass="t-closer">
+            <span class="opaque">By</span>
+            <a class="mat-h4 l" routerLink="/user/{{ novel.author?.uid }}"> {{ novel.author.displayName }}</a>,
+            <div class="inblock opaque">{{ toDate(novel.createdAt) | date }}</div>
+          </div>
+          <span class="opaque" *ngIf="{ toc: toc$ | async } as d">
+            |
+            <div class="inblock cursor-help" matTooltip="Chapters released to-date" matTooltipClass="t-closer">
+              <mat-icon inline>library_books</mat-icon>
+              {{ d.toc ? d.toc.indexes.length : 0 }}
+            </div>
+            |
+            <div class="inblock cursor-help" matTooltip="Release rate over past 28 days" matTooltipClass="t-closer">
+                <mat-icon inline>trending_up</mat-icon>
+                {{ d.toc ? calcReleaseRate(d.toc) : 0 }} chs / week
+            </div>
+          </span>
+        </mat-card-subtitle>
+
+        <div class="full" [innerHTML]="novel.description" appMinimizeBtn minimizedMaxHeight="7.2em" color="neutral"></div>
+      </div>
+
+    </div>
+  </mat-card-content>
+</mat-card>
+<ng-template #loadNovel>
+  <h1>Loading...</h1>
+</ng-template>

@@ -1,7 +1,13 @@
 <div class="rev-container" *ngIf="reviews$ | async as reviewsList; else noReviews">
   <ng-container *ngIf="reviewsList.length > 0; else noReviews">
-    <div *ngFor="let review of reviewsList">
-      <app-render-review [review]="review"></app-render-review>
+    <div class="rev-wrap" *ngFor="let review of reviewsList">
+      <div class="rev-head">
+        <h2>Novel</h2>
+        <h1 *ngIf="review.novel"><a class="l" routerLink="/novel/{{ review.novel.id }}">{{ review.novel.title }}</a></h1>
+      </div>
+      <div class="rev-quote">
+        <app-render-review [review]="review"></app-render-review>
+      </div>
     </div>
   </ng-container>
 </div>

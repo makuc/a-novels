@@ -49,7 +49,7 @@ export class LibraryService {
   myLibraryField(field: string): Observable<string[]> {
     if (!field) { return EMPTY; }
     return this.myLibrary().pipe(
-      map(lib => lib[field])
+      map(lib => lib ? lib[field] : null)
     );
   }
 

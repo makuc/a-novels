@@ -1,46 +1,39 @@
-.rot-90 {
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
-
-.icon-flipped {
-  -moz-transform: scaleX(-1);
-  -webkit-transform: scaleX(-1);
-  -ms-transform: scaleX(-1);
-  transform: scaleX(-1);
-}
-.icon-flip-y {
-  -moz-transform: scaleY(-1);
-  -webkit-transform: scaleY(-1);
-  -ms-transform: scaleY(-1);
-  transform: scaleY(-1);
-}
+@import 'shortcuts/cursors';
+@import 'shortcuts/scale';
+@import 'shortcuts/icons';
 
 .hidden {
   display: none;
 }
-
 .center {
   margin: 0 auto;
   text-align: center;
 }
-
 .non-interactive .mat-chip-disabled{
   opacity: 1 !important;
 }
-
 .interactive {
   cursor: pointer !important;
 }
-
 .full {
   width: 100%;
 }
-
 .nodata {
   font-size: 1.2rem;
   padding: 2em;
+}
+.no-overflow {
+  overflow: hidden;
+}
+.opaque {
+  opacity: .6;
+}
+.inblock {
+  display: inline-block;
+}
+.float-right {
+  float: right;
+}
+.float-left {
+  float: left;
 }

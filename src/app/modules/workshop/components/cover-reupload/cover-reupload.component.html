@@ -51,7 +51,7 @@
           *ngIf="changed"
           [disabled]="busy"
           matTooltip="Upload cover"
-          matTooltipClass="icon"
+          matTooltipClass="dscr-tooltip"
           aria-label="Upload cover"
           (click)="reuploadCover()">
     <mat-icon>done</mat-icon>
@@ -60,7 +60,7 @@
           *ngIf="changed"
           [disabled]="busy"
           matTooltip="Clear replace cover"
-          matTooltipClass="icon"
+          matTooltipClass="dscr-tooltip"
           aria-label="Clear replace cover"
           (click)="clearSelected()">
     <mat-icon>clear</mat-icon>
@@ -70,7 +70,7 @@
           *ngIf="!changed"
           [disabled]="busy"
           matTooltip="Replace cover"
-          matTooltipClass="icon"
+          matTooltipClass="dscr-tooltip"
           aria-label="Replace cover"
           (click)="sCover.click()">
     <mat-icon>edit</mat-icon>
@@ -80,7 +80,7 @@
       *ngIf="cover"
       [disabled]="busy"
       matTooltip="Save cover"
-      matTooltipClass="icon"
+      matTooltipClass="dscr-tooltip"
       aria-label="Save cover"
       target="_blank"
       download
@@ -91,7 +91,7 @@
           *ngIf="cover && !changed"
           [disabled]="busy"
           matTooltip="Remove cover"
-          matTooltipClass="icon"
+          matTooltipClass="dscr-tooltip"
           aria-label="Remove cover"
           (click)="removeCover()">
     <mat-icon>delete</mat-icon>

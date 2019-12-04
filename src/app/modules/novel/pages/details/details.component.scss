@@ -2,26 +2,24 @@
   font-size: 1rem;
   line-height: 1.4em;
 }
-
 h1 {
   font-size: 1.5em;
   margin: 0;
-  line-height: 1em;
+  line-height: 1.4em;
+  text-align: left;
 }
 .d-title {
-  padding: 1.5em 0;
-  .d-author {
-    font-size: .8em;
-    margin: 0;
-    line-height: 1.4em;
-  }
+  padding: .5em 0 1.5em 0;
+  text-align: left;
 }
-
+.short-specs {
+  margin-bottom: .5em;
+}
 mat-icon {
   vertical-align: middle;
 }
-.novel-details {
-  margin: 1em auto 0 auto;
+.wrap {
+  padding: 2em .5em 0 .5em;
 }
 .cover {
   max-width: 11em;
@@ -33,11 +31,9 @@ mat-icon {
     text-align: left;
   }
 }
-
 .dscr {
   overflow: hidden;
 }
-
 .glist {
   li {
     margin: 0 .4em .4em 0;
@@ -58,6 +54,7 @@ $actions-height: 3em;
 
     .mat-button-base {
       margin-left: .5em;
+      margin-bottom: .4em;
       &:first-child {
         margin-left: 0;
       }
@@ -67,19 +64,15 @@ $actions-height: 3em;
     }
   }
 }
-
 app-ratings {
   margin: 1em 0 0 0;
 }
-
 .tab-icon {
   margin-right: 0.2em;
 }
-
 .margin {
   padding-top: 1rem;
 }
-
 .tags {
   margin-top: 1em;
 }

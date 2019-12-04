@@ -114,6 +114,10 @@ export class AuthenticationService {
     return this.afAuth.auth.signInWithPopup(new auth.FacebookAuthProvider());
   }
 
+  sendPasswordResetEmail(email: string) {
+    return this.afAuth.auth.sendPasswordResetEmail(email);
+  }
+
   logout() {
     return this.afAuth.auth.signOut();
   }

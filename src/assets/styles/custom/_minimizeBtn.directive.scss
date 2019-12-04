@@ -1,0 +1,26 @@
+.minimize-btn {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border: none;
+  vertical-align: bottom;
+  cursor: pointer;
+  outline: none;
+  color: inherit;
+  font-size: .9em;
+  line-height: 1em;
+  text-decoration: underline dotted;
+  font-style: italic;
+  font-weight: lighter;
+  padding: 0 0 .4em 0;
+
+  &.min {
+    padding: 3em 0 .4em 0;
+  }
+
+}
+.minimize {
+  position: relative;
+  padding-bottom: 1.5em;
+  overflow: hidden;
+}

@@ -1,19 +1,16 @@
-<section *ngIf="user | async as userData">
-  <app-profile-header [user]="userData"></app-profile-header>
+<section *ngIf="user$ | async as user">
+  <app-profile-header [user]="user"></app-profile-header>
 
-  <div fxLayout="row" fxLayoutGap="1em" id="profile-tabs">
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="1em" id="profile-tabs">
 
-    <app-profile-nav [navId]="userData.uid" ngClass.xs="hidden" fxFlex="initial"></app-profile-nav>
-    <div id="profile-nav"> </div>
+    <app-profile-nav [navId]="user.uid" fxFlex="initial"></app-profile-nav>
 
-    <div fxFlex fxLayout="column" style="overflow: hidden;">
-
+    <div class="full">
       <mat-toolbar class="mat-elevation-z1">
         <span>Novels</span>
       </mat-toolbar>
 
-      <app-p-novels [uid]="userData.uid"></app-p-novels>
-
+      <app-p-novels [uid]="user.uid"></app-p-novels>
     </div>
 
   </div>

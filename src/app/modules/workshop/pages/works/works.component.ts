@@ -16,7 +16,7 @@ import { ScrollService } from 'src/app/core/services/scroll.service';
 export class WorksComponent implements OnDestroy, AfterViewInit {
   private end: Subject<void> = new Subject();
 
-  novelsList: Observable<Novel[]>;
+  novels$: Observable<Novel[]>;
   init = false;
   queryConfig: Partial<NovelsQueryConfig> = {
     sortField: 'iTitle',
@@ -34,7 +34,7 @@ export class WorksComponent implements OnDestroy, AfterViewInit {
       (user) => {
         this.queryConfig.authorID = user.uid;
         this.ns.init(this.queryConfig);
-        this.novelsList = this.ns.data;
+        this.novels$ = this.ns.data;
 
         // Check if there are enough novels display for scrolling!
         this.ns.loading.pipe(

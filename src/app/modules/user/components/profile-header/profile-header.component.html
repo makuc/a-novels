@@ -1,10 +1,10 @@
-<div class="profile-head" fxLayout="row" fxLayoutAlign="start center">
+<div class="profile-head" fxLayout="row" fxLayoutAlign="start center" fxLayout.xs="column">
   <div class="userpic" ngClass.gt-xs="userpic-gt-xs">
-    <img class="mat-elevation-z3" src="/assets/img/users/01/userpic.jpg" alt="userpic">
+    <img class="mat-elevation-z2" src="{{ profilePictureURL() }}" alt="userpic">
   </div>
   <div class="userdetails" fxFlex>
+    <span class="uid inblock opaque">UID: {{ user.uid }}</span>
     <h1>{{ user.displayName }}</h1>
-    <h6>UID: {{ user.uid }}</h6>
-    <h4>Registered: {{ user.createdAt.toDate() | date:'d. M. yyyy' }}</h4>
+    <h4 class="opaque">Registered: {{ user.createdAt.toDate() | date:'d. M. yyyy' }}</h4>
   </div>
 </div>

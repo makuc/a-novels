@@ -1,6 +1,6 @@
-<div class="container" fxLayout="row" fxLayout.xs="column">
-  <ul class="v-list">
-    <li *ngFor="let novel of novelsList | async; let last = last">
+<div class="container" *ngIf="novels$ | async as novels; else noNovels">
+  <ul class="v-list" *ngIf="novels.length > 0; else noNovels">
+    <li *ngFor="let novel of novels; let last = last">
       <div fxLayout="row" fxLayoutAlign="start start" fxLayout.xs="column">
         <div>
           <img class="cover-img" [src]="coverURL(novel.cover, novel.id)">
@@ -18,3 +18,6 @@
     </li>
   </ul>
 </div>
+<ng-template #noNovels>
+  <p class="nodata">No novels created yet...</p>
+</ng-template>

@@ -16,7 +16,7 @@ export class BrowseComponent implements OnInit, OnDestroy {
   end: Subject<void> = new Subject<void>();
 
   queryChange: Subject<Partial<QueryConfig>> = new Subject();
-  novelsList: Observable<Novel[]>;
+  novels$: Observable<Novel[]>;
   queryConfig: Partial<QueryConfig> = {
     sortField: 'iTitle',
     genres: []
@@ -27,52 +27,43 @@ export class BrowseComponent implements OnInit, OnDestroy {
     private scroll: ScrollService
   ) {
     this.ns.init(this.queryConfig);
-    this.novelsList = this.ns.data;
+    this.novels$ = this.ns.data;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initScroll();
     this.initSort();
   }
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.end.next();
     this.end.complete();
   }
 
-  initSort() {
+  initSort(): void {
     this.queryChange.pipe(
       tap(q => this.ns.init(q)),
       takeUntil(this.end)
     ).subscribe();
   }
 
-  initScroll() {
+  initScroll(): void {
     this.scroll.offset(50, 100);
     this.scroll.scrollPosition.pipe(
       takeUntil(this.end)
     ).subscribe(e => this.scrollHandler(e));
   }
 
-  scrollHandler(pos: 'bottom' | 'top') {
+  scrollHandler(pos: 'bottom' | 'top'): void {
     if (pos === 'bottom') {
       this.ns.more();
     }
   }
 
-  coverURL(custom: boolean, novelID: string): string {
-    return storageKeys.GEN_URL(
-      storageKeys.BASIC_URL,
-      storageKeys.NOVELS_COVER_PATH,
-      custom ? novelID : storageKeys.NOVELS_COVER_DEFAULT_NAME,
-      storageKeys.NOVELS_COVER_THUMBNAIL
-    );
-  }
-
-  updateQuery() {
+  updateQuery(): void {
     this.queryChange.next(this.queryConfig);
   }
 
-  toggleSortDirection() {
+  toggleSortDirection(): void {
     this.queryConfig.reverse = !this.queryConfig.reverse;
     this.updateQuery();
   }

@@ -1,0 +1,31 @@
+@mixin scale($ratio: 1) {
+  transform: scale($ratio);
+}
+
+.scale-1 {
+  @include scale(.1)
+}
+.scale-2 {
+  @include scale(.2)
+}
+.scale-3 {
+  @include scale(.3)
+}
+.scale-4 {
+  @include scale(.4)
+}
+.scale-5 {
+  @include scale(.5)
+}
+.scale-6 {
+  @include scale(.6)
+}
+.scale-7 {
+  @include scale(.7)
+}
+.scale-8 {
+  @include scale(.8);
+}
+.scale-9 {
+  @include scale(.9);
+}

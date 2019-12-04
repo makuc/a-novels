@@ -1,17 +1,14 @@
 <section *ngIf="user | async as userData">
   <app-profile-header [user]="userData"></app-profile-header>
 
-  <div fxLayout="row" fxLayoutGap="1em" id="profile-tabs">
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="1em" id="profile-tabs">
 
-    <app-profile-nav [navId]="navId" ngClass.xs="hidden" fxFlex="initial"></app-profile-nav>
-    <div id="profile-nav"> </div>
+    <app-profile-nav [navId]="navId" fxFlex="initial"></app-profile-nav>
 
-    <div fxFlex fxLayout="column" style="overflow: hidden;">
-
+    <div class="full">
       <mat-toolbar class="mat-elevation-z1">
-        <span>Reviews</span>
+        <span>Novels Reviews</span>
       </mat-toolbar>
-
       <app-p-reviews [uid]="userData.uid"></app-p-reviews>
     </div>
 

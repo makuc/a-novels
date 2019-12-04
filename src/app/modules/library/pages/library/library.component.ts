@@ -1,7 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { NovelMeta } from 'src/app/shared/models/novels/novel.model';
-import { Library } from 'src/app/shared/models/library/library.model';
-import { ActivatedRoute } from '@angular/router';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { NovelService } from 'src/app/core/services/novel.service';
 

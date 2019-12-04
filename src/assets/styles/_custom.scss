@@ -10,16 +10,13 @@
 @import 'custom/multi-ellipsis';
 @import 'custom/links';
 @import 'custom/sticky';
+@import 'custom/minimizeBtn.directive';
+@import 'custom/buttons';
 @import 'variables';
 
 app-header .navbar {
   border-radius: 0 !important;
 }
-
-img {
-  font-size: 0;
-}
-
 .content {
   width: 75%;
   max-width: 40em;

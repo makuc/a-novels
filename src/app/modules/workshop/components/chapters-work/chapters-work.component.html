@@ -20,18 +20,18 @@
         </a>
 
         <div class="actions">
-          <button class="edit-btn-inline color primary" aria-label="Edit chapter" matTooltip="Edit chapter"
-                  routerLink="/workshop/novel/{{ novelID }}/{{ chs.toc[i].id }}/edit">
-            <mat-icon inline>edit</mat-icon>
+          <button type="button" routerLink="/workshop/novel/{{ novelID }}/{{ chs.toc[i].id }}/edit"
+                  appBtn color="primary" aria-label="Edit chapter" matTooltip="Edit chapter">
+                  <app-icon>edit</app-icon>
           </button>
-          <button class="edit-btn-inline color primary"
-                  aria-label="tt"
-                  (click)="togglePrivate(chs.toc[i].id, chs.toc[i].public)"
-                  matTooltip="{{ chs.toc[i].public ? 'Make private' : 'Make public' }}">
-            <mat-icon inline>{{ chs.toc[i].public ? 'visibility' : 'visibility_off' }}</mat-icon>
+          <button type="button" (click)="togglePrivate(chs.toc[i].id, chs.toc[i].public)"
+                  appBtn color="primary" [matTooltip]="chs.toc[i].public ? 'Make chapter private' : 'Make chapter public'"
+                  [attr.aria-label]="chs.toc[i].public ? 'Make chapter private' : 'Make chapter public'">
+            <app-icon>{{ chs.toc[i].public ? 'visibility' : 'visibility_off' }}</app-icon>
           </button>
-          <button class="edit-btn-inline color warn" aria-label="Delete chapter" matTooltip="Delete chapter">
-            <mat-icon inline>delete</mat-icon>
+          <button type="button"
+                  appBtn color="warn" aria-label="Delete chapter" matTooltip="Delete chapter">
+            <app-icon>delete</app-icon>
           </button>
         </div>
         <div class="ch-handle" [class.disabled]="chsBusy" cdkDragHandle>

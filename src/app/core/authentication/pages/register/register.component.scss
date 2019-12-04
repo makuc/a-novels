@@ -3,19 +3,18 @@
 }
 
 .wrapper {
-  max-width: 15em;
+  max-width: 20em;
   margin-left: auto;
   margin-right: auto;
   margin-top: 1em;
 }
-
 .avatar-size {
   font-size: 2.6em;
   width: 1em !important;
   height: 1em !important;
 
   mat-icon {
-    vertical-align: middle;
+    vertical-align: top;
     line-height: 1em;
     margin: -8px 0;
   }
@@ -31,10 +30,6 @@ button mat-spinner {
   display: inline-block;
 }
 
-.spacer {
-  flex: 1 1 auto;
-}
-
 mat-toolbar {
   margin-top: 0.5em;
   background: transparent !important;
@@ -45,28 +40,16 @@ mat-toolbar {
     line-height: 2em !important;
   }
 }
+.actions {
+  width: 100%;
+  margin: 2em 0 0 0;
+  display: flex;
+  flex-flow: row nowrap;
 
-#providers {
-  margin-top: 1em;
-
-  button {
-    margin-top: 0.5em;
-    color: white;
-
-    &:first-of-type {
-      margin-top: 0;
-    }
-  }
-
-  .btn-p-google {
-    background: red;
-  }
-
-  .btn-p-fb {
-    background: blue;
+  .spacer {
+    flex: 1 1 auto;
   }
 }
-
 .terms {
   a {
     padding-left: 0;
