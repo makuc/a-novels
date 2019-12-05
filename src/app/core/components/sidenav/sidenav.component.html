@@ -19,7 +19,7 @@
 
   <a mat-list-item routerLink="/browse">
     <div [class.min]="!sideMax && !isMobile" [class.max]="sideMax || isMobile">
-      <mat-icon>assignment_ind</mat-icon>
+      <mat-icon>calendar_view_day</mat-icon><!-- assignment_ind, calendar_view_day -->
       <span class="mat-body-2">Browse</span>
     </div>
   </a>
@@ -31,16 +31,23 @@
     </div>
   </a>
 
-  <a mat-list-item [matMenuTriggerFor]="example">
+  <!--<a mat-list-item [matMenuTriggerFor]="example">
     <div [class.min]="!sideMax && !isMobile" [class.max]="sideMax || isMobile">
       <mat-icon>unfold_more</mat-icon>
       <span class="mat-body-2">Example</span>
     </div>
   </a>
-
   <mat-menu #example="matMenu">
     <button mat-menu-item routerLink="/user/me">View profile</button>
     <button mat-menu-item>Add contact</button>
-  </mat-menu>
+  </mat-menu>-->
+
+  <mat-divider></mat-divider>
+  <a mat-list-item routerLink="/workshop">
+    <div [class.min]="!sideMax && !isMobile" [class.max]="sideMax || isMobile">
+      <mat-icon>dashboard</mat-icon><!-- home_work, keyboard, post_add, dashboard -->
+      <span class="mat-body-2">Workshop</span>
+    </div>
+  </a>
 
 </mat-nav-list>
