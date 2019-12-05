@@ -1,16 +1,20 @@
 # ANovels
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.2.
+Appplication UI for ANovels. Written for Angular 9-rc3.
+
+## Prepare dir
+
+After cloning the repository run `./make install` in PowerShell to install all dependencies.
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `./make serve` in PowerShell for a dev server, then navigate to `https://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ### SSL Certificate
 
 Since Angular CLI configuration is set to run development server over HTTPS, a proper certificate must be installed on the local machine.
 
-On Windows, this is done by running the following commands in BASH console:
+On Windows, this is done by running the following commands in BASH console (Git Console):
 
 ```bash
 cd node_modules/webpack-dev-server/ssl
@@ -25,7 +29,11 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `./make build` to build the project. The build artifacts will be stored in the `dist/` directory.
+
+## Deploy
+
+To deploy to initialized Firebase Hosting run `./make deploy`. This command builds the application (see title 'Build' above) and automatically deploys it using Firebase Tools.
 
 ## Running unit tests
 
