@@ -1,18 +1,17 @@
-import { environment } from 'src/environments/environment.prod';
 import { dbKeys, storageKeys } from 'src/app/keys.config';
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable, throwError } from 'rxjs';
 import { firestore } from 'firebase/app';
 import { Novel, NovelsStats } from 'src/app/shared/models/novels/novel.model';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
-import { map, first, switchMap, tap, scan } from 'rxjs/operators';
-import { UserService } from './user.service';
 import { Genre } from 'src/app/shared/models/novels/genre.model';
 import { LikesService } from './likes.service';
 import { LikeStats, Like } from 'src/app/shared/models/like.model';
 import { LibraryService } from './library.service';
 import { PaginateCollectionService, QueryConfig } from './paginate-collection.service';
+import { AuthenticationService } from '../authentication/authentication.service';
+import { map } from 'rxjs/operators';
 
 export interface NovelsQueryConfig {
   public: boolean;
@@ -33,7 +32,7 @@ export class NovelService extends PaginateCollectionService<Novel> {
   constructor(
     afs: AngularFirestore,
     private afStorage: AngularFireStorage,
-    private users: UserService,
+    private auth: AuthenticationService,
     private ls: LikesService,
     private libs: LibraryService
   ) {
@@ -56,7 +55,11 @@ export class NovelService extends PaginateCollectionService<Novel> {
     return null;
   }
 
-  get timestamp() {
+  private get user() {
+    return this.auth.currentSnapshot;
+  }
+
+  private get timestamp() {
     return firestore.FieldValue.serverTimestamp();
   }
 
@@ -71,55 +74,53 @@ export class NovelService extends PaginateCollectionService<Novel> {
       .valueChanges();
   }
 
-  novelAdd(data: Novel): Observable<string> {
-    return this.users.currentUser
-      .pipe(
-        first(),
-        switchMap(user => {
-          // Prepare new entries
-          const newStoryId = this.afs.createId();
-          const newNovel: Novel = {
-            id: newStoryId,
-            author: {
-              uid: user.uid,
-              displayName: user.displayName
-            },
+  novelAdd(data: Novel): Promise<string> {
+    if (!this.user) {
+      console.log('novel.novelAdd');
+      return this.rejectLoginPromise;
+    }
 
-            title: data.title,
-            iTitle: this.caseFoldNormalize(data.title),
+    // Prepare new entries
+    const newStoryId = this.afs.createId();
+    const newNovel: Novel = {
+      id: newStoryId,
+      author: {
+        uid: this.user.uid,
+        displayName: this.user.displayName
+      },
 
-            description: data.description,
-            genres: data.genres,
-            tags: data.tags,
+      title: data.title,
+      iTitle: this.caseFoldNormalize(data.title),
 
-            cover: false,
-            public: data.public || false,
+      description: data.description,
+      genres: data.genres,
+      tags: data.tags,
 
-            createdAt: this.timestamp,
-            updatedAt: this.timestamp
-          };
-          const newStats: NovelsStats = {
-            updatedAt: this.timestamp,
-            n: firestore.FieldValue.increment(1),
-            nAll: firestore.FieldValue.increment(data.public ? 1 : 0),
-            id: newStoryId
-          };
+      cover: false,
+      public: data.public || false,
 
-          // Get a new write batch
-          const batch = this.afs.firestore.batch();
-          const storyRef = this.afs.doc<Novel>(`${dbKeys.C_NOVELS}/${newStoryId}`).ref;
-          const statsRef = this.afs.doc<NovelsStats>(`${dbKeys.C_NOVELS}/${dbKeys.STATS_DOC}`).ref;
+      createdAt: this.timestamp,
+      updatedAt: this.timestamp
+    };
+    const newStats: NovelsStats = {
+      updatedAt: this.timestamp,
+      n: firestore.FieldValue.increment(1),
+      nAll: firestore.FieldValue.increment(data.public ? 1 : 0),
+      id: newStoryId
+    };
 
-          batch.set(storyRef, newNovel);
-          batch.set(statsRef, newStats, { merge: true });
+    // Get a new write batch
+    const batch = this.afs.firestore.batch();
+    const storyRef = this.afs.doc<Novel>(`${dbKeys.C_NOVELS}/${newStoryId}`).ref;
+    const statsRef = this.afs.doc<NovelsStats>(`${dbKeys.C_NOVELS}/${dbKeys.STATS_DOC}`).ref;
 
-          // Commit the batch
-          return batch.commit().then(
-            () => newStoryId,
-            (err) => Promise.reject(err)
-          );
-        })
-      );
+    batch.set(storyRef, newNovel);
+    batch.set(statsRef, newStats, { merge: true });
+
+    // Commit the batch
+    return batch.commit().then(
+      () => newStoryId
+    );
   }
 
   novelCoverUpload(id: string, img: File): AngularFireUploadTask {
@@ -249,13 +250,19 @@ export class NovelService extends PaginateCollectionService<Novel> {
 
   // LIBRARY SYSTEM
   libNovels(uid: string) {
-    return this.libs.libraryField(uid, dbKeys.C_library_novels);
+    return this.libs.library(uid).pipe(
+      map(library => this.libs.selectField(library, dbKeys.C_library_novels))
+    );
   }
   libMyNovels() {
-    return this.libs.myLibraryField(dbKeys.C_library_novels);
+    return this.libs.myLibrary().pipe(
+      map(library => this.libs.selectField(library, dbKeys.C_library_novels))
+    );
   }
   inLibrary(novelID: string) {
-    return this.libs.inLibrary(dbKeys.C_library_novels, novelID);
+    return this.libs.myLibrary().pipe(
+      map(library => this.libs.inLibrary(library, dbKeys.C_library_novels, novelID))
+    );
   }
   libAdd(novelID: string) {
     return this.libs.add(dbKeys.C_library_novels, novelID);

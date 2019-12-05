@@ -3,10 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
-import { AlertService } from 'src/app/core/services/alert.service';
+import { AlertService, Alert } from 'src/app/core/services/alert.service';
 import { AppSettingsService } from 'src/app/core/services/app-settings.service';
 
 import { keysConfig } from 'src/app/keys.config';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -46,21 +47,33 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
 
     // reset alerts on submit
-    // this.alertService.clear();
+    this.alertService.clear();
 
     // stop here if form is invalid
     if (this.loginForm.invalid) {
       return;
     }
     this.loading = true;
+
     this.authenticationService.loginEmail(this.c.email.value, this.c.password.value)
       .then(
         data => {
-          this.router.navigate([this.returnUrl]);
+          this.loading = false;
+          if (data.uid) {
+            this.router.navigate([this.returnUrl]);
+          } else if (data.code === 'auth/wrong-password') {
+            this.alertService.error('Wrong password or wrong login method');
+          } else if (data.code === 'auth/user-not-found') {
+            this.alertService.error('User with associated email doesn\'t exist');
+          } else if (data.code === 'auth/too-many-requests') {
+            this.alertService.error('Too many unsuccessful login attempts');
+          } else {
+            console.error('Invalid login data:', data);
+          }
         },
         err => {
           // this.alertService.error(error);
-          if (!environment.production) { console.error(err); }
+          console.error(err);
           this.loading = false;
         }
       );

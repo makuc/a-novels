@@ -1,24 +1,27 @@
 import { Injectable } from '@angular/core';
 import { firestore } from 'firebase/app';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { UserService } from './user.service';
 import { dbKeys } from 'src/app/keys.config';
-import { first, switchMap, debounceTime, map } from 'rxjs/operators';
+import { first, map, exhaustMap, switchMap } from 'rxjs/operators';
 import { Like, LikeStats } from 'src/app/shared/models/like.model';
-import { Observable } from 'rxjs';
+import { Observable, EMPTY, throwError } from 'rxjs';
+import { AuthenticationService } from '../authentication/authentication.service';
+import { HttpErrorsHelper } from '../helpers/http-errors.helper';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LikesService {
+export class LikesService extends HttpErrorsHelper {
 
   constructor(
     private afs: AngularFirestore,
-    private us: UserService
-  ) { }
+    private auth: AuthenticationService
+  ) {
+    super();
+  }
 
-  private reject() {
-    return Promise.reject({ err: 403, msg: 'You must login' });
+  private get user() {
+    return this.auth.currentSnapshot;
   }
 
   get timestamp() { return firestore.FieldValue.serverTimestamp(); }
@@ -28,65 +31,57 @@ export class LikesService {
   }
 
   state(elPath: string): Observable<Like> {
-    return this.us.currentUser.pipe(
+    return this.auth.getUser.pipe(
       switchMap(user => {
-        if (!user) { return undefined; }
-        return this.getLike(elPath, user.uid);
+        if (!user) { return EMPTY; }
+        const path = `${elPath}/${dbKeys.C_Likes}/${user.uid}`;
+        return this.afs.doc<Like>(path).valueChanges();
       })
     );
   }
 
-  like(elPath: string) {
-    return this.us.currentUser.pipe(
-      first(),
-      switchMap(user => {
-        if (!user) { return this.reject(); }
-        return this.getLike(elPath, user.uid);
-      }),
-      first(),
-      switchMap(current => this.setLike(elPath, current, true)),
+  like(elPath: string): Observable<void> {
+    return this.getLike(elPath).pipe(
+      exhaustMap(current => this.setLike(elPath, current, true)),
+      first()
     );
   }
 
   dislike(elPath: string) {
-    return this.us.currentUser.pipe(
-      first(),
-      switchMap(user => {
-        if (!user) { return this.reject(); }
-        return this.getLike(elPath, user.uid);
-      }),
-      first(),
-      switchMap(current => this.setLike(elPath, current, false))
+    return this.getLike(elPath).pipe(
+      exhaustMap(current => this.setLike(elPath, current, false)),
+      first()
     );
   }
 
   reset(elPath: string) {
-    return this.us.currentUser.pipe(
-      first(),
-      switchMap(user => {
-        if (!user) { return this.reject(); }
-        return this.getLike(elPath, user.uid);
-      }),
-      first(),
-      switchMap(like => this.deleteLike(elPath, like))
+    return this.getLike(elPath).pipe(
+      exhaustMap(like => this.deleteLike(elPath, like)),
+      first()
     );
   }
 
-  private getLike(elPath: string, uid: string): Observable<Like> {
+  private getLike(elPath: string): Observable<Like> {
+    if (!this.user) {// Must be logged in
+      return EMPTY;
+    }
+    const uid = this.user.uid;
     return this.afs.doc<Like>(`${elPath}/${dbKeys.C_Likes}/${uid}`).valueChanges().pipe(
-      map(like => {
-        if (!like) {
-          return {
-            uid,
-            value: undefined
-          };
-        }
-        return like;
-      })
+      map(like => this.mapLike(uid, like))
     );
   }
 
-  private setLike(elPath: string, like: Like, next: boolean) {
+  private mapLike(uid: string, like: Like) {
+    if (!like) {
+      return {
+        uid,
+        value: undefined
+      };
+    }
+    return like;
+  }
+
+  private setLike(elPath: string, like: Like, next: boolean): Promise<void> {
     if (like.value === next) { return Promise.resolve(); }// Already voted, new vote is the same!
 
     let pos = 0;
@@ -122,22 +117,26 @@ export class LikesService {
     return batch.commit();
   }
 
-  private deleteLike(elPath: string, like: Like) {
+  private deleteLike(elPath: string, like: Like): Promise<void> {
     if (!like.createdAt) { // LIKE doesn't exist, just resolve
       return Promise.resolve();
+    }
+    if (!this.user) {
+      console.log('likes.deleteLike');
+      return this.rejectLoginPromise;
     }
 
     // Prepare new entries
     const newStats: Partial<LikeStats> = {
       path: elPath,
-      id: like.uid,
+      id: this.user.uid,
       pos: firestore.FieldValue.increment(like.value ? -1 : 0),
       neg: firestore.FieldValue.increment(like.value ? 0 : -1)
     };
 
     // Write new entries in batch
     const batch = this.afs.firestore.batch();
-    const refLike = this.afs.doc<Like>(`${elPath}/${dbKeys.C_Likes}/${like.uid}`).ref;
+    const refLike = this.afs.doc<Like>(`${elPath}/${dbKeys.C_Likes}/${this.user.uid}`).ref;
     const refStats = this.afs.doc<LikeStats>(`${elPath}/${dbKeys.C_STATS}/${dbKeys.C_Likes}`).ref;
 
     batch.set(refStats, newStats, { merge: true });

@@ -9,42 +9,60 @@ import { TOC } from 'src/app/shared/models/novels/chapters-stats.model';
 import { ScrollService } from 'src/app/core/services/scroll.service';
 import { StickyEvent } from 'src/app/shared/directives/observe-sticky.directive';
 import { firestore } from 'firebase';
+import { NovelService } from 'src/app/core/services/novel.service';
+import { Like, LikeStats } from 'src/app/shared/models/like.model';
+import { UnauthorizedHelper } from 'src/app/core/helpers/unauthorized.helper';
+import { keysConfig } from 'src/app/keys.config';
 
 @Component({
   selector: 'app-chapter',
   templateUrl: './chapter.component.html',
   styleUrls: ['./chapter.component.scss']
 })
-export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
+export class ChapterComponent extends UnauthorizedHelper implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
   end: Subject<void> = new Subject();
 
+  novelID: string;
   activeChapter: string;
   private scrollTo: string;
 
   chapters$: Observable<Chapter[]>;
   done$: Observable<boolean>;
+  likeState$: Observable<Like>;
+  likes$: Observable<LikeStats>;
+  busyFav = false;
+  islib$: Observable<boolean>;
+  busyLib = false;
 
   tocOpen = false;
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    router: Router,
     private location: Location,
+    private ns: NovelService,
     private cs: ChaptersService,
     private scroll: ScrollService,
     private renderer: Renderer2
   ) {
+    super(router);
+
+    this.novelID = this.route.snapshot.paramMap.get('novelID');
     this.route.paramMap.pipe(
       takeUntil(this.end)
     ).subscribe(
       params => {
-        this.cs.init(params.get('novelID'), params.get('chapterID'));
+        this.cs.init(this.novelID, params.get('chapterID'));
         this.activeChapter = params.get('chapterID');
       }
     );
     this.chapters$ = this.cs.data;
     this.done$ = this.cs.done;
     this.scroll.resetScrollable();
+
+    this.likeState$ = this.ns.likeState();
+    this.likes$ = this.ns.getLikes();
+    this.islib$ = this.ns.inLibrary(this.novelID);
   }
 
   ngOnInit() { }
@@ -132,9 +150,9 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
 
   keyboardSwitch() {
     fromEvent<KeyboardEvent>(document, 'keydown').pipe(
-      takeUntil(this.end),
       filter(e => e.key === 'ArrowLeft' || e.key === 'ArrowRight'),
-      debounceTime(300)
+      debounceTime(300),
+      takeUntil(this.end)
     ).subscribe(e => {
       // console.log(e);
       switch (e.key) {
@@ -154,7 +172,6 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
   scrollToPrevID(id: string) {
     const elem = document.getElementById(id);
     if (elem) {
-      console.log('Scrolling back:', id);
       elem.scrollIntoView();
       this.activeChapter = id;
     } else if (id) {
@@ -172,7 +189,6 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
   scrollToNextID(id: string) {
     const elem = document.getElementById(id);
     if (elem && elem != null) {
-      console.log('Scrolling next:', id);
       elem.scrollIntoView();
       this.activeChapter = id;
     } else if (id) {
@@ -188,8 +204,8 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
     fromEvent<StickyEvent>(document, 'sticky-change').pipe(
       takeUntil(this.end)
     ).subscribe(e => {
-      this.renderer[!e.detail.stuck ? 'addClass' : 'removeClass'](e.detail.target.firstChild, 'mat-elevation-z9');
-      this.renderer[!e.detail.stuck ? 'addClass' : 'removeClass'](e.detail.target.firstChild, 'stuck');
+      this.renderer[!e.detail.stuck ? 'addClass' : 'removeClass'](e.detail.target.firstChild, 'mat-elevation-z2');
+      this.renderer[!e.detail.stuck ? 'addClass' : 'removeClass'](e.detail.target, 'stuck');
     });
   }
 
@@ -199,7 +215,42 @@ export class ChapterComponent implements OnInit, OnDestroy, AfterViewInit, After
 
   toggleToc() {
     this.tocOpen = !this.tocOpen;
-    console.log('toggling TOC');
+  }
+
+  like(like: Like) {
+    this.busyFav = true;
+    if (!like || !like.value) {
+      this.ns.like().subscribe(
+        () => this.busyFav = false,
+        err => this.handleUnauthorized(err)
+      );
+    } else {
+      this.ns.unlike().subscribe(
+        () => this.busyFav = false,
+        err => this.handleUnauthorized(err)
+      );
+    }
+  }
+
+  toggleLibrary(inLib: boolean) {
+    this.busyLib = true;
+    if (inLib) {
+      this.ns.libRemove(this.novelID).then(
+        () => this.busyLib = false,
+        err => this.handleUnauthorized(err)
+      );
+    } else {
+      this.ns.libAdd(this.novelID).then(
+        () => this.busyLib = false,
+        err => this.handleUnauthorized(err)
+      );
+    }
+  }
+
+  get returnQueryParams() {
+    return {
+      [keysConfig.RETURN_URL_KEY]: this.router.url
+    };
   }
 
 }

@@ -17,14 +17,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   users = [];
 
   constructor(
-    private authService: AuthenticationService,
-    private userService: UserService
+    private auth: AuthenticationService,
+    private us: UserService
   ) { }
 
   ngOnInit(): void {
-    this.authService.getUser
-      .pipe(takeUntil(this.destroyer))
-      .subscribe(user => this.currentUser = user);
+    this.currentUser = this.auth.currentSnapshot;
   }
 
   ngOnDestroy(): void {

@@ -3,23 +3,22 @@ import { Component, OnInit } from '@angular/core';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
 import { PageEvent } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap, map, first, concatMap } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map, tap } from 'rxjs/operators';
 import { NovelService } from 'src/app/core/services/novel.service';
-import { LibraryService } from 'src/app/core/services/library.service';
 import { Like, LikeStats } from 'src/app/shared/models/like.model';
 import { HistoryNovel } from 'src/app/shared/models/history/history.model';
 import { ChaptersService } from 'src/app/core/services/chapters.service';
 import { firestore } from 'firebase';
 import { TOC } from 'src/app/shared/models/novels/chapters-stats.model';
+import { UnauthorizedHelper } from 'src/app/core/helpers/unauthorized.helper';
 
 @Component({
   selector: 'app-details',
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss']
 })
-export class DetailsComponent implements OnInit {
-  s: any;
+export class DetailsComponent extends UnauthorizedHelper implements OnInit {
 
   chaptersPageEvent: PageEvent;
   reviewsPageEvent: PageEvent;
@@ -27,6 +26,7 @@ export class DetailsComponent implements OnInit {
   busyLib = false;
   busyFav = false;
   novelID: string;
+  toc: TOC;
   novel$: Observable<Novel>;
   toc$: Observable<TOC>;
   likes$: Observable<LikeStats>;
@@ -38,52 +38,53 @@ export class DetailsComponent implements OnInit {
     private ns: NovelService,
     private cs: ChaptersService,
     private route: ActivatedRoute,
+    router: Router
   ) {
-    this.s = storageKeys;
-    this.novelID = this.route.snapshot.paramMap.get('novelID');
-  }
+    super(router);
 
-  ngOnInit() {
+    this.novelID = this.route.snapshot.paramMap.get('novelID');
     this.novel$ = this.ns.novelGet(this.novelID);
-    this.likes$ = this.ns.getLikes();
-    this.likeState$ = this.ns.likeState();
+    this.toc$ = this.cs.toc(this.novelID).pipe(
+      map(toc => this.cs.tocFilterPublic(toc)),
+      tap(toc => this.toc = toc)
+    );
     this.islib$ = this.ns.inLibrary(this.novelID);
+    this.likeState$ = this.ns.likeState();
+    this.likes$ = this.ns.getLikes();
     this.history$ = this.cs.readGet(this.novelID);
   }
+
+  ngOnInit() { }
 
 
   like(like: Like) {
     this.busyFav = true;
-    if (like && !like.value) {
+    if (!like || !like.value) {
       this.ns.like().subscribe(
         () => this.busyFav = false,
-        err => console.error(err)
+        err => this.handleUnauthorized(err)
       );
     } else {
       this.ns.unlike().subscribe(
         () => this.busyFav = false,
-        err => console.error(err)
+        err => this.handleUnauthorized(err)
       );
     }
   }
 
-  toggleLibrary() {
+  toggleLibrary(inLib: boolean) {
     this.busyLib = true;
-    this.islib$
-      .pipe(
-        first(),
-        switchMap(islib => {
-          if (islib) {
-            return this.ns.libRemove(this.novelID);
-          } else {
-            return this.ns.libAdd(this.novelID);
-          }
-        })
-      )
-      .subscribe(
+    if (inLib) {
+      this.ns.libRemove(this.novelID).then(
         () => this.busyLib = false,
-        console.error
+        err => this.handleUnauthorized(err)
       );
+    } else {
+      this.ns.libAdd(this.novelID).then(
+        () => this.busyLib = false,
+        err => this.handleUnauthorized(err)
+      );
+    }
   }
 
   coverURL(custom: boolean, novelID: string): string {
@@ -100,19 +101,7 @@ export class DetailsComponent implements OnInit {
   }
 
   calcReleaseRate(toc: TOC) {
-    let rate = 0;
-    const date = new Date();
-    date.setDate(date.getDate() - 28);
-
-    for (let i = toc.indexes.length - 1; i >= 0; i--) {
-      const chDate = toc.toc[toc.indexes[i]].createdAt as firestore.Timestamp;
-      if (chDate.toDate() >= date) {
-        rate++;
-      } else {
-        break;
-      }
-    }
-    return (rate / 4).toFixed(2);
+    return this.cs.chaptersReleaseRate(toc);
   }
 
   linkChapter(nid: string, cid: string) {

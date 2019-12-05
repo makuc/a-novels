@@ -3,6 +3,7 @@ import { Component, OnInit, Output, EventEmitter, ViewEncapsulation, Input, OnDe
 import { AppSettingsService } from '../../services/app-settings.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-sidenav',
@@ -11,29 +12,36 @@ import { takeUntil } from 'rxjs/operators';
     encapsulation: ViewEncapsulation.None
 })
 export class SidenavComponent implements OnInit, OnDestroy {
-    private destroyer = new Subject<void>();
+  private destroyer = new Subject<void>();
 
-    @Input() isMobile: boolean;
+  @Input() isMobile: boolean;
 
-    sideMax: boolean;
+  sideMax: boolean;
 
-    constructor(
-        private appSettings: AppSettingsService
-    ) { }
+  constructor(
+      private appSettings: AppSettingsService,
+      private router: Router
+  ) { }
 
-    ngOnInit() {
-        this.appSettings
-            .getSetting(keysConfig.SIDENAV_MAXIMIZED)
-            .pipe(takeUntil(this.destroyer))
-            .subscribe(updatedSidenavMax => this.sideMax = updatedSidenavMax === 'true');
-    }
+  ngOnInit() {
+      this.appSettings
+          .getSetting(keysConfig.SIDENAV_MAXIMIZED)
+          .pipe(takeUntil(this.destroyer))
+          .subscribe(updatedSidenavMax => this.sideMax = updatedSidenavMax === 'true');
+  }
 
-    ngOnDestroy() {
-        this.destroyer.next();
-        this.destroyer.unsubscribe();
-    }
+  ngOnDestroy() {
+      this.destroyer.next();
+      this.destroyer.unsubscribe();
+  }
 
-    toggleCollapse() {
-        this.appSettings.setSetting(keysConfig.SIDENAV_MAXIMIZED, (!this.sideMax).toString());
-    }
+  toggleCollapse() {
+      this.appSettings.setSetting(keysConfig.SIDENAV_MAXIMIZED, (!this.sideMax).toString());
+  }
+
+  get returnQueryParams() {
+    return {
+      [keysConfig.RETURN_URL_KEY]: this.router.url
+    };
+  }
 }

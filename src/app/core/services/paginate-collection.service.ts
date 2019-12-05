@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection, QueryFn } from '@angular/fire/firestore';
-import { scan, tap, first } from 'rxjs/operators';
-import { dbKeys } from 'src/app/keys.config';
+import { tap, first } from 'rxjs/operators';
 import { firestore } from 'firebase';
 import { Genre } from 'src/app/shared/models/novels/genre.model';
+import { HttpErrorsHelper } from '../helpers/http-errors.helper';
 
 export interface QueryConfig {
   public: boolean;
@@ -18,7 +18,7 @@ export interface QueryConfig {
 @Injectable({
   providedIn: 'root'
 })
-export class PaginateCollectionService<T> {
+export class PaginateCollectionService<T> extends HttpErrorsHelper {
 
 // tslint:disable: variable-name
   private _done = new BehaviorSubject(false);
@@ -37,7 +37,9 @@ export class PaginateCollectionService<T> {
 
   constructor(
     protected afs: AngularFirestore
-  ) { }
+  ) {
+    super();
+  }
 
   // Initial query sets options and defines the Observable
   // passing opts will override the defaults

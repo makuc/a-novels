@@ -4,7 +4,7 @@ import { NovelService } from 'src/app/core/services/novel.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
-import { first, concatMap } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 import { ReviewsService } from 'src/app/core/services/reviews.service';
 import { Review } from 'src/app/shared/models/novels/review.model';
 
@@ -14,6 +14,8 @@ import { Review } from 'src/app/shared/models/novels/review.model';
   styleUrls: ['./review.component.scss']
 })
 export class ReviewComponent {
+
+  novelID: string;
   fgroup: FormGroup;
   storyGroup: FormGroup;
   styleGroup: FormGroup;
@@ -32,47 +34,14 @@ export class ReviewComponent {
     private router: Router,
     private route: ActivatedRoute
   ) {
-    this.novel = this.route.paramMap
-      .pipe(
-        concatMap(params => this.novels.novelGet(params.get('novelID')))
-      );
-    this.route.paramMap
-      .pipe(
-        first(),
-        concatMap(params => this.reviews.reviewMy(params.get('novelID'))),
-        first()
-      )
-      .subscribe(
-        review => {
-          this.review = review || new Review();
-
-          this.storyGroup = this.fb.group({
-            rating: [this.review.storyRating, [Validators.required, Validators.min(1), Validators.max(5)]],
-            review: [this.review.storyReview, [Validators.required]]
-          });
-          this.styleGroup = this.fb.group({
-            rating: [this.review.styleRating, [Validators.required, Validators.min(1), Validators.max(5)]],
-            review: [this.review.styleReview, [Validators.required]]
-          });
-          this.charsGroup = this.fb.group({
-            rating: [this.review.charsRating, [Validators.required, Validators.min(1), Validators.max(5)]],
-            review: [this.review.charsReview, [Validators.required]]
-          });
-          this.worldGroup = this.fb.group({
-            rating: [this.review.worldRating, [Validators.required, Validators.min(1), Validators.max(5)]],
-            review: [this.review.worldReview, [Validators.required]]
-          });
-          this.grammGroup = this.fb.group({
-            rating: [this.review.grammRating, [Validators.required, Validators.min(1), Validators.max(5)]],
-            review: [this.review.grammReview, [Validators.required]]
-          });
-
-          this.fgroup = this.fb.group({
-            title: [this.review.title, [Validators.required]]
-          });
-        },
-        console.error
-      );
+    this.novelID = this.route.snapshot.paramMap.get('novelID');
+    this.novel = this.novels.novelGet(this.novelID);
+    this.reviews.reviewMy(this.novelID).pipe(
+      first()
+    ).subscribe(
+      review => this.initFormGroup(review),
+      (err) => console.error(err)
+    );
   }
 
   get fg() { return this.fgroup.controls; }
@@ -81,6 +50,35 @@ export class ReviewComponent {
   get chars() { return this.charsGroup.controls; }
   get world() { return this.worldGroup.controls; }
   get gramm() { return this.grammGroup.controls; }
+
+  initFormGroup(review: Review) {
+    this.review = review || new Review();
+
+    this.storyGroup = this.fb.group({
+      rating: [this.review.storyRating, [Validators.required, Validators.min(1), Validators.max(5)]],
+      review: [this.review.storyReview, [Validators.required]]
+    });
+    this.styleGroup = this.fb.group({
+      rating: [this.review.styleRating, [Validators.required, Validators.min(1), Validators.max(5)]],
+      review: [this.review.styleReview, [Validators.required]]
+    });
+    this.charsGroup = this.fb.group({
+      rating: [this.review.charsRating, [Validators.required, Validators.min(1), Validators.max(5)]],
+      review: [this.review.charsReview, [Validators.required]]
+    });
+    this.worldGroup = this.fb.group({
+      rating: [this.review.worldRating, [Validators.required, Validators.min(1), Validators.max(5)]],
+      review: [this.review.worldReview, [Validators.required]]
+    });
+    this.grammGroup = this.fb.group({
+      rating: [this.review.grammRating, [Validators.required, Validators.min(1), Validators.max(5)]],
+      review: [this.review.grammReview, [Validators.required]]
+    });
+
+    this.fgroup = this.fb.group({
+      title: [this.review.title, [Validators.required]]
+    });
+  }
 
   validateAllFormFields(formGroup: FormGroup) {         // {1}
     Object.keys(formGroup.controls).forEach(field => {  // {2}
@@ -124,7 +122,7 @@ export class ReviewComponent {
 
     this.reviews.reviewSet(novelID, reviewData).subscribe(
       () => this.router.navigate([`/novel/${novelID}`]),
-      console.error
+      (err) => console.error(err)
     );
   }
 }

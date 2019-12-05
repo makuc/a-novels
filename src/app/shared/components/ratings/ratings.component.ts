@@ -42,7 +42,7 @@ export class RatingsComponent implements OnInit, OnDestroy {
           this.gramm = (stats.sumGramm as number) / this.nRevs || 0;
         }
       },
-      console.error
+      (err) => console.error(err)
     );
   }
 

@@ -9,7 +9,7 @@ import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 })
 export class ProfileNavComponent implements OnInit {
 
-  @Input() navId: string;
+  @Input() uid: string;
 
   constructor() { }
 

@@ -1,11 +1,9 @@
 import { storageKeys } from 'src/app/keys.config';
 import { Component, OnInit, OnDestroy, Input, AfterViewInit } from '@angular/core';
 import { NovelService, NovelsQueryConfig } from 'src/app/core/services/novel.service';
-import { UserService } from 'src/app/core/services/user.service';
 import { Observable, Subject } from 'rxjs';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
-import { switchMap, first, tap, takeUntil, filter } from 'rxjs/operators';
-import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
+import { switchMap, first, takeUntil, filter } from 'rxjs/operators';
 import { ScrollService } from 'src/app/core/services/scroll.service';
 
 @Component({

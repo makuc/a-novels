@@ -2,15 +2,12 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './core/imports/material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
-import { HomeModule } from './modules/home/home.module';
 import { SharedModule } from './shared/shared.module';
-import { UserModule } from './modules/user/user.module';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowseModule } from './modules/browse/browse.module';
+import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 
 
 @NgModule({
@@ -25,12 +22,11 @@ import { BrowseModule } from './modules/browse/browse.module';
 
     AppRoutingModule,
     CoreModule,
-    SharedModule,
-
-    HomeModule,
-    UserModule
+    SharedModule
   ],
-  providers: [],
+  providers: [
+    AngularFireAuthGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

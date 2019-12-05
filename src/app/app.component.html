@@ -1,11 +1,11 @@
-<app-header (sidenavToggle)="toggleSidenav()"></app-header>
+<app-header (sidenavToggle)="snav.toggle()"></app-header>
 
 <mat-sidenav-container class="sidenav-container" autosize>
-  <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [opened]="sideOpen" role="navigation"
-               fixedInViewport>
 
+  <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
+               (openedChange)="saveState($event)"
+               [(opened)]="sideOpen" role="navigation" fixedInViewport>
     <app-sidenav [isMobile]="mobileQuery.matches"></app-sidenav>
-
   </mat-sidenav>
 
   <mat-sidenav-content scrollInit id="scroll-container">
@@ -13,8 +13,7 @@
       <app-shortcuts></app-shortcuts>
       <router-outlet></router-outlet>
     </main>
-
     <app-footer></app-footer>
-
   </mat-sidenav-content>
+
 </mat-sidenav-container>

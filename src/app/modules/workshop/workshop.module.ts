@@ -15,6 +15,7 @@ import { CoverReuploadComponent } from './components/cover-reupload/cover-reuplo
 import { EditTXEComponent } from './components/edit-txe/edit-txe.component';
 import { EditGenresComponent } from './components/edit-genres/edit-genres.component';
 import { EditTagsComponent } from './components/edit-tags/edit-tags.component';
+import { TagsSelectorAutocompleteComponent } from './components/tags-selector-autocomplete/tags-selector-autocomplete.component';
 
 @NgModule({
   imports: [
@@ -29,6 +30,7 @@ import { EditTagsComponent } from './components/edit-tags/edit-tags.component';
     WorksComponent,
     NovelAddComponent,
     TagsSelectorComponent,
+    TagsSelectorAutocompleteComponent,
     NovelWorkComponent,
     ChaptersWorkComponent,
     ChapterAddComponent,

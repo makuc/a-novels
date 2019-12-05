@@ -12,22 +12,24 @@
     <div class="d-title">
       <h1>{{ novel.title }}</h1>
       <div class="inblock" matTooltip="Author of the novel" matTooltipClass="t-closer">
-        <span class="opaque">
+        <span class="opaque cursor-help">
           By
         </span>
         <a class="l" routerLink="/user/{{ novel.author.uid }}">{{ novel.author.displayName }}</a>,&nbsp;
       </div>
-      <div class="inblock opaque">{{ toDate(novel.createdAt) | date }}</div>
-      <span class="opaque" *ngIf="{ toc: toc$ | async } as d">
+      <div class="inblock opaque cursor-help" matTooltip="Date created" matTooltipClass="t-closer">
+        {{ toDate(novel.createdAt) | date }}
+      </div>
+      <span class="opaque">
         |
         <div class="inblock cursor-help" matTooltip="Chapters released to-date" matTooltipClass="t-closer">
           <mat-icon inline>library_books</mat-icon>
-          {{ d.toc ? d.toc.indexes.length : 0 }}
+          {{ toc ? toc.indexes.length : 0 }}
         </div>
         |
-        <div class="inblock cursor-help" matTooltip="Release rate over past 28 days" matTooltipClass="t-closer">
+        <div class="inblock cursor-help" matTooltip="Release over the past month" matTooltipClass="t-closer">
             <mat-icon inline>trending_up</mat-icon>
-            {{ d.toc ? calcReleaseRate(d.toc) : 0 }} chs / week
+            {{ toc ? calcReleaseRate(toc) : 0 }} chs / week
         </div>
       </span>
     </div>
@@ -64,12 +66,12 @@
             {{ his.progress ? 'Continue' : 'Read' }}
           </a>
           <button mat-raised-button
-                  (click)="toggleLibrary()"
+                  *ngIf="{val: islib$ | async} as data"
+                  (click)="toggleLibrary(data.val)"
                   matTooltip="Add to library"
                   matTooltipClass="t-closer"
                   color="primary"
-                  [disabled]="busyLib"
-                  *ngIf="{val: islib$ | async} as data">
+                  [disabled]="busyLib">
             <mat-icon>{{ data.val ? 'playlist_add_check' : 'playlist_add' }}</mat-icon>
             LIBRARY
           </button>
@@ -114,9 +116,12 @@
         <mat-icon class="tab-icon">toc</mat-icon>
         <strong>Chapters</strong>
       </ng-template>
-      <div class="toc">
-        <app-toc [novelID]="novelID" pagination></app-toc>
+      <div class="toc" *ngIf="toc$ | async; else noChs">
+        <app-toc [novelID]="novelID" [toc]="toc" pagination></app-toc>
       </div>
+      <ng-template #noChs>
+        <p class="nodata">No chapters released yet</p>
+      </ng-template>
     </mat-tab>
 
   </mat-tab-group>

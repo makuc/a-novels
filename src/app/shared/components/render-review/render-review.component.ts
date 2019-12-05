@@ -4,13 +4,15 @@ import { Observable } from 'rxjs';
 import { ReviewsService } from 'src/app/core/services/reviews.service';
 import { Like, LikeStats } from '../../models/like.model';
 import { firestore } from 'firebase';
+import { Router, ActivatedRoute } from '@angular/router';
+import { UnauthorizedHelper } from 'src/app/core/helpers/unauthorized.helper';
 
 @Component({
   selector: 'app-render-review',
   templateUrl: './render-review.component.html',
   styleUrls: ['./render-review.component.scss']
 })
-export class RenderReviewComponent implements OnInit {
+export class RenderReviewComponent extends UnauthorizedHelper implements OnInit {
 
   @Input() review: Review;
   @Input() novelID: string;
@@ -20,8 +22,12 @@ export class RenderReviewComponent implements OnInit {
   stats$: Observable<LikeStats>;
 
   constructor(
-    private rs: ReviewsService
-  ) { }
+    private rs: ReviewsService,
+    private route: ActivatedRoute,
+    router: Router
+  ) {
+    super(router);
+  }
 
   ngOnInit() {
     this.state$ = this.rs.likeState(this.review.id);
@@ -52,16 +58,28 @@ export class RenderReviewComponent implements OnInit {
 
   toggleLike(cur: Like) {
     if (cur && cur.value) {
-      this.rs.unlike(this.review.id).subscribe();
+      this.rs.unlike(this.review.id).subscribe(
+        () => null,
+        err => this.handleUnauthorized(err)
+      );
     } else {
-      this.rs.like(this.review.id).subscribe();
+      this.rs.like(this.review.id).subscribe(
+        () => null,
+        err => this.handleUnauthorized(err)
+      );
     }
   }
   toggleDislike(cur: Like) {
     if (cur && cur.value === false) {
-      this.rs.unlike(this.review.id).subscribe();
+      this.rs.unlike(this.review.id).subscribe(
+        () => null,
+        err => this.handleUnauthorized(err)
+      );
     } else {
-      this.rs.dislike(this.review.id).subscribe();
+      this.rs.dislike(this.review.id).subscribe(
+        () => null,
+        err => this.handleUnauthorized(err)
+      );
     }
   }
 

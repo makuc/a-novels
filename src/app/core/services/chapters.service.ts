@@ -2,8 +2,7 @@ import { dbKeys } from 'src/app/keys.config';
 import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { firestore } from 'firebase/app';
-import { Novel, NovelMeta } from 'src/app/shared/models/novels/novel.model';
-import { first, switchMap, map, scan, tap, takeUntil } from 'rxjs/operators';
+import { first, map, tap, takeUntil, exhaustMap } from 'rxjs/operators';
 import { Chapter, ChapterMeta } from 'src/app/shared/models/novels/chapter.model';
 import { NovelService } from './novel.service';
 import { ChaptersStats, ChaptersList, TOC } from 'src/app/shared/models/novels/chapters-stats.model';
@@ -28,8 +27,8 @@ export interface ChaptersQuery {
 export class ChaptersService implements OnDestroy {
   private end: Subject<void> = new Subject();
 
-  private activeChapterID: string;
   private query: ChaptersQuery;
+  private novelID: string;
   private cursor: string;
   private cursorPrev: string;
 // tslint:disable: variable-name
@@ -48,9 +47,7 @@ export class ChaptersService implements OnDestroy {
     private afs: AngularFirestore,
     private novels: NovelService,
     private hs: HistoryService
-  ) {
-    console.log('Switch novelID and chapterID in func def');
-  }
+  ) { }
 
   ngOnDestroy() {
     this.end.next();
@@ -61,11 +58,11 @@ export class ChaptersService implements OnDestroy {
     return firestore.FieldValue.serverTimestamp();
   }
 
-  private ch(chapterID: string, novelID = this.query.novelID) {
-    return this.afs.doc<Chapter>(`${dbKeys.C_NOVELS}/${novelID}/${dbKeys.C_NOVELS_CHAPTERS}/${chapterID}`);
+  private pathCh(chapterID: string, novelID = this.query.novelID): string {
+    return `${dbKeys.C_NOVELS}/${novelID}/${dbKeys.C_NOVELS_CHAPTERS}/${chapterID}`;
   }
-  private stats(novelID = this.query.novelID) {
-    return this.afs.doc<ChaptersStats>(`${dbKeys.C_NOVELS}/${novelID}/${dbKeys.C_STATS}/${dbKeys.C_NOVELS_CHAPTERS}`);
+  private pathStats(novelID = this.query.novelID): string {
+    return `${dbKeys.C_NOVELS}/${novelID}/${dbKeys.C_STATS}/${dbKeys.C_NOVELS_CHAPTERS}`;
   }
 
   init(novelID: string, chapterID: string, opts?: Partial<ChaptersQuery>) {
@@ -73,6 +70,7 @@ export class ChaptersService implements OnDestroy {
     this._data.next([]);
     this._done.next(false);
     this._loading.next(false);
+    this.novelID = novelID;
     this.query = {
       novelID,
       reverse: false,
@@ -112,8 +110,8 @@ export class ChaptersService implements OnDestroy {
         setTimeout(() => this.more(), 250);
         return;
       }
-      this.query.prepend = false;
 
+      this.query.prepend = false;
       const newCursor = this.nextChapterID(this.cursor);
 
       if (!newCursor) {// No more values, mark done
@@ -151,7 +149,7 @@ export class ChaptersService implements OnDestroy {
   private mapAndUpdate(chapterID: string) {
     if (this._loading.value) { return; }
 
-    const doc = this.ch(chapterID);
+    const doc = this.afs.doc<Chapter>(this.pathCh(chapterID));
 
     // loading
     this._loading.next(true);
@@ -176,11 +174,12 @@ export class ChaptersService implements OnDestroy {
     );
   }
 
-  state(novelID = this.query.novelID) {
-    return this.stats(novelID).valueChanges();
+  state(novelID = this.novelID) {
+    return this.afs.doc<ChaptersStats>(this.pathStats(novelID)).valueChanges();
   }
 
-  toc(novelID = this.query.novelID): Observable<TOC> {
+  toc(novelID = this.novelID): Observable<TOC> {
+    this.novelID = novelID;
     const toc$ = this.tocAll(novelID).pipe(
       map(toc => this.tocFilterPublic(toc))
     );
@@ -189,8 +188,9 @@ export class ChaptersService implements OnDestroy {
     ).subscribe(toc => this.readToc = toc);
     return toc$;
   }
-  tocAll(novelID = this.query.novelID): Observable<TOC> {
-    return this.stats(novelID).valueChanges().pipe(
+  tocAll(novelID = this.novelID): Observable<TOC> {
+    this.novelID = novelID;
+    return this.afs.doc<ChaptersStats>(this.pathStats(novelID)).valueChanges().pipe(
       map(stats => {
         if (!stats) { return undefined; }
         return new TOC(Object.keys(stats.toc), stats.toc);
@@ -215,128 +215,41 @@ export class ChaptersService implements OnDestroy {
     }
     return n;
   }
-  chapterAddTransactional(chapter: Chapter, novelID = this.query.novelID) {
-    // Prepare working data
-    const chMeta: ChapterMeta = {
-      id: chapter.id || this.afs.createId(),
-      title: chapter.title,
-      public: chapter.public,
-      createdAt: this.timestamp
-    };
 
-    // Create needed references
-    const novelRef = this.afs.doc<Novel>(`${dbKeys.C_NOVELS}/${novelID}`).ref;
-    const statsRef = this.stats(novelID).ref;
-    const chapterRef = this.ch(chMeta.id, novelID).ref;
+  chaptersReleaseRate(toc: TOC) {
+    let rate = 0;
+    const date = new Date();
+    date.setDate(date.getDate() - 28);
 
-    // Execute the transaction
-    return this.afs.firestore.runTransaction(transaction => {
-      return Promise.all([ transaction.get(statsRef), transaction.get(chapterRef) ]).then(
-        (docs) => {
-          const stats = docs[0];
-          const ch = docs[1];
-
-          if (!stats.exists) {
-            return transaction
-              .get(novelRef)
-              .then<TmpChStats>(novel => {
-                const n = novel.data() as Novel;
-                transaction.update(novelRef, {
-                  updatedAt: this.timestamp
-                });
-
-                const nMeta: NovelMeta = {
-                  id: n.id,
-                  title: n.title
-                };
-                return {
-                  stats: new ChaptersStats(nMeta, n.author),
-                  chapter: ch.data() as Chapter
-                };
-              });
-          } else {
-            return {
-              stats: stats.data() as ChaptersStats,
-              chapter: ch.data() as Chapter
-            };
-          }
-        }
-      )
-      .then(tmpChStats => {
-        // Create the chapter
-        transaction.set(chapterRef, {
-          novel: tmpChStats.stats.novel,
-          author: tmpChStats.stats.author,
-
-          id: chMeta.id,
-          title: chapter.title,
-          content: chapter.content,
-
-          public: chapter.public || false,
-
-          createdAt: tmpChStats.chapter.createdAt || this.timestamp,
-          updatedAt: this.timestamp
-        }, { merge: true });
-
-        // Increase number of private/public chapter?
-        let publicInc = 0;
-        let privateInc = 0;
-        if (tmpChStats.chapter && tmpChStats.chapter.public) {
-          if (tmpChStats.chapter.public === chapter.public) {
-            publicInc = 0;
-            privateInc = 0;
-          } else {
-            publicInc = chapter.public ? 1 : -1;
-            privateInc = chapter.public ? -1 : 1;
-          }
-        } else {
-          publicInc = chapter.public ? 1 : 0;
-          privateInc = chapter.public ? 0 : 1;
-        }
-
-        // Try to get Index
-        const index = this.chapterID_to_index(tmpChStats.stats.toc, chMeta.id);
-
-        // Update stats
-        transaction.set(statsRef, {
-          novel: tmpChStats.stats.novel,
-          author: tmpChStats.stats.author,
-
-          updatedAt: this.timestamp,
-          id: chMeta.id,
-
-          public: firestore.FieldValue.increment(publicInc),
-          private: firestore.FieldValue.increment(privateInc),
-
-          toc: {
-            [index ? index : tmpChStats.stats.nextIndex]: chMeta
-          },
-          nextIndex: firestore.FieldValue.increment(1)
-        }, { merge: true });
-      });
-    });
+    for (let i = toc.indexes.length - 1; i >= 0; i--) {
+      const chDate = toc.toc[toc.indexes[i]].createdAt as firestore.Timestamp;
+      if (chDate.toDate() >= date) {
+        rate++;
+      } else {
+        break;
+      }
+    }
+    return (rate / 4).toFixed(2);
   }
-  chapterAdd(chapter: Chapter, novelID = this.query.novelID): Observable<void> {
-    return this.stats(novelID)
-      .valueChanges()
-      .pipe(
-        first(),
-        switchMap(stats => this.ensureNovelMetaExists(novelID, stats)),
-        switchMap(stats => this.chapterSet(chapter, stats))
-      );
+
+  chapterAdd(chapter: Chapter, novelID = this.novelID): Observable<void> {
+    return this.afs.doc<ChaptersStats>(this.pathStats(novelID)).valueChanges().pipe(
+      exhaustMap(stats => this.ensureNovelMetaExists(stats, novelID)),
+      exhaustMap(stats => this.chapterSet(chapter, stats)),
+      first()
+    );
   }
-  private ensureNovelMetaExists(novelID: string, stats: ChaptersStats): Observable<ChaptersStats> {
+
+  private ensureNovelMetaExists(stats: ChaptersStats, novelID: string = this.novelID): Observable<ChaptersStats> {
     if (stats && stats.novel) {
       return of<ChaptersStats>(stats);
     } else {
-      return this.novels
-        .novelGet(novelID)
-        .pipe(
-          map(novel => new ChaptersStats({
-            id: novel.id,
-            title: novel.title
-          }, novel.author))
-        );
+      return this.novels.novelGet(novelID).pipe(
+        map(novel => new ChaptersStats({
+          id: novel.id,
+          title: novel.title
+        }, novel.author))
+      );
     }
   }
   private chapterSet(chapter: Chapter, stats: ChaptersStats) {
@@ -351,7 +264,7 @@ export class ChaptersService implements OnDestroy {
     const batch = this.afs.firestore.batch();
 
     // Create the chapter
-    const chapterRef = this.ch(newChapterID, stats.novel.id).ref;
+    const chapterRef = this.afs.doc<Chapter>(this.pathCh(newChapterID, stats.novel.id)).ref;
     batch.set(chapterRef, {
       novel: stats.novel,
       author: stats.author,
@@ -367,7 +280,7 @@ export class ChaptersService implements OnDestroy {
     });
 
     // Update stats
-    const statsRef = this.stats(stats.novel.id).ref;
+    const statsRef = this.afs.doc<ChaptersStats>(this.pathStats(stats.novel.id)).ref;
     batch.set(statsRef, {
       updatedAt: this.timestamp,
       id: newChapterID,
@@ -383,22 +296,21 @@ export class ChaptersService implements OnDestroy {
     return batch.commit();
   }
 
-  chapterPublicToggle(novelID: string, chapterID: string, currentPublic: boolean): Observable<void> {
-    return this.stats(novelID).valueChanges().pipe(
-      first(),
-      switchMap(stats => {
+  chapterPublicToggle(chapterID: string, currentPublic: boolean, novelID: string = this.novelID): Observable<void> {
+    return this.afs.doc<ChaptersStats>(this.pathStats(novelID)).valueChanges().pipe(
+      exhaustMap(stats => {
         const toc = stats.toc;
         const index = this.chapterID_to_index(toc, chapterID);
         const ch = toc[index];
 
         const batch = this.afs.firestore.batch();
-        const chapterRef = this.ch(chapterID, novelID).ref;
+        const chapterRef = this.afs.doc<Chapter>(this.pathCh(chapterID, novelID)).ref;
         batch.update(chapterRef, {
           updatedAt: this.timestamp,
           public: !currentPublic
         });
 
-        const statsRef = this.stats(novelID).ref;
+        const statsRef = this.afs.doc<ChaptersStats>(this.pathStats(novelID)).ref;
 
         batch.update(statsRef, {
           id: chapterID,
@@ -417,13 +329,13 @@ export class ChaptersService implements OnDestroy {
         });
 
         return batch.commit();
-      })
+      }),
+      first()
     );
   }
-  chapterRemove(novelID: string, chapterID: string): Observable<void> {
-    return this.ch(chapterID, novelID).valueChanges().pipe(
-      first(),
-      switchMap(chapter => {
+  chapterRemove(chapterID: string, novelID: string = this.novelID): Observable<void> {
+    return this.afs.doc<Chapter>(this.pathCh(chapterID, novelID)).valueChanges().pipe(
+      exhaustMap(chapter => {
         const chapterMeta: ChapterMeta = {
           id: chapter.id,
           title: chapter.title,
@@ -431,10 +343,10 @@ export class ChaptersService implements OnDestroy {
         };
 
         const batch = this.afs.firestore.batch();
-        const chapterRef = this.ch(chapterID, novelID).ref;
+        const chapterRef = this.afs.doc<Chapter>(this.pathCh(chapterID, novelID)).ref;
         batch.delete(chapterRef);
 
-        const statsRef = this.stats(novelID).ref;
+        const statsRef = this.afs.doc<ChaptersStats>(this.pathStats(novelID)).ref;
         if (chapter.public) {
           batch.update(statsRef, {
             updatedAt: this.timestamp,
@@ -450,7 +362,8 @@ export class ChaptersService implements OnDestroy {
         }
 
         return batch.commit();
-      })
+      }),
+      first()
     );
   }
 
@@ -467,11 +380,11 @@ export class ChaptersService implements OnDestroy {
     return parseInt(index, 10);
   }
 
-  switchChaptersIndexes(novelID: string, index1: string, index2: string) {
-    return this.stats(novelID).valueChanges().pipe(
-      first(),
-      switchMap(stats => {
-        return this.stats(novelID).update({
+  switchChaptersIndexes(index1: string, index2: string, novelID: string = this.novelID) {
+    const statsDoc = this.afs.doc<ChaptersStats>(this.pathStats(novelID));
+    return statsDoc.valueChanges().pipe(
+      exhaustMap(stats => {
+        return statsDoc.update({
           toc: {
             ...stats.toc,
             [index1]: stats.toc[index2],
@@ -479,26 +392,26 @@ export class ChaptersService implements OnDestroy {
           },
           updatedAt: this.timestamp
         });
-      })
+      }),
+      first()
     );
   }
 
 
-  readGet(novelID: string): Observable<HistoryNovel> {
+  readGet(novelID: string = this.novelID): Observable<HistoryNovel> {
+    this.novelID = novelID;
     return this.hs.getMyHistory<HistoryNovel>(dbKeys.C_history_novels, novelID);
   }
 
   readSet(chapterID: string, read = false) {
-    this.activeChapterID = chapterID;
-
-    return this.stats(this.query.novelID).valueChanges().pipe(
-      first(),
-      switchMap(stats => this.hs.setMyHistory<HistoryNovel>(dbKeys.C_history_novels, this.query.novelID, {
+    return this.afs.doc<ChaptersStats>(this.pathStats(this.novelID)).valueChanges().pipe(
+      exhaustMap(stats => this.hs.setMyHistory<HistoryNovel>(dbKeys.C_history_novels, this.novelID, {
         novel: stats.novel,
         chapterID,
         index: this.chapterID_to_index(stats.toc, chapterID),
         read
-      }))
+      })),
+      first()
     );
   }
 

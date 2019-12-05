@@ -5,12 +5,10 @@ import { NovelMeta } from './novel.model';
 // tslint:disable: no-inferrable-types
 
 export class ReviewNeeds {
-  author: UserMeta;
   stats: ReviewsStats;
   review?: Review;
 
-  constructor(stats: ReviewsStats, author: UserMeta) {
-    this.author = author;
+  constructor(stats: ReviewsStats) {
     this.stats = stats;
   }
 }

@@ -5,7 +5,6 @@ import { ChaptersService } from 'src/app/core/services/chapters.service';
 import { Observable } from 'rxjs';
 import { TOC } from 'src/app/shared/models/novels/chapters-stats.model';
 import { map } from 'rxjs/operators';
-import { ChapterMeta } from 'src/app/shared/models/novels/chapter.model';
 import { firestore } from 'firebase';
 
 @Component({
@@ -42,19 +41,7 @@ export class NovelEntryComponent implements OnInit {
   }
 
   calcReleaseRate(toc: TOC) {
-    let rate = 0;
-    const date = new Date();
-    date.setDate(date.getDate() - 28);
-
-    for (let i = toc.indexes.length - 1; i >= 0; i--) {
-      const chDate = toc.toc[toc.indexes[i]].createdAt as firestore.Timestamp;
-      if (chDate.toDate() >= date) {
-        rate++;
-      } else {
-        break;
-      }
-    }
-    return (rate / 4).toFixed(2);
+    return this.cs.chaptersReleaseRate(toc);
   }
 
   toDate(timestamp: firestore.Timestamp) {

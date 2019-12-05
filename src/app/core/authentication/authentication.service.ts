@@ -1,8 +1,5 @@
-import { keysConfig } from 'src/app/keys.config';
-
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-
+import { Observable } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestoreCollection } from '@angular/fire/firestore';
 import { auth, User } from 'firebase/app';
@@ -24,11 +21,15 @@ export class AuthenticationService {
     private alert: MatSnackBar
   ) { }
 
+  get currentSnapshot(): User {
+    const user = this.afAuth.auth.currentUser;
+    return user;
+  }
+
   get getUser(): Observable<User> {
-    return this.afAuth.user
-      .pipe(
-        shareReplay(1)
-      );
+    return this.afAuth.user.pipe(
+      shareReplay(1)
+    );
   }
   get tokenResults(): Observable<auth.IdTokenResult> {
     return this.afAuth.idTokenResult

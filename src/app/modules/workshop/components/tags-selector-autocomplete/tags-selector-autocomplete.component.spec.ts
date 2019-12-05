@@ -3,21 +3,21 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { TagsSelectorComponent } from './tags-selector.component';
+import { TagsSelectorAutocompleteComponent } from './tags-selector-autocomplete.component';
 
 describe('TagsSelectorComponent', () => {
-  let component: TagsSelectorComponent;
-  let fixture: ComponentFixture<TagsSelectorComponent>;
+  let component: TagsSelectorAutocompleteComponent;
+  let fixture: ComponentFixture<TagsSelectorAutocompleteComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TagsSelectorComponent ]
+      declarations: [TagsSelectorAutocompleteComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TagsSelectorComponent);
+    fixture = TestBed.createComponent(TagsSelectorAutocompleteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

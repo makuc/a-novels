@@ -9,7 +9,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/core/imports/material.module';
 import { ReviewComponent } from './pages/review/review.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { ListReviewsComponent } from './components/list-reviews/list-reviews.component';
 import { ChapterComponent } from './pages/chapter/chapter.component';
 import { ChSeparatorComponent } from './components/ch-separator/ch-separator.component';
 
@@ -26,7 +25,6 @@ import { ChSeparatorComponent } from './components/ch-separator/ch-separator.com
     DetailsComponent,
     FullStatisticComponent,
     TocComponent,
-    ListReviewsComponent,
 
     ReviewComponent,
 

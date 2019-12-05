@@ -1,10 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChaptersService } from 'src/app/core/services/chapters.service';
 import { Observable } from 'rxjs';
-import { switchMap, map, first } from 'rxjs/operators';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChapterMeta, Chapter } from 'src/app/shared/models/novels/chapter.model';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { ChapterMeta } from 'src/app/shared/models/novels/chapter.model';
 import { TOC } from 'src/app/shared/models/novels/chapters-stats.model';
 
 @Component({
@@ -23,31 +22,20 @@ export class ChaptersWorkComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private chapters: ChaptersService
-  ) {
-    this.toc = this.route.paramMap.pipe(
-      switchMap(params => this.chapters.tocAll(params.get('novelID')))
-    );
-    this.route.paramMap.pipe(
-      map(params => params.get('novelID')),
-      first()
-    ).subscribe(
-      id => this.novelID = id,
-      err => console.log('Getting novel ID:', err)
-    );
-  }
+  ) { }
 
   ngOnInit() {
+    this.novelID = this.route.snapshot.paramMap.get('novelID');
+    this.toc = this.chapters.tocAll(this.novelID);
   }
 
   drop(event: CdkDragDrop<string[]>, chs: TOC) {
     // moveItemInArray(this.chaptersList.public, event.previousIndex, event.currentIndex);
     this.chsBusy = true;
-    this.chapters
-      .switchChaptersIndexes(this.novelID, chs[event.previousIndex], chs[event.currentIndex])
-      .subscribe(
-        () => this.chsBusy = false,
-        console.error
-      );
+    this.chapters.switchChaptersIndexes(chs[event.previousIndex], chs[event.currentIndex]).subscribe(
+      () => this.chsBusy = false,
+      err => console.error(err)
+    );
   }
 
   displayIndex(index: string): number {
@@ -56,9 +44,9 @@ export class ChaptersWorkComponent implements OnInit {
 
   togglePrivate(chapterID: string, state: boolean) {
     this.chsBusy = true;
-    this.chapters.chapterPublicToggle(this.novelID, chapterID, state).subscribe(
+    this.chapters.chapterPublicToggle(chapterID, state).subscribe(
       () => this.chsBusy = false,
-      console.error
+      err => console.error(err)
     );
   }
 

@@ -5,24 +5,25 @@
   line-height: 1.4em;
 }
 
+h1 {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  font-size: 2em;
+  line-height: 1.3em;
+}
+
 section {
   padding: 0 1em;
   position: relative;
 }
 .ch {
-  padding: 1.5em 0 0 0;
+  margin: 0 0 2em 0;
 }
 .ch-title {
-  margin: 0 0 2em 0;
+  margin: 0;
+  padding: 2em 0;
   line-height: 1.2em;
-
-  h1 {
-    margin: 0;
-    padding: 0;
-    text-align: left;
-    font-size: 2em;
-    line-height: 1.3em;
-  }
 }
 .ch-content {
   font-size: 1em;
@@ -37,29 +38,51 @@ section {
   position: sticky;
   bottom: 0;
   text-align: center;
-  height: 50px;
-  overflow: hidden;
+  z-index: 0;
+  margin: 5vh 0 10vh 0;
+
   div {
     display: inline-block;
     margin: 0 auto;
     border-radius: 15px;
     padding: 5px 10px;
-
-    &.stuck {
+  }
+  &.stuck {
+    //z-index: 1;
+    div {
       border-radius: 15px 15px 0 0;
     }
   }
 }
 .end {
+  padding: 2em;
   height: 85vh;
-  background: chocolate;
+  text-align: center;
+  & > * {
+    margin: 0 auto;
+  }
+
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+
+  .fav {
+    color: rgba($color: #ff6666, $alpha: 1.0);
+  }
+  button {
+    margin: 0 1.5em;
+  }
+  h1 {
+    text-align: center;
+  }
 }
 .toc {
   //padding-left: 1rem;
   top: $header-height;
   position: fixed;
   bottom: 0;
-  right: 0;
+  right: 17px;
   width: 100%;
   max-width: 25rem;
   height: 100%;
@@ -67,4 +90,8 @@ section {
   border-bottom: none !important;
   border-right: none !important;
   overflow: auto;
+  z-index: 1;
+}
+.toc-header {
+  text-align: right;
 }

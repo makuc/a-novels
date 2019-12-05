@@ -24,11 +24,10 @@ export class NovelAddComponent implements OnInit {
     private genres: GenresService,
     private novels: NovelService,
     private router: Router
-  ) {
-    this.genresList = this.genres.get();
-  }
+  ) { }
 
   ngOnInit() {
+    this.genresList = this.genres.get();
     this.fgroup = this.fb.group({
       title: ['', [Validators.required]],
       tags: [([]), [Validators.required]],
@@ -71,8 +70,7 @@ export class NovelAddComponent implements OnInit {
       genres: this.form.genres.value,
       tags: this.form.tags.value,
       public: this.form.public.value
-    })
-    .subscribe(
+    }).then(
       (id: string) => {
         if (this.form.cover.value && this.form.cover.value.length > 0) {
           this.uploadCover(id, this.form.cover.value[0]);

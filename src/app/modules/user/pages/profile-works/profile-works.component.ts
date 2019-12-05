@@ -11,18 +11,18 @@ import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 })
 export class ProfileWorksComponent implements OnInit {
 
-  navID: string;
+  uid: string;
   user$: Observable<UserProfile>;
 
   constructor(
     private route: ActivatedRoute,
     private us: UserService
   ) {
-    this.navID = this.route.snapshot.paramMap.get('uid');
-    if (this.navID === 'me') {
-      this.user$ = this.us.getMe();
+    this.uid = this.route.snapshot.paramMap.get('uid');
+    if (this.uid === 'me') {
+      this.user$ = this.us.currentUser;
     } else {
-      this.user$ = this.us.getUser(this.navID);
+      this.user$ = this.us.getUser(this.uid);
     }
   }
 

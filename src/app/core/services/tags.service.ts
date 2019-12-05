@@ -1,6 +1,6 @@
 import { dbKeys } from 'src/app/keys.config';
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { firestore } from 'firebase/app';
 import { Tag } from 'src/app/shared/models/novels/tag.model';

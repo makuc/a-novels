@@ -20,6 +20,23 @@ function serve {
   ng serve
 }
 
+function build {
+  ng build --prod
+}
+
+function deploy {
+  build
+  firebase deploy
+}
+
+function fire-init {
+  firebase init
+}
+
+function fire-update {
+  npm i -g firebase-tools
+}
+
 
 # RUNS the COMMAND
 Clear-Host

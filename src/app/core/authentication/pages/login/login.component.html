@@ -7,7 +7,7 @@
   </mat-card-header>
 
   <mat-card-content>
-
+    <app-alert></app-alert>
     <form [formGroup]="loginForm" (ngSubmit)="loginEmail()">
       <div>
         <mat-form-field class="full-width">
@@ -26,14 +26,14 @@
           <mat-error *ngIf="c['password'].invalid">Password is <strong>required</strong></mat-error>
         </mat-form-field>
       </div>
-      <a routerLink="/reset-password" class="l smaller"><i>Forgotten password?</i></a>
+      <a routerLink="/reset-password" queryParamsHandling="merge" class="l smaller"><i>Forgotten password?</i></a>
       <div class="actions">
         <button [disabled]="loading" mat-flat-button color="primary">
           <mat-spinner *ngIf="loading" [diameter]="15"></mat-spinner>
           Login
         </button>
         <span class="spacer"></span>
-        <a mat-stroked-button routerLink="/register">Register</a>
+        <a mat-stroked-button routerLink="/register" queryParamsHandling="merge">Register</a>
       </div>
     </form>
 

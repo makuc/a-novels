@@ -1,9 +1,9 @@
-<section *ngIf="novel | async as novelData">
+<section *ngIf="novel$ | async as novel">
   <div class="novel-details">
     <ul class="h-list dynamic glist">
-      <li *ngFor="let genre of novelData.genres" class="bckg-primary genre">{{ genre.name }}</li>
+      <li *ngFor="let genre of novel.genres" class="bckg-primary genre">{{ genre.name }}</li>
       <li>
-        <button type="button" (click)="openEditGenres(novelData.id, novelData.genres)"
+        <button type="button" (click)="openEditGenres(novel.genres)"
                 appBtn color="accent" label="Edit genres">
           <app-icon>edit</app-icon>
         </button>
@@ -12,8 +12,8 @@
 
     <div>
       <h1>
-        {{ novelData.title }}
-        <button type="button" (click)="openEditTitle(novelData.id, novelData.title)"
+        {{ novel.title }}
+        <button type="button" (click)="openEditTitle(novel.title)"
                 appBtn color="accent" label="Edit title">
           <app-icon inline>edit</app-icon>
         </button>
@@ -23,36 +23,36 @@
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start center" fxLayoutGap=".6em">
 
       <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center" fxLayoutGap=".6em">
-        <app-cover-reupload [cover]="novelData.cover" [novelID]="novelData.id"></app-cover-reupload>
+        <app-cover-reupload [cover]="novel.cover" [novelID]="novel.id"></app-cover-reupload>
         <!--<app-ratings [novel]="novel"></app-ratings>-->
       </div>
 
       <div fxFlex fxLayout="column" fxLayoutAlign="start stretch">
 
         <div class="dscr">
-          <div class="full" [innerHTML]="novelData.description" appMinimizeBtn minimizedMaxHeight="12em"></div>
-          <button type="button" (click)="openEditDescription(novelData.id, novelData.description)"
+          <div class="full" [innerHTML]="novel.description" appMinimizeBtn minimizedMaxHeight="12em"></div>
+          <button type="button" (click)="openEditDescription(novel.description)"
                   appBtn color="accent" label="Edit description">
             <app-icon inline>edit</app-icon>
           </button>
         </div>
         <div class="margin">
-          <mat-slide-toggle [checked]="novelData.public"
+          <mat-slide-toggle [checked]="novel.public"
                             [disabled]="togglingPublic"
-                            (change)="togglePublic(novelData.id, novelData.public)">
+                            (change)="togglePublic(novel.public)">
             Published
           </mat-slide-toggle>
         </div>
 
         <div class="actions">
           <a mat-flat-button color="primary" matTooltip="Add a new chapter"
-            routerLink="/workshop/novel/{{ novelData.id }}/chapter-add">
+            routerLink="/workshop/novel/{{ novel.id }}/chapter-add">
             <mat-icon>add</mat-icon>
             Chapter
           </a>
 
           <a mat-stroked-button matTooltip="Permanently delete this novel"
-            routerLink="/novel/{{ novelData.id }}/chapter-add">
+            routerLink="/novel/{{ novel.id }}/chapter-add">
             <mat-icon>visibility</mat-icon>
             View
           </a>
@@ -65,11 +65,11 @@
 
         <div>
           <mat-chip-list aria-label="Selected tags" disabled class="non-interactive">
-            <mat-chip *ngFor="let tag of novelData.tags">
+            <mat-chip *ngFor="let tag of novel.tags">
               {{ tag }}
-              <mat-icon matChipRemove class="interactive" (click)="removeTag(novelData.id, tag)">cancel</mat-icon>
+              <mat-icon matChipRemove class="interactive" (click)="removeTag(tag)">cancel</mat-icon>
             </mat-chip>
-            <button (click)="openEditTags(novelData.id, novelData.tags)"
+            <button (click)="openEditTags(novel.tags)"
                     appBtn color="accent" label="Edit tags">
               <app-icon inline>edit</app-icon>
             </button>
@@ -98,10 +98,8 @@
         Reviews
       </ng-template>
       <div class="wrapper">
-        <h1>Some more tab content</h1>
-        <p>...</p>
+        <app-list-reviews [novelID]="novelID"></app-list-reviews>
       </div>
-      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
     </mat-tab>
 
   </mat-tab-group>

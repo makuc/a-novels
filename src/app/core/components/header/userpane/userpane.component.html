@@ -8,14 +8,14 @@
     <!--<button mat-menu-item routerLink="/messager">Messages</button>-->
     <mat-divider></mat-divider>
     <button mat-menu-item routerLink="/workshop">Workshop</button>
-    <button mat-menu-item routerLink="/user/settings">Settings</button>
+    <!--<button mat-menu-item routerLink="/user/settings">Settings</button>-->
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="logout.emit()">Log out</button>
   </div>
   <div class="wider" *ngIf="!user">
     <button mat-menu-item routerLink="/login">Login</button>
     <button mat-menu-item routerLink="/register">Register</button>
-    <mat-divider></mat-divider>
-    <button mat-menu-item routerLink="/user/settings">Settings</button>
+    <!--<mat-divider></mat-divider>
+    <button mat-menu-item routerLink="/user/settings">Settings</button>-->
   </div>
 </mat-menu>

@@ -2,15 +2,14 @@ import { dbKeys } from 'src/app/keys.config';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { firestore } from 'firebase/app';
-import { Novel } from 'src/app/shared/models/novels/novel.model';
-import { first, map, debounceTime, exhaustMap, switchMap } from 'rxjs/operators';
+import { first, map, debounceTime, exhaustMap } from 'rxjs/operators';
 import { NovelService } from './novel.service';
-import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, of, EMPTY, throwError } from 'rxjs';
 import { Review, ReviewsStats, ReviewNeeds } from 'src/app/shared/models/novels/review.model';
-import { UserService } from './user.service';
 import { LikesService } from './likes.service';
 import { LikeStats, Like } from 'src/app/shared/models/like.model';
 import { PaginateCollectionService } from './paginate-collection.service';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 interface ReviewsQueryConfig {
   novelID: string;
@@ -30,28 +29,25 @@ export class ReviewsService extends PaginateCollectionService<Review> {
   constructor(
     afs: AngularFirestore,
     private novels: NovelService,
-    private users: UserService,
+    private auth: AuthenticationService,
     private ls: LikesService
   ) {
     super(afs);
+  }
+
+  private get user() {
+    return this.auth.currentSnapshot;
   }
 
   get timestamp() {
     return firestore.FieldValue.serverTimestamp();
   }
 
-  private rc(novelID: string) {
-    return this.afs
-      .collection<Novel>(dbKeys.C_NOVELS)
-      .doc<Novel>(novelID)
-      .collection<Review>(dbKeys.C_NOVELS_REVIEWS);
+  private pathRC(novelID: string) {
+    return `${dbKeys.C_NOVELS}/${novelID}/${dbKeys.C_NOVELS_REVIEWS}`;
   }
-  private stats(novelID: string) {
-    return this.afs
-      .collection<Novel>(dbKeys.C_NOVELS)
-      .doc<Novel>(novelID)
-      .collection(dbKeys.C_STATS)
-      .doc<ReviewsStats>(dbKeys.C_STATS_Reviews);
+  private pathStats(novelID: string) {
+    return `${dbKeys.C_NOVELS}/${novelID}/${dbKeys.C_STATS}/${dbKeys.C_STATS_Reviews}`;
   }
 
   // Implementation for retrieving reviews
@@ -65,74 +61,61 @@ export class ReviewsService extends PaginateCollectionService<Review> {
 
   // Reviews Management
   statsGet(novelID: string) {
-    return this.stats(novelID).valueChanges();
+    return this.afs.doc<ReviewsStats>(this.pathStats(novelID)).valueChanges();
   }
 
   reviewMy(novelID: string): Observable<Review> {
-    return this.users
-      .currentUser
-      .pipe(
-        first(),
-        switchMap(user => this.reviewGet(novelID, user.uid))
-      );
+    if (!this.user) { return EMPTY; }
+    this.novelID = novelID;
+    return this.reviewGet(novelID);
   }
-  reviewGet(novelID: string, authorID: string): Observable<Review> {
-    return this.rc(novelID)
-      .doc<Review>(authorID)
-      .valueChanges();
+  private reviewGet(novelID: string, authorID: string = this.user.uid): Observable<Review> {
+    const path = `${this.pathRC(novelID)}/${authorID}`;
+    return this.afs.doc<Review>(path).valueChanges();
   }
 
   reviewSet(novelID: string, review: Review): Observable<void> {
-    return this.stats(novelID)
-      .valueChanges()
-      .pipe(
-        debounceTime(300),
+    if (!this.user) {
+      console.log('reviews.reviewSet');
+      return this.rejectLoginObservable;
+    }
+
+    return this.afs.doc<ReviewsStats>(this.pathStats(novelID)).valueChanges().pipe(
+        debounceTime(250),
         exhaustMap(stats => this.ensureNovelMetaExists(novelID, stats)),
-        exhaustMap(stats => this.appointUserMeta(stats)),
-        exhaustMap(rdata => this.appointPreviousReview(rdata)),
+        exhaustMap(stats => this.appointPreviousReview(stats)),
         exhaustMap(rdata => this.reviewCreate(review, rdata)),
         first()
       );
   }
-  private appointPreviousReview(rdata: ReviewNeeds): Observable<ReviewNeeds> {
-    return this.reviewGet(rdata.stats.novel.id, rdata.author.uid).pipe(
-      map(review => ({ ...rdata, review }))
+  private appointPreviousReview(stats: ReviewsStats): Observable<ReviewNeeds> {
+    return this.reviewGet(stats.novel.id).pipe(
+      map(review => ({ stats, review }))
     );
-  }
-  private appointUserMeta(stats: ReviewsStats): Observable<ReviewNeeds> {
-    return this.users.currentUser
-      .pipe(
-        first(),
-        map(user => {
-          return new ReviewNeeds(stats, {
-            uid: user.uid,
-            displayName: user.displayName
-          });
-        })
-      );
   }
   private ensureNovelMetaExists(novelID: string, stats: ReviewsStats): Observable<ReviewsStats> {
     if (stats && stats.novel) {
       return of<ReviewsStats>(stats);
     } else {
-      return this.novels
-        .novelGet(novelID)
-        .pipe(
-          map(novel => {
-            return new ReviewsStats(
-                {
-                  id: novel.id,
-                  title: novel.title
-                }
-              );
-          })
-        );
+      return this.novels.novelGet(novelID).pipe(
+        map(novel => {
+          return new ReviewsStats(
+              {
+                id: novel.id,
+                title: novel.title
+              }
+            );
+        })
+      );
     }
   }
   private reviewCreate(review: Review, rdata: ReviewNeeds): Promise<void> {
     const reviewData: Review = {
-      id: rdata.author.uid,
-      author: rdata.author,
+      id: this.user.uid,
+      author: {
+        uid: this.user.uid,
+        displayName: this.user.displayName
+      },
       novel: rdata.stats.novel,
 
       title: review.title,
@@ -157,7 +140,8 @@ export class ReviewsService extends PaginateCollectionService<Review> {
     const batch = this.afs.firestore.batch();
 
     // Create the chapter
-    const reviewRef = this.rc(rdata.stats.novel.id).doc<Review>(reviewData.id).ref;
+    const pathReview = `${this.pathRC(rdata.stats.novel.id)}/${this.user.uid}`;
+    const reviewRef = this.afs.doc<Review>(pathReview).ref;
 
     batch.set(reviewRef, reviewData, { merge: true });
 
@@ -168,11 +152,11 @@ export class ReviewsService extends PaginateCollectionService<Review> {
     const world = rdata.review ? reviewData.worldRating - rdata.review.worldRating : reviewData.worldRating;
     const gramm = rdata.review ? reviewData.grammRating - rdata.review.grammRating : reviewData.grammRating;
 
-    const statsRef = this.stats(rdata.stats.novel.id).ref;
+    const statsRef = this.afs.doc<ReviewsStats>(this.pathStats(rdata.stats.novel.id)).ref;
     batch.set(statsRef, {
       novel: rdata.stats.novel,
       updatedAt: this.timestamp,
-      id: reviewData.id,
+      id: this.user.uid,
       nRevs: firestore.FieldValue.increment(review.createdAt ? 0 : 1),
       sumStory: firestore.FieldValue.increment(story),
       sumStyle: firestore.FieldValue.increment(style),
@@ -185,36 +169,37 @@ export class ReviewsService extends PaginateCollectionService<Review> {
     return batch.commit();
   }
 
-  reviewRemove(novelID: string, reviewID: string): Observable<void> {
-    return this.rc(novelID)
-      .doc<Review>(reviewID)
-      .valueChanges()
-      .pipe(
-        first(),
-        switchMap(review => {
-          if (!review) { return Promise.resolve(); }
+  reviewRemove(novelID: string): Observable<void> {
+    if (!this.user) {
+      console.log('reviews.reviewRemove');
+      return this.rejectLoginObservable;
+    }
 
-          const batch = this.afs.firestore.batch();
-          const reviewRef = this.rc(novelID).doc<Review>(reviewID).ref;
-          batch.delete(reviewRef);
+    const pathReview = `${this.pathRC(novelID)}/${this.user.uid}`;
+    const refReview = this.afs.doc<Review>(pathReview).ref;
+    const refStats = this.afs.doc<ReviewsStats>(this.pathStats(novelID)).ref;
+    return this.afs.doc<Review>(pathReview).valueChanges().pipe(
+      exhaustMap(review => {
+        if (!review) { return Promise.resolve(); }
 
-          const statsRef = this.stats(novelID).ref;
-          batch.update(statsRef, {
-            updatedAt: this.timestamp,
-            id: reviewID,
-            nRevs: firestore.FieldValue.increment(-1),
-            nDeleted: firestore.FieldValue.increment(1),
+        const batch = this.afs.firestore.batch();
+        batch.delete(refReview);
+        batch.update(refStats, {
+          updatedAt: this.timestamp,
+          id: this.user.uid,
+          nRevs: firestore.FieldValue.increment(-1),
+          nDeleted: firestore.FieldValue.increment(1),
 
-            sumStory: firestore.FieldValue.increment(-review.storyRating),
-            sumStyle: firestore.FieldValue.increment(-review.styleRating),
-            sumChars: firestore.FieldValue.increment(-review.charsRating),
-            sumWorld: firestore.FieldValue.increment(-review.worldRating),
-            sumGramm: firestore.FieldValue.increment(-review.grammRating)
-          });
-
-          return batch.commit();
-        })
-      );
+          sumStory: firestore.FieldValue.increment(-review.storyRating),
+          sumStyle: firestore.FieldValue.increment(-review.styleRating),
+          sumChars: firestore.FieldValue.increment(-review.charsRating),
+          sumWorld: firestore.FieldValue.increment(-review.worldRating),
+          sumGramm: firestore.FieldValue.increment(-review.grammRating)
+        });
+        return batch.commit();
+      }),
+      first()
+    );
   }
 
   // LIKE/DISLIKE SYSTEM

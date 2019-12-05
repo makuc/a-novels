@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { NovelService } from 'src/app/core/services/novel.service';
 
@@ -7,12 +7,14 @@ import { NovelService } from 'src/app/core/services/novel.service';
   templateUrl: './library.component.html',
   styleUrls: ['./library.component.scss']
 })
-export class LibraryComponent {
+export class LibraryComponent implements OnInit {
   novels$: Observable<string[]>;
 
   constructor(
     private ns: NovelService
-  ) {
+  ) { }
+
+  ngOnInit() {
     this.novels$ = this.ns.libMyNovels();
   }
 

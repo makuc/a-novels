@@ -4,15 +4,12 @@ import { Observable } from 'rxjs';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
 import { NovelService } from 'src/app/core/services/novel.service';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
 import { storageKeys } from 'src/app/keys.config';
 import { EditInputComponent } from '../../components/edit-input/edit-input.component';
 import { EditTXEComponent } from '../../components/edit-txe/edit-txe.component';
 import { Genre } from 'src/app/shared/models/novels/genre.model';
 import { EditGenresComponent } from '../../components/edit-genres/edit-genres.component';
 import { EditTagsComponent } from '../../components/edit-tags/edit-tags.component';
-import { Chapter } from 'src/app/shared/models/novels/chapter.model';
-import { ChaptersService } from 'src/app/core/services/chapters.service';
 
 @Component({
   selector: 'app-novel-work',
@@ -23,24 +20,22 @@ export class NovelWorkComponent implements OnInit {
 
   s = storageKeys;
 
-  novel: Observable<Novel>;
+  novelID: string;
+  novel$: Observable<Novel>;
   togglingPublic = false;
 
   constructor(
-    private novels: NovelService,
+    private ns: NovelService,
     private route: ActivatedRoute,
     public dialog: MatDialog
-  ) {
-    this.novel = this.route.paramMap
-      .pipe(
-        switchMap(params => this.novels.novelGet(params.get('novelID')))
-      );
-  }
+  ) { }
 
   ngOnInit() {
+    this.novelID = this.route.snapshot.paramMap.get('novelID');
+    this.novel$ = this.ns.novelGet(this.novelID);
   }
 
-  openEditTitle(id: string, title: string) {
+  openEditTitle(title: string) {
     const dialogRef = this.dialog.open(EditInputComponent, {
       width: '340px',
       disableClose: true,
@@ -52,14 +47,14 @@ export class NovelWorkComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.novels.novelTitleEdit(id, value).catch(
+        this.ns.novelTitleEdit(this.novelID, value).catch(
           (err) => console.log('Edit title:', err)
         );
       }
     });
   }
 
-  openEditDescription(id: string, description: string) {
+  openEditDescription(description: string) {
     const dialogRef = this.dialog.open(EditTXEComponent, {
       width: '600px',
       disableClose: true,
@@ -71,14 +66,14 @@ export class NovelWorkComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.novels.novelDescriptionEdit(id, value).catch(
+        this.ns.novelDescriptionEdit(this.novelID, value).catch(
           (err) => console.log('Edit description:', err)
         );
       }
     });
   }
 
-  openEditTags(id: string, tags: string) {
+  openEditTags(tags: string) {
     const dialogRef = this.dialog.open(EditTagsComponent, {
       width: '600px',
       disableClose: true,
@@ -90,14 +85,14 @@ export class NovelWorkComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.novels.novelTagsEdit(id, value).catch(
+        this.ns.novelTagsEdit(this.novelID, value).catch(
           (err) => console.log('Edit tags:', err)
         );
       }
     });
   }
 
-  openEditGenres(id: string, genres: Genre[]) {
+  openEditGenres(genres: Genre[]) {
     const dialogRef = this.dialog.open(EditGenresComponent, {
       width: '600px',
       disableClose: true,
@@ -109,23 +104,23 @@ export class NovelWorkComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.novels.novelGenresEdit(id, value).catch(
+        this.ns.novelGenresEdit(this.novelID, value).catch(
           (err) => console.log('Edit genre:', err)
         );
       }
     });
   }
 
-  togglePublic(id: string, currentValue: boolean) {
+  togglePublic(currentValue: boolean) {
     this.togglingPublic = true;
-    this.novels.novelPublicToggle(id, currentValue).then(
+    this.ns.novelPublicToggle(this.novelID, currentValue).then(
       () => this.togglingPublic = false,
       (err) => console.log('Toggle public:', err)
     );
   }
 
-  removeTag(id: string, tag: string) {
-    this.novels.novelTagRemove(id, tag).catch(
+  removeTag(tag: string) {
+    this.ns.novelTagRemove(this.novelID, tag).catch(
       (err) => console.error('Remove tag:', err)
     );
   }

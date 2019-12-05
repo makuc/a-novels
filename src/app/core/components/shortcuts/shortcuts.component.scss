@@ -8,7 +8,7 @@ $main-btn-size: 54px;
 app-shortcuts {
   position: fixed;
   bottom: $sec-btn-size / 3 * 2;
-  right: $sec-btn-size / 3 * 2;
+  right: $sec-btn-size / 3 * 2 + 10px;
   z-index: 999;
 }
 

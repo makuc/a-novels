@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { MustMatch } from 'src/app/shared/directives/password-match.directive';
+import { keysConfig } from 'src/app/keys.config';
 
 @Component({
   selector: 'app-register',
@@ -13,14 +14,18 @@ export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   loading = false;
   submitted = false;
+  returnURL: string;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthenticationService
   ) { }
 
   ngOnInit() {
+    this.returnURL = this.route.snapshot.queryParams[keysConfig.RETURN_URL_KEY] || '/';
+
     this.registerForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -48,18 +53,17 @@ export class RegisterComponent implements OnInit {
     }
     this.loading = true;
 
-    this.authService.createEmail(this.f.email.value, this.f.password.value)
-      .then(
-        user => {
-          // this.alertService.success('Registration successful', true);
-          this.router.navigate(['/login']);
-        },
-        error => {
-          // this.alertService.error(error);
-          console.log(error);
-          this.loading = false;
-        }
-      );
+    this.authService.createEmail(this.f.email.value, this.f.password.value).then(
+      user => {
+        // this.alertService.success('Registration successful', true);
+        this.router.navigate([ this.returnURL ]);
+      },
+      error => {
+        // this.alertService.error(error);
+        console.log(error);
+        this.loading = false;
+      }
+    );
   }
 
 }

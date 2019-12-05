@@ -1,7 +1,8 @@
 <mat-card class="wrapper">
 
   <mat-card-header>
-    <a class="avatar-size mat-elevation-z2" mat-card-avatar mat-mini-fab color="warm" routerLink="/login">
+    <a class="avatar-size mat-elevation-z2" mat-card-avatar mat-mini-fab color="warm"
+       routerLink="/login" queryParamsHandling="merge">
       <mat-icon inline>arrow_back</mat-icon>
     </a>
 
@@ -59,7 +60,7 @@
       </div>
       <div class="terms">
         <mat-checkbox name="acceptTerms" formControlName="acceptTerms">
-          I agree to the <a routerLink="/terms" class="mat-button mat-primary">terms.</a>
+          I agree to the <a routerLink="/terms" queryParamsHandling="merge" class="mat-button mat-primary">terms.</a>
         </mat-checkbox>
       </div>
       <div class="actions">
@@ -68,7 +69,7 @@
           Register
         </button>
         <span class="spacer"></span>
-        <a mat-stroked-button routerLink="/login" class="btn btn-link">Cancel</a>
+        <a mat-stroked-button routerLink="/login" queryParamsHandling="merge">Cancel</a>
       </div>
     </form>
 

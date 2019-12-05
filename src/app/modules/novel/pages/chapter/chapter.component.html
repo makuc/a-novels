@@ -1,6 +1,6 @@
 <section class="side-c" *ngIf="chapters$ | async as chs" observeStickyFooter>
-  <div class="ch" *ngFor="let ch of chs; let last = last">
-    <div class="scrollTo" id="{{ ch.id }}">
+  <div *ngFor="let ch of chs">
+    <div class="scrollTo ch" id="{{ ch.id }}">
       <div class="ch-title">
         <h1>Chapter {{ showChapterIndex(ch.id) }}: {{ ch.title }}</h1>
         <small class="opaque">{{ toDate(ch.createdAt) | date }}</small>
@@ -11,17 +11,47 @@
 
     <!--<div class="ch-end"></div>-->
 
-    <app-ch-separator *ngIf="!last" color="normal"></app-ch-separator>
+    <app-ch-separator color="normal"></app-ch-separator>
   </div>
 
   <div class="toc bckg-stacked brdr-neutral mat-elevation-z5" [class.hidden]="!tocOpen">
+    <div class="toc-header">
+      <button mat-icon-button (click)="toggleToc()" aria-label="Close toc">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
     <app-toc *ngIf="chs[0]" [novelID]="chs[0].novel.id"></app-toc>
   </div>
 
   <div id="no-ch" class="end scrollTo" *ngIf="done$ | async">
-    <p>No more chapters...</p>
-    <p>You like this novel? Like it!</p>
-    <p>Reviewed yet? Or update your review!</p>
+    <h1>You've reached the end of all published chapter!</h1>
+
+    <p class="nodata">Wanna know when a new chapter is released?</p>
+    <p>
+      <button mat-raised-button *ngIf="{val: islib$ | async} as data" (click)="toggleLibrary(data.val)"
+        matTooltip="Add to library" matTooltipClass="t-closer" color="primary" [disabled]="busyLib">
+        <mat-icon>{{ data.val ? 'playlist_add_check' : 'playlist_add' }}</mat-icon>
+        LIBRARY
+      </button>
+    </p>
+
+    <p class="nodata">Do you like this novel?</p>
+    <p>
+      <button mat-fab matTooltip="Mark as favorite" matTooltipClass="t-closer" color="primary" [disabled]="busyFav"
+        *ngIf="{state: likeState$ | async} as d" (click)="like(d.state)">
+        <mat-icon [class.fav]="d.state && d.state.value">
+          {{ d.state && d.state.value ? 'favorite' : 'favorite_border' }}
+        </mat-icon>
+      </button>
+    </p>
+    <p class="nodata">What do you think about it? Let others know!</p>
+    <p>
+      <a mat-raised-button color="primary" matTooltip="Write a review" matTooltipClass="t-closer"
+         routerLink="/novel/{{ novelID }}/review" [queryParams]="returnQueryParams">
+        <mat-icon>rate_review</mat-icon>
+        Review
+      </a>
+    </p>
   </div>
 
   <div class="sticky">

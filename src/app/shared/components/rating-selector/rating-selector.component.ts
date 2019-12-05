@@ -1,10 +1,7 @@
 import {
   Component,
   ElementRef,
-  Renderer2,
   Input,
-  Output,
-  EventEmitter,
   OnDestroy,
   DoCheck,
   HostBinding,
@@ -104,7 +101,6 @@ export class RatingSelectorComponent
   @Input()
   set tabindex(value: string) {
     this._tabindex = value;
-    // this.renderer.setAttribute(this.txe.nativeElement, 'tabindex', this._tabindex);
   }
   get tabindex() {
     return this._tabindex;

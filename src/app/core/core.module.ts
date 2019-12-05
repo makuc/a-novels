@@ -42,6 +42,8 @@ import { ChaptersService } from './services/chapters.service';
 import { ReviewsService } from './services/reviews.service';
 import { LikesService } from './services/likes.service';
 import { ResetPasswordComponent } from './authentication/pages/reset-password/reset-password.component';
+import { CustomAngularFireAuthGuard } from './guards/auth.guard';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -54,10 +56,17 @@ import { ResetPasswordComponent } from './authentication/pages/reset-password/re
     MaterialModule,
     FirebaseModule,
 
-    NgMatSearchBarModule
+    NgMatSearchBarModule,
+
+    SharedModule
   ],
   providers: [
     { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
+
+    // AUTH GUARD
+    CustomAngularFireAuthGuard,
+
+    // SERVICES
     AppSettingsService,
     AlertService,
     // { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

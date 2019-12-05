@@ -16,6 +16,7 @@ import { ObserveStickyFooterDirective } from './directives/observe-sticky-footer
 import { MinimizeBtnDirective } from './directives/minimize-btn.directive';
 import { IconComponent } from './components/icon/icon.component';
 import { BtnDirective } from './directives/btn.directive';
+import { ListReviewsComponent } from './components/list-reviews/list-reviews.component';
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import { BtnDirective } from './directives/btn.directive';
     FileSelectComponent,
     RatingSelectorComponent,
     RenderReviewComponent,
+    ListReviewsComponent,
     DisplayRatingComponent,
     RatingsComponent,
     IconComponent,
@@ -47,6 +49,7 @@ import { BtnDirective } from './directives/btn.directive';
     FileSelectComponent,
     RatingSelectorComponent,
     RenderReviewComponent,
+    ListReviewsComponent,
     DisplayRatingComponent,
     RatingsComponent,
     IconComponent,

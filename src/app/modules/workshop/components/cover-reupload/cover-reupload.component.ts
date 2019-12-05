@@ -8,9 +8,9 @@ import {
 } from '@angular/animations';
 import { NovelService } from 'src/app/core/services/novel.service';
 import { storageKeys } from 'src/app/keys.config';
-import { environment } from 'src/environments/environment.prod';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { AlertService } from 'src/app/core/services/alert.service';
 
 @Component({
   selector: 'app-cover-reupload',
@@ -50,7 +50,8 @@ export class CoverReuploadComponent implements OnInit {
 
   constructor(
     private novels: NovelService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private alert: AlertService
   ) { }
 
   ngOnInit() {
@@ -97,7 +98,7 @@ export class CoverReuploadComponent implements OnInit {
       (err) => {
         this.busy = false;
         if (err.code === storageKeys.E404) {
-          return console.log('It may take a minute for changes to take effect...');
+          return this.alert.success('It may take a minute for changes to take effect...');
         }
         console.error('Remove cover:', err);
       }

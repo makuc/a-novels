@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
 import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
@@ -13,17 +12,17 @@ import { UserService } from 'src/app/core/services/user.service';
 export class ProfileReviewsComponent {
 
   public user: Observable<UserProfile>;
-  public navId: string;
+  public uid: string;
 
   constructor(
     private route: ActivatedRoute,
     private us: UserService
   ) {
-    this.navId = this.route.snapshot.paramMap.get('uid');
-    if (this.navId === 'me') {
-      this.user = this.us.getMe();
+    this.uid = this.route.snapshot.paramMap.get('uid');
+    if (this.uid === 'me') {
+      this.user = this.us.currentUser;
     } else {
-      this.user = this.us.getUser(this.navId);
+      this.user = this.us.getUser(this.uid);
     }
   }
 

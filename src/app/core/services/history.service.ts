@@ -1,55 +1,55 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { dbKeys } from 'src/app/keys.config';
-import { Observable, EMPTY } from 'rxjs';
-import { UserService } from './user.service';
-import { first, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { AuthenticationService } from '../authentication/authentication.service';
+import { HttpErrorsHelper } from '../helpers/http-errors.helper';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class HistoryService {
+export class HistoryService extends HttpErrorsHelper {
 
   constructor(
     private afs: AngularFirestore,
-    private us: UserService
-  ) { }
+    private auth: AuthenticationService
+  ) {
+    super();
+  }
 
-  private reject() {
-    return Promise.reject({ err: 403, msg: 'You must login' });
+  private get user() {
+    return this.auth.currentSnapshot;
   }
 
   getUserHistory<T>(path: string, uid: string, key: string): Observable<T> {
-    if (!path || !uid || !key) { return EMPTY; }
-    return this.afs.doc<T>(`${dbKeys.C_history}/${uid}/${path}/${key}`).valueChanges();
+    if (!path || !uid || !key) { return this.rejectDataObservable; }
+    return this.auth.getUser.pipe(
+      switchMap(user => {
+        if (!user) {// First expose yourself a little!
+          return this.rejectLoginObservable;
+        }
+        const fullPath = `${dbKeys.C_history}/${uid}/${path}/${key}`;
+        return this.afs.doc<T>(fullPath).valueChanges();
+      })
+    );
   }
 
   getMyHistory<T>(path: string, key: string): Observable<T> {
-    if (!path || !key) { return EMPTY; }
-    return this.us.currentUser.pipe(
-      first(),
+    if (!path || !key) { return this.rejectDataObservable; }
+    return this.auth.getUser.pipe(
       switchMap(user => {
-        if (!user) { return this.reject(); }
-        return this.getUserHistory<T>(path, user.uid, key);
+        if (!user) { return null; }
+        const fullPath = `${dbKeys.C_history}/${user.uid}/${path}/${key}`;
+        return this.afs.doc<T>(fullPath).valueChanges();
       })
     );
   }
 
-  private setUserHistory<T>(path: string, uid: string, key: string, value: T): Promise<void> {
-    return this.afs.doc<T>(`${dbKeys.C_history}/${uid}/${path}/${key}`)
-      .set(value, { merge: true });
+  setMyHistory<T>(path: string, key: string, value: T): Promise<void> {
+    if (!path || !key || !value) { return this.rejectDataPromise; }
+    if (!this.user) { return Promise.resolve(); }
+    return this.afs.doc<T>(`${dbKeys.C_history}/${this.user.uid}/${path}/${key}`).set(value, { merge: true });
   }
-
-  setMyHistory<T>(path: string, key: string, value: T): Observable<void> {
-    if (!path || !key || !value) { return EMPTY; }
-    return this.us.currentUser.pipe(
-      first(),
-      switchMap(user => {
-        if (!user) { return this.reject(); }
-        return this.setUserHistory<T>(path, user.uid, key, value);
-      })
-    );
-  }
-
 
 }

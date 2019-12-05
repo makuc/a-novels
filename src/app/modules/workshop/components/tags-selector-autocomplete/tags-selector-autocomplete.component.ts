@@ -14,11 +14,11 @@ export interface Fruit {
  * @title Simple Tag Selector
  */
 @Component({
-  selector: 'app-tags-selector',
-  templateUrl: './tags-selector.component.html',
-  styleUrls: ['./tags-selector.component.scss']
+  selector: 'app-tags-selector-autocomplete',
+  templateUrl: './tags-selector-autocomplete.component.html',
+  styleUrls: ['./tags-selector-autocomplete.component.scss']
 })
-export class TagsSelectorComponent {
+export class TagsSelectorAutocompleteComponent {
 
   @Input() required = false;
   @Input() selectable = true;

@@ -6,7 +6,7 @@
   <ul class='circle-container'>
 
     <li>
-      <button mat-mini-fab (click)="noClose($event)">
+      <button mat-mini-fab (click)="switchTheme($event)">
         <mat-icon>palette</mat-icon>
       </button>
     </li>
@@ -24,8 +24,8 @@
 
     <li>
       <button mat-mini-fab (click)="switchThemeMode($event)">
-        <mat-icon *ngIf="data.darkMode">brightness_7</mat-icon>
-        <mat-icon *ngIf="!data.darkMode">brightness_2</mat-icon>
+        <mat-icon *ngIf="themeMode">brightness_7</mat-icon>
+        <mat-icon *ngIf="!themeMode">brightness_2</mat-icon>
       </button>
     </li>
 

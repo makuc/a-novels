@@ -14,6 +14,9 @@ import { Chapter } from 'src/app/shared/models/novels/chapter.model';
   styleUrls: ['./chapter-add.component.scss']
 })
 export class ChapterAddComponent implements OnInit {
+
+  novelID: string;
+  chapterID: string;
   fgroup: FormGroup;
   loading = false;
   submitted = false;
@@ -26,41 +29,41 @@ export class ChapterAddComponent implements OnInit {
     private cs: ChaptersService,
     private router: Router,
     private route: ActivatedRoute
-  ) {
-    this.novel = this.route.paramMap.pipe(
-      switchMap(params => this.novels.novelGet(params.get('novelID')))
-    );
-    this.route.paramMap.pipe(
-        first()
-      ).subscribe(
-        params => this.cs.init(params.get('novelID'), params.get('chapterID'))
-      );
+  ) { }
+
+  ngOnInit() {
+    this.novelID = this.route.snapshot.paramMap.get('novelID');
+    this.chapterID = this.route.snapshot.paramMap.get('chapterID');
+
+    this.novel = this.novels.novelGet(this.novelID);
+    this.cs.init(this.novelID, this.chapterID);
+
     this.cs.loading.pipe(
       filter(val => val === false),
       switchMap(() => this.cs.data),
       first()
     ).subscribe(
-          chapters => {
-            if (chapters.length > 0) {
-              this.chapter = chapters[0];
-            } else {
-              this.chapter = new Chapter();
-            }
-
-            this.fgroup = this.fb.group({
-              title: [this.chapter.title, [Validators.required]],
-              chapter: [this.chapter.content, [Validators.required]],
-              public: [this.chapter.public]
-            });
-          },
-          (err) => console.error('Getting ch:', err)
-        );
+      chapters => this.prepareFormGroup(chapters),
+      (err) => console.error('Getting ch:', err)
+    );
   }
-
-  ngOnInit() { }
 
   get form() {
     return this.fgroup.controls;
+  }
+
+  prepareFormGroup(chapters: Chapter[]) {
+    if (chapters.length > 0) {
+      this.chapter = chapters[0];
+    } else {
+      this.chapter = new Chapter();
+    }
+
+    this.fgroup = this.fb.group({
+      title: [this.chapter.title, [Validators.required]],
+      chapter: [this.chapter.content, [Validators.required]],
+      public: [this.chapter.public]
+    });
   }
 
   validateAllFormFields(formGroup: FormGroup) {         // {1}
@@ -74,7 +77,7 @@ export class ChapterAddComponent implements OnInit {
     });
   }
 
-  onSubmit(novelID: string) {
+  onSubmit() {
     this.submitted = true;
 
     this.validateAllFormFields(this.fgroup);
@@ -85,13 +88,14 @@ export class ChapterAddComponent implements OnInit {
     }
     this.loading = true;
 
-    this.cs.chapterAddTransactional({
+    const newCh: Chapter = {
       ...this.chapter,
       title: this.form.title.value,
       content: this.form.chapter.value,
       public: this.form.public.value
-    }).then(
-      () => this.router.navigate([`/workshop/novel/${novelID}`]),
+    };
+    this.cs.chapterAdd(newCh).subscribe(
+      () => this.router.navigate([`/workshop/novel/${this.novelID}`]),
       (err) => console.error('Adding chapter:', err)
     );
   }

@@ -26,12 +26,10 @@ export class TagsSelectorComponent {
   @Input() addOnBlur = true;
   @Input() separatorKeysCodes: number[] = [SEMICOLON, ENTER, MAC_ENTER, COMMA, FF_SEMICOLON, SPACE];
   @Input() tagsCtrl = new FormControl();
-  @Input() possibleTags: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
 
   inputCtrl = new FormControl();
 
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
-  @ViewChild('tagSelector') matAutocomplete: MatAutocomplete;
 
   constructor() { }
 

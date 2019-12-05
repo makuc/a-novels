@@ -1,14 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { canActivate, redirectLoggedInTo } from '@angular/fire/auth-guard';
 import { E404Component } from './shared/pages/e404/e404.component';
 import { LoginComponent } from './core/authentication/pages/login/login.component';
 import { ResetPasswordComponent } from './core/authentication/pages/reset-password/reset-password.component';
 import { RegisterComponent } from './core/authentication/pages/register/register.component';
 import {
-  redirectLoggedInToHome,
-  redirectUnauthorizedToLogin
-} from './core/guards/const-def.guard';
+  CustomAngularFireAuthGuard,
+  redirectUnauthorizedTo,
+  redirectLoggedInTo
+} from './core/guards/auth.guard';
+
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
+const redirectLoggedInToLibrary = () => redirectLoggedInTo(['library']);
 
 const routes: Routes = [
   {
@@ -19,17 +22,26 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    ...canActivate(redirectLoggedInToHome)
+    canActivate: [CustomAngularFireAuthGuard],
+    data: {
+      authGuardPipe: redirectLoggedInToLibrary
+    }
   },
   {
     path: 'reset-password',
     component: ResetPasswordComponent,
-    ...canActivate(redirectLoggedInToHome)
+    canActivate: [CustomAngularFireAuthGuard],
+    data: {
+      authGuardPipe: redirectLoggedInToLibrary
+    }
   },
   {
     path: 'register',
     component: RegisterComponent,
-    ...canActivate(redirectLoggedInToHome)
+    canActivate: [CustomAngularFireAuthGuard],
+    data: {
+      authGuardPipe: redirectLoggedInToLibrary
+    }
   },
   {
     path: 'home',
@@ -42,7 +54,10 @@ const routes: Routes = [
   {
     path: 'user',
     loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule),
-    ...canActivate(redirectUnauthorizedToLogin)
+    canActivate: [CustomAngularFireAuthGuard],
+    data: {
+      authGuardPipe: redirectUnauthorizedToLogin
+    }
   },
   {
     path: 'browse',
@@ -51,12 +66,18 @@ const routes: Routes = [
   {
     path: 'workshop',
     loadChildren: () => import('./modules/workshop/workshop.module').then(m => m.WorkshopModule),
-    ...canActivate(redirectUnauthorizedToLogin)
+    canActivate: [CustomAngularFireAuthGuard],
+    data: {
+      authGuardPipe: redirectUnauthorizedToLogin
+    }
   },
   {
     path: 'library',
     loadChildren: () => import('./modules/library/library.module').then(m => m.LibraryModule),
-    ...canActivate(redirectUnauthorizedToLogin)
+    canActivate: [CustomAngularFireAuthGuard],
+    data: {
+      authGuardPipe: redirectUnauthorizedToLogin
+    }
   },
   // Default
   { path: '**', component: E404Component }

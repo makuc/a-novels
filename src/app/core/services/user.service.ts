@@ -1,10 +1,9 @@
-import { keysConfig, dbKeys } from 'src/app/keys.config';
+import { dbKeys } from 'src/app/keys.config';
 import { Injectable } from '@angular/core';
-import { User, auth } from 'firebase/app';
 import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 import { Observable, EMPTY, from } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { switchMap, map, exhaustMap, first } from 'rxjs/operators';
+import { exhaustMap, first } from 'rxjs/operators';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 
@@ -14,24 +13,22 @@ export class UserService {
   // Implementation
   constructor(
     private afAuth: AngularFireAuth,
-    private as: AuthenticationService,
+    private auth: AuthenticationService,
     private afs: AngularFirestore
   ) { }
+
+  private get user() {
+    return this.auth.currentSnapshot;
+  }
 
   getUser(uid: string): Observable<UserProfile> {
     if (!uid) { return EMPTY; }
     return this.afs.doc<UserProfile>(`${dbKeys.CUsers}/${uid}`).valueChanges();
   }
 
-  getMe(): Observable<UserProfile> {
-    return this.as.getUser.pipe(
-      map(user => user ? user.uid : undefined),
-      switchMap(uid => this.getUser(uid))
-    );
-  }
-
   get currentUser(): Observable<UserProfile> {
-    return this.getMe();
+    if (!this.user) { return EMPTY; }
+    return this.getUser(this.user.uid);
   }
 
   // Delete user from Auth to remove matching doc from this collection
@@ -49,7 +46,8 @@ export class UserService {
     });
   }
   private changeUserProfileName(name: string): Promise<void> {
-    return this.afs.doc<UserProfile>(`${dbKeys.CUsers}/${this.afAuth.auth.currentUser.uid}`).update({
+    const path = `${dbKeys.CUsers}/${this.afAuth.auth.currentUser.uid}`;
+    return this.afs.doc<UserProfile>(path).update({
       displayName: name
     });
   }

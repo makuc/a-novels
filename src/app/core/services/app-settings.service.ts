@@ -11,11 +11,19 @@ export class AppSettingsService {
 
   // tslint:disable-next-line: variable-name
   private _settings: BehaviorSubject<any>;
-  private privateSettings: {} = {};
+  private privateSettings: any = {};
 
   constructor() {
     this.init();
     this._settings = new BehaviorSubject(this.privateSettings);
+  }
+
+  get snapshot() {
+    return this._settings.value;
+  }
+
+  snapshotSetting<T>(key: string) {
+    return this.snapshot[key] as T;
   }
 
   private init() {
@@ -29,17 +37,17 @@ export class AppSettingsService {
     }
   }
 
-  get getSettings(): Observable<{}> {
+  get getSettings(): Observable<any> {
     return this._settings.asObservable();
   }
 
-  getSetting(key: string): Observable<string | number> {
+  getSetting<T>(key: string): Observable<T> {
     return this.getSettings.pipe(
-      map(settings => settings[key])
+      map(settings => settings[key] as T)
     );
   }
 
-  setSetting(key: string, value: any) {
+  setSetting<T>(key: string, value: T) {
     this.privateSettings[key] = value;
     this.publishSettings();
   }
@@ -58,7 +66,7 @@ export class AppSettingsService {
   private publishSettings(): void {
     localStorage.setItem(keysConfig.SETTINGS_KEY, JSON.stringify(this.privateSettings));
     // Publish settings globally
-    this._settings.next(Object.assign({}, this.privateSettings));
+    this._settings.next({ ...this.privateSettings });
   }
 
 }

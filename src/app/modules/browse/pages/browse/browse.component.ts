@@ -1,5 +1,5 @@
 import { storageKeys } from 'src/app/keys.config';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { NovelService } from 'src/app/core/services/novel.service';
 import { Observable, Subject } from 'rxjs';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
@@ -12,7 +12,7 @@ import { QueryConfig } from 'src/app/core/services/paginate-collection.service';
   templateUrl: './browse.component.html',
   styleUrls: ['./browse.component.scss']
 })
-export class BrowseComponent implements OnInit, OnDestroy {
+export class BrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   end: Subject<void> = new Subject<void>();
 
   queryChange: Subject<Partial<QueryConfig>> = new Subject();
@@ -25,14 +25,15 @@ export class BrowseComponent implements OnInit, OnDestroy {
   constructor(
     private ns: NovelService,
     private scroll: ScrollService
-  ) {
-    this.ns.init(this.queryConfig);
-    this.novels$ = this.ns.data;
-  }
+  ) { }
 
   ngOnInit(): void {
-    this.initScroll();
     this.initSort();
+    this.updateQuery();
+    this.novels$ = this.ns.data;
+  }
+  ngAfterViewInit() {
+    this.initScroll();
   }
   ngOnDestroy(): void {
     this.end.next();

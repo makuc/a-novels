@@ -30,13 +30,12 @@ export class TocComponent implements OnInit, OnDestroy {
     this._pagination = coerceBooleanProperty(value);
   }
 
-  toc: TOC;
+  @Input() toc: TOC;
   limit: number;
   tocPage: string[];
   displayedColumns: string[] = ['index', 'name'];
 
   constructor(
-    private chapters: ChaptersService,
     private config: AppSettingsService
   ) {
     this.config.getSetting('toc-size').pipe(
@@ -45,16 +44,7 @@ export class TocComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.chapters.toc(this.novelID).pipe(
-      map(toc => this.chapters.tocFilterPublic(toc)),
-      takeUntil(this.destroyer)
-    ).subscribe(
-      toc => {
-        this.toc = toc;
-        this.prepareTocPage();
-      },
-      console.error
-    );
+    this.prepareTocPage();
   }
 
   ngOnDestroy() {

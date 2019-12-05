@@ -1,7 +1,6 @@
 import { storageKeys } from 'src/app/keys.config';
 import { Component, OnInit, Input } from '@angular/core';
-import { NovelMeta, Novel } from 'src/app/shared/models/novels/novel.model';
-import { HistoryService } from 'src/app/core/services/history.service';
+import { Novel } from 'src/app/shared/models/novels/novel.model';
 import { Observable } from 'rxjs';
 import { HistoryNovel } from 'src/app/shared/models/history/history.model';
 import { NovelService } from 'src/app/core/services/novel.service';
