@@ -22,6 +22,7 @@ function serve {
 
 function build {
   ng build --prod
+  #ng build
 }
 
 function deploy {

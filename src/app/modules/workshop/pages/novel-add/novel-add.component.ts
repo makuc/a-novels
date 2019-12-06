@@ -71,23 +71,27 @@ export class NovelAddComponent implements OnInit {
       tags: this.form.tags.value,
       public: this.form.public.value
     }).then(
-      (id: string) => {
+      id => {
         if (this.form.cover.value && this.form.cover.value.length > 0) {
           this.uploadCover(id, this.form.cover.value[0]);
         } else {
-          this.router.navigate([`/novel/${id}`]);
+          this.router.navigate([`/workshop/novel/${id}`]);
         }
       },
-      (err) => {if (!environment.production) { console.error('Error adding novel:', err); }}
+      err => {
+        this.loading = false;
+        console.error('Error creating novel', err);
+      }
     );
   }
   private uploadCover(id: string, coverImg: File) {
     const task = this.novels.novelCoverUpload(id, coverImg);
     task.then(
-      (completeTask) => {
-        this.router.navigate([`/novel/${id}`]);
+      completeTask => {
+        this.loading = false;
+        this.router.navigate([`/workshop/novel/${id}`]);
       },
-      (err) => {if (!environment.production) { console.error('Error uploading cover:', err); }}
+      err => console.error(err)
     );
   }
 

@@ -1,44 +1,50 @@
-<ng-container *ngIf="toc | async as chs">
-  <ul class="v-list full"
-      *ngIf="chs.indexes.slice().reverse() as dchs"
-      cdkDropList
-      (cdkDropListDropped)="drop($event, dchs)"
-      cdkDropListOrientation="vertical"
-      cdkDropListLockAxis="y"
-      [cdkDropListDisabled]="chsBusy">
+<ng-container *ngIf="toc$ | async as toc; else noToc">
+  <ng-container *ngIf="toc.indexes.length == 0; else noToc">
+    <ul class="v-list full"
+        *ngIf="toc.indexes.slice().reverse() as rtoc"
+        cdkDropList
+        (cdkDropListDropped)="drop($event, rtoc)"
+        cdkDropListOrientation="vertical"
+        cdkDropListLockAxis="y"
+        [cdkDropListDisabled]="chsBusy">
 
-    <li *ngFor="let i of dchs" cdkDrag>
-      <div class="ch-placeholder" *cdkDragPlaceholder></div>
-      <div class="ch-content">
-        <div class="index" [class.private]="!chs.toc[i].public">{{ displayIndex(i) }}</div>
+      <li *ngFor="let i of rtoc" cdkDrag>
+        <div class="ch-placeholder" *cdkDragPlaceholder></div>
+        <div class="ch-content">
+          <div class="index" [class.private]="!toc.toc[i].public">{{ displayIndex(i) }}</div>
 
-        <a fxFlex class="l l-inner title"
-           [class.private]="!chs.toc[i].public"
-           routerLink="/workshop/novel/{{ novelID }}/{{ chs.toc[i].id }}">
-          <div class="l-dec">{{ chs.toc[i].title }}</div>
-          <div class="small-print" *ngIf="chs.toc[i].createdAt">{{ chs.toc[i].createdAt?.toMillis() | date }}</div>
-        </a>
+          <a fxFlex class="l l-inner title"
+            [class.private]="!toc.toc[i].public"
+            routerLink="/workshop/novel/{{ novelID }}/{{ toc.toc[i].id }}">
+            <div class="l-dec">{{ toc.toc[i].title }}</div>
+            <div class="small-print" *ngIf="toc.toc[i].createdAt">{{ toc.toc[i].createdAt?.toMillis() | date }}</div>
+          </a>
 
-        <div class="actions">
-          <button type="button" routerLink="/workshop/novel/{{ novelID }}/{{ chs.toc[i].id }}/edit"
-                  appBtn color="primary" aria-label="Edit chapter" matTooltip="Edit chapter">
-                  <app-icon>edit</app-icon>
-          </button>
-          <button type="button" (click)="togglePrivate(chs.toc[i].id, chs.toc[i].public)"
-                  appBtn color="primary" [matTooltip]="chs.toc[i].public ? 'Make chapter private' : 'Make chapter public'"
-                  [attr.aria-label]="chs.toc[i].public ? 'Make chapter private' : 'Make chapter public'">
-            <app-icon>{{ chs.toc[i].public ? 'visibility' : 'visibility_off' }}</app-icon>
-          </button>
-          <button type="button"
-                  appBtn color="warn" aria-label="Delete chapter" matTooltip="Delete chapter">
-            <app-icon>delete</app-icon>
-          </button>
+          <div class="actions">
+            <button type="button" routerLink="/workshop/novel/{{ novelID }}/{{ toc.toc[i].id }}/edit"
+                    appBtn color="primary" aria-label="Edit chapter" matTooltip="Edit chapter">
+                    <app-icon>edit</app-icon>
+            </button>
+            <button type="button" (click)="togglePrivate(toc.toc[i].id, toc.toc[i].public)"
+                    appBtn color="primary"
+                    [matTooltip]="toc.toc[i].public ? 'Make chapter private' : 'Make chapter public'"
+                    [attr.aria-label]="toc.toc[i].public ? 'Make chapter private' : 'Make chapter public'">
+              <app-icon>{{ toc.toc[i].public ? 'visibility' : 'visibility_off' }}</app-icon>
+            </button>
+            <button type="button"
+                    appBtn color="warn" aria-label="Delete chapter" matTooltip="Delete chapter">
+              <app-icon>delete</app-icon>
+            </button>
+          </div>
+          <div class="ch-handle" [class.disabled]="chsBusy" cdkDragHandle>
+            <mat-icon inline>drag_indicator</mat-icon>
+          </div>
         </div>
-        <div class="ch-handle" [class.disabled]="chsBusy" cdkDragHandle>
-          <mat-icon inline>drag_indicator</mat-icon>
-        </div>
-      </div>
-    </li>
+      </li>
 
-  </ul>
+    </ul>
+  </ng-container>
 </ng-container>
+<ng-template #noToc>
+  <p class="nodata">No chapters yet</p>
+</ng-template>

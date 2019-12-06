@@ -57,7 +57,8 @@
             View
           </a>
 
-          <button mat-flat-button color="warn" matTooltip="Permanently delete this novel">
+          <button mat-flat-button color="warn" matTooltip="Permanently delete this novel"
+                  (click)="deleteNovel(novel.public)">
             <mat-icon>delete_forever</mat-icon>
             Delete
           </button>

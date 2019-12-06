@@ -15,7 +15,7 @@ export class ChaptersWorkComponent implements OnInit {
 
   novelID: string;
   chsBusy = false;
-  toc: Observable<TOC>;
+  toc$: Observable<TOC>;
   privateChapters: ChapterMeta[];
   displayedColumns: string[] = ['title'];
 
@@ -26,7 +26,7 @@ export class ChaptersWorkComponent implements OnInit {
 
   ngOnInit() {
     this.novelID = this.route.snapshot.paramMap.get('novelID');
-    this.toc = this.chapters.tocAll(this.novelID);
+    this.toc$ = this.chapters.tocAll(this.novelID);
   }
 
   drop(event: CdkDragDrop<string[]>, chs: TOC) {

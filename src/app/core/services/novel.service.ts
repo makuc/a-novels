@@ -50,7 +50,6 @@ export class NovelService extends PaginateCollectionService<Novel> {
       }
       return query;
     };
-
     super.doInit(path, opts, queryFunc);
     return null;
   }
@@ -65,20 +64,12 @@ export class NovelService extends PaginateCollectionService<Novel> {
 
   novelGet(id: string): Observable<Novel> {
     this.novelID = id;
-
-    return this.afs
-      .collection<Novel>(dbKeys.C_NOVELS, ref => {
-        return ref.where('public', '==', true);
-      })
-      .doc<Novel>(id)
-      .valueChanges();
+    const path = `${dbKeys.C_NOVELS}/${id}`;
+    return this.afs.doc<Novel>(path).valueChanges();
   }
 
   novelAdd(data: Novel): Promise<string> {
-    if (!this.user) {
-      console.log('novel.novelAdd');
-      return this.rejectLoginPromise;
-    }
+    if (!this.user) { return this.rejectLoginPromise; }
 
     // Prepare new entries
     const newStoryId = this.afs.createId();
@@ -104,8 +95,8 @@ export class NovelService extends PaginateCollectionService<Novel> {
     };
     const newStats: NovelsStats = {
       updatedAt: this.timestamp,
-      n: firestore.FieldValue.increment(1),
-      nAll: firestore.FieldValue.increment(data.public ? 1 : 0),
+      n: firestore.FieldValue.increment(data.public ? 1 : 0),
+      nAll: firestore.FieldValue.increment(1),
       id: newStoryId
     };
 
@@ -213,7 +204,7 @@ export class NovelService extends PaginateCollectionService<Novel> {
     const refStats = this.afs.doc<NovelsStats>(`${dbKeys.C_NOVELS}/${dbKeys.STATS_DOC}`).ref;
 
     batch.delete(refNovel);
-    batch.set(refStats, upStats);
+    batch.set(refStats, upStats, { merge: true });
 
     return batch.commit();
   }

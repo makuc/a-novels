@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
 import { NovelService } from 'src/app/core/services/novel.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { storageKeys } from 'src/app/keys.config';
 import { EditInputComponent } from '../../components/edit-input/edit-input.component';
 import { EditTXEComponent } from '../../components/edit-txe/edit-txe.component';
@@ -27,6 +27,7 @@ export class NovelWorkComponent implements OnInit {
   constructor(
     private ns: NovelService,
     private route: ActivatedRoute,
+    private router: Router,
     public dialog: MatDialog
   ) { }
 
@@ -122,6 +123,13 @@ export class NovelWorkComponent implements OnInit {
   removeTag(tag: string) {
     this.ns.novelTagRemove(this.novelID, tag).catch(
       (err) => console.error('Remove tag:', err)
+    );
+  }
+
+  deleteNovel(curPublic: boolean) {
+    this.ns.novelRemove(this.novelID, curPublic).then(
+      () => this.router.navigate(['workshop']),
+      err => console.log(err)
     );
   }
 
