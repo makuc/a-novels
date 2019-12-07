@@ -1,9 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection, QueryFn, QueryDocumentSnapshot } from '@angular/fire/firestore';
-import { tap, takeUntil } from 'rxjs/operators';
+import { tap, takeUntil, throttleTime } from 'rxjs/operators';
 import { firestore } from 'firebase';
-import { Genre } from 'src/app/shared/models/novels/genre.model';
 import { HttpErrorsHelper } from '../helpers/http-errors.helper';
 
 type CompiledSnapshot<T> = T & { doc: QueryDocumentSnapshot<T> };
@@ -65,14 +64,10 @@ export class PaginateCollectionService<T> extends HttpErrorsHelper implements On
     };
 
     const begin = this.afs.collection<T>(this.path, ref => {
-      if (!this.queryFunc) {
-        return ref.orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
-                  .limit(this.query.limit);
-      } else {
-        return this.queryFunc(ref)
-                   .orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
-                   .limit(this.query.limit);
-      }
+      const query = this.queryFunc ? this.queryFunc(ref) : ref;
+      return query
+        .orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
+        .limit(this.query.limit);
     });
 
     this.mapAndUpdate(begin);
@@ -80,19 +75,12 @@ export class PaginateCollectionService<T> extends HttpErrorsHelper implements On
 
   more() {
     if (!this._done.value) {
-      const cursor = this.getCursor();
-
       const more = this.afs.collection<T>(this.path, ref => {
-        if (!this.queryFunc) {
-          return ref.orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
-                    .limit(this.query.limit)
-                    .startAfter(cursor);
-        } else {
-          return this.queryFunc(ref)
-                     .orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
-                     .limit(this.query.limit)
-                     .startAfter(cursor);
-        }
+        const query = this.queryFunc ? this.queryFunc(ref) : ref;
+        return query
+          .orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
+          .limit(this.query.limit)
+          .startAfter(this.getCursor());
       });
 
       this.mapAndUpdate(more);
@@ -117,6 +105,7 @@ export class PaginateCollectionService<T> extends HttpErrorsHelper implements On
 
     // Map snapshot with doc ref (needed for cursor)
     return col.snapshotChanges().pipe(
+      throttleTime(1000, undefined, { trailing: true, leading: true }),
       tap(snaps => {
         const value = this._data.value;
         let newDocs: CompiledSnapshot<T>[] = [];
@@ -133,10 +122,10 @@ export class PaginateCollectionService<T> extends HttpErrorsHelper implements On
             const val = value[i];
             if (val.doc.id === doc.doc.id) {
               Object.keys(doc.doc).forEach((key, index) => {
-                if (key !== 'doc') {
+                if (key !== 'doc' && value[i][key] !== doc[key]) {
                   value[i][key] = doc[key];
                 }
-              })
+              });
               value[i] = doc;
               exists = true;
               break;
@@ -154,7 +143,9 @@ export class PaginateCollectionService<T> extends HttpErrorsHelper implements On
         });
 
         // If prepending
-        newDocs = this.query.prepend ? newDocs.concat(value) : value.concat(newDocs);
+        if (newDocs.length > 0) {
+          newDocs = this.query.prepend ? newDocs.concat(value) : value.concat(newDocs);
+        }
 
         // Update source with new values, done loading
         this._data.next(newDocs);
