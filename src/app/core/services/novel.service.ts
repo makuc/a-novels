@@ -1,7 +1,7 @@
 import { dbKeys, storageKeys } from 'src/app/keys.config';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { firestore } from 'firebase/app';
 import { Novel, NovelsStats } from 'src/app/shared/models/novels/novel.model';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
@@ -13,21 +13,25 @@ import { PaginateCollectionService, QueryConfig } from './paginate-collection.se
 import { AuthenticationService } from '../authentication/authentication.service';
 import { map } from 'rxjs/operators';
 
-export interface NovelsQueryConfig {
+export interface NovelsQueryConfig extends QueryConfig {
   public: boolean;
   authorID?: string;
-  sortField: 'iTitle' | 'createdAt' | 'updatedAt'; // field to orderBy
-  limit: number; // limit per query
-  reverse: boolean; // reverse order
-  prepend: boolean; // prepend to source
+  genres?: Genre[];
+  sortField: 'iTitle' | 'createdAt' | 'updatedAt'; // field to orderBy, override
 }
+
 @Injectable({
   providedIn: 'root'
 })
 export class NovelService extends PaginateCollectionService<Novel> {
-// tslint:disable: variable-name
+
+  // Additional Query Settings
+  private authorID: string;
+  private public = true;
+  private genres: Genre[];
+
+  // Handy Helper (like, library, etc.)
   private novelID: string;
-// tslint:enable: variable-name
 
   constructor(
     afs: AngularFirestore,
@@ -39,25 +43,32 @@ export class NovelService extends PaginateCollectionService<Novel> {
     super(afs);
   }
 
-  init(opts?: Partial<QueryConfig>) {
-    const path = dbKeys.C_NOVELS;
-    const queryFunc = (ref: firestore.CollectionReference): firestore.Query => {
-      let query: firestore.Query = ref;
-      if (this.query.public) { query = query.where('public', '==', true); }
-      if (this.query.authorID) { query = query.where('author.uid', '==', this.query.authorID); }
-      if (this.query.genres && this.query.genres.length > 0) {
-        query = query.where('genres', 'array-contains-any', this.query.genres);
-      }
-      return query;
-    };
-    super.doInit(path, opts, queryFunc);
-    return null;
-  }
-
   private get user() {
     return this.auth.currentSnapshot;
   }
 
+  init(opts?: Partial<NovelsQueryConfig>) {
+    const path = dbKeys.C_NOVELS;
+    this.authorID = opts.authorID;
+    this.public = opts.public === false ? (this.user && this.user.uid === this.authorID) : true;
+    this.genres = opts.genres;
+
+    super.doInit(path, opts, (ref) => this.queryFn(ref));
+    return null;
+  }
+
+  private queryFn(ref: firestore.CollectionReference): firestore.Query {
+    let query: firestore.Query = ref;
+    if (this.public) { query = query.where('public', '==', true); }
+    if (this.authorID) { query = query.where('author.uid', '==', this.authorID); }
+    if (this.genres && this.genres.length > 0) {
+      query = query.where('genres', 'array-contains-any', this.genres);
+    }
+    return query;
+  }
+
+
+  // NOVELS MANAGEMENT
   private get timestamp() {
     return firestore.FieldValue.serverTimestamp();
   }

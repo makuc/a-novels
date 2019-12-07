@@ -1,11 +1,9 @@
-import { storageKeys } from 'src/app/keys.config';
 import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
-import { NovelService } from 'src/app/core/services/novel.service';
+import { NovelService, NovelsQueryConfig } from 'src/app/core/services/novel.service';
 import { Observable, Subject } from 'rxjs';
 import { Novel } from 'src/app/shared/models/novels/novel.model';
-import { takeUntil, switchMap, tap } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 import { ScrollService } from 'src/app/core/services/scroll.service';
-import { QueryConfig } from 'src/app/core/services/paginate-collection.service';
 
 @Component({
   selector: 'app-browse',
@@ -15,9 +13,9 @@ import { QueryConfig } from 'src/app/core/services/paginate-collection.service';
 export class BrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   end: Subject<void> = new Subject<void>();
 
-  queryChange: Subject<Partial<QueryConfig>> = new Subject();
+  queryChange: Subject<Partial<NovelsQueryConfig>> = new Subject();
   novels$: Observable<Novel[]>;
-  queryConfig: Partial<QueryConfig> = {
+  queryConfig: Partial<NovelsQueryConfig> = {
     sortField: 'iTitle',
     genres: []
   };
@@ -48,7 +46,7 @@ export class BrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   initScroll(): void {
-    this.scroll.offset(50, 100);
+    this.scroll.offset(50, 150);
     this.scroll.scrollPosition.pipe(
       takeUntil(this.end)
     ).subscribe(e => this.scrollHandler(e));
