@@ -1,0 +1,12 @@
+<div fxLayout="row" fxLayoutAlign="start start" fxLayout.xs="column">
+  <div [class.private]="!novel.public">
+    <img class="cover-img" [src]="novel.coverThumbURL">
+  </div>
+
+  <div class="full">
+    <a class="l" routerLink="/workshop/novel/{{ novel.id }}">
+      <h2 [class.private]="!novel.public">{{ novel.title }}</h2>
+    </a>
+    <div class="full" [innerHTML]="novel.description" appMinimizeBtn minimizedMaxHeight="10em"></div>
+  </div>
+</div>

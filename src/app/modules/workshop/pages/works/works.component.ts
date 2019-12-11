@@ -7,49 +7,37 @@ import { Novel } from 'src/app/shared/models/novels/novel.model';
 import { switchMap, first, tap, takeUntil, filter } from 'rxjs/operators';
 import { UserProfile } from 'src/app/shared/models/users/user-profile.model';
 import { ScrollService } from 'src/app/core/services/scroll.service';
+import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 
 @Component({
   selector: 'app-works',
   templateUrl: './works.component.html',
   styleUrls: ['./works.component.scss']
 })
-export class WorksComponent implements OnDestroy, AfterViewInit {
+export class WorksComponent implements OnInit, OnDestroy, AfterViewInit {
   private end: Subject<void> = new Subject();
 
   novels$: Observable<Novel[]>;
   init = false;
+  queryChange: Subject<Partial<NovelsQueryConfig>> = new Subject();
   queryConfig: Partial<NovelsQueryConfig> = {
     sortField: 'iTitle',
+    genres: [],
     public: false
   };
 
   constructor(
+    private auth: AuthenticationService,
     private ns: NovelService,
-    private us: UserService,
     private scroll: ScrollService
-  ) {
-    this.us.currentUser.pipe(
-      first()
-    ).subscribe(
-      (user) => {
-        this.queryConfig.authorID = user.uid;
-        this.ns.init(this.queryConfig);
-        this.novels$ = this.ns.data;
+  ) { }
 
-        // Check if there are enough novels display for scrolling!
-        this.ns.loading.pipe(
-          filter(val => val === false),
-          switchMap(() => this.scroll.scrollable),
-          first()
-        ).subscribe(
-          val => {
-            if (!val) {
-              this.ns.more();
-            }
-          }
-        );
-      }
-    );
+  ngOnInit() {
+    this.queryConfig.authorID = this.auth.currentSnapshot.uid;
+    this.updateQuery();
+    this.ns.init(this.queryConfig);
+    this.initSort();
+    this.novels$ = this.ns.data;
   }
 
   ngOnDestroy() {
@@ -61,13 +49,15 @@ export class WorksComponent implements OnDestroy, AfterViewInit {
     this.initScroll();
   }
 
-  coverURL(custom: boolean, novelID: string): string {
-    return storageKeys.GEN_URL(
-      storageKeys.BASIC_URL,
-      storageKeys.NOVELS_COVER_PATH,
-      custom ? novelID : storageKeys.NOVELS_COVER_DEFAULT_NAME,
-      storageKeys.NOVELS_COVER_THUMBNAIL
-    );
+  initSort(): void {
+    this.queryChange.pipe(
+      tap(q => this.ns.init(q)),
+      takeUntil(this.end)
+    ).subscribe();
+  }
+
+  testiram(data: any) {
+    console.log(data);
   }
 
   initScroll() {
@@ -83,6 +73,10 @@ export class WorksComponent implements OnDestroy, AfterViewInit {
     if (pos === 'bottom') {
       this.ns.more();
     }
+  }
+
+  private updateQuery(): void {
+    this.queryChange.next(this.queryConfig);
   }
 
 }

@@ -25,7 +25,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
       this.appSettings
-          .getSetting(keysConfig.SIDENAV_MAXIMIZED)
+          .getSetting(keysConfig.SIDENAV_MAX)
           .pipe(takeUntil(this.destroyer))
           .subscribe(updatedSidenavMax => this.sideMax = updatedSidenavMax === 'true');
   }
@@ -36,7 +36,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   toggleCollapse() {
-      this.appSettings.setSetting(keysConfig.SIDENAV_MAXIMIZED, (!this.sideMax).toString());
+      this.appSettings.setSetting(keysConfig.SIDENAV_MAX, (!this.sideMax).toString());
   }
 
   get returnQueryParams() {

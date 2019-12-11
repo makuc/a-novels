@@ -8,13 +8,16 @@ import { ScrollService } from 'src/app/core/services/scroll.service';
 @Component({
   selector: 'app-browse',
   templateUrl: './browse.component.html',
-  styleUrls: ['./browse.component.scss']
+  styleUrls: ['./browse.component.scss'],
+  providers: [
+    NovelService
+  ]
 })
 export class BrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   end: Subject<void> = new Subject<void>();
 
-  queryChange: Subject<Partial<NovelsQueryConfig>> = new Subject();
   novels$: Observable<Novel[]>;
+  queryChange: Subject<Partial<NovelsQueryConfig>> = new Subject();
   queryConfig: Partial<NovelsQueryConfig> = {
     sortField: 'iTitle',
     genres: []
@@ -40,9 +43,8 @@ export class BrowseComponent implements OnInit, AfterViewInit, OnDestroy {
 
   initSort(): void {
     this.queryChange.pipe(
-      tap(q => this.ns.init(q)),
       takeUntil(this.end)
-    ).subscribe();
+    ).subscribe(q => this.ns.init(q));
   }
 
   initScroll(): void {

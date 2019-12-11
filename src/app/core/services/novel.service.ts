@@ -1,7 +1,7 @@
 import { dbKeys, storageKeys } from 'src/app/keys.config';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { firestore } from 'firebase/app';
 import { Novel, NovelsStats } from 'src/app/shared/models/novels/novel.model';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
@@ -11,7 +11,7 @@ import { LikeStats, Like } from 'src/app/shared/models/like.model';
 import { LibraryService } from './library.service';
 import { PaginateCollectionService, QueryConfig } from './paginate-collection.service';
 import { AuthenticationService } from '../authentication/authentication.service';
-import { map } from 'rxjs/operators';
+import { map, catchError, mergeMap, concatMap } from 'rxjs/operators';
 
 export interface NovelsQueryConfig extends QueryConfig {
   public: boolean;
@@ -48,7 +48,7 @@ export class NovelService extends PaginateCollectionService<Novel> {
   }
 
   init(opts?: Partial<NovelsQueryConfig>) {
-    const path = dbKeys.C_NOVELS;
+    const path = dbKeys.CNovels;
     this.authorID = opts.authorID;
     this.public = opts.public === false ? (this.user && this.user.uid === this.authorID) : true;
     this.genres = opts.genres;
@@ -59,8 +59,8 @@ export class NovelService extends PaginateCollectionService<Novel> {
 
   private queryFn(ref: firestore.CollectionReference): firestore.Query {
     let query: firestore.Query = ref;
-    if (this.public) { query = query.where('public', '==', true); }
     if (this.authorID) { query = query.where('author.uid', '==', this.authorID); }
+    if (this.public) { query = query.where('public', '==', true); }
     if (this.genres && this.genres.length > 0) {
       query = query.where('genres', 'array-contains-any', this.genres);
     }
@@ -75,8 +75,36 @@ export class NovelService extends PaginateCollectionService<Novel> {
 
   novelGet(id: string): Observable<Novel> {
     this.novelID = id;
-    const path = `${dbKeys.C_NOVELS}/${id}`;
-    return this.afs.doc<Novel>(path).valueChanges();
+    const path = `${dbKeys.CNovels}/${id}`;
+    return this.afs.doc<Novel>(path).valueChanges()/*.pipe(
+      concatMap(novel => this.coverThumbURL(novel.coverID).pipe( map(url => this.mapCoverThumb(novel, url)) )),
+      concatMap(novel => this.coverFullURL(novel.coverID).pipe( map(url => this.mapCoverFull(novel, url)) ))
+    )*/;
+  }
+
+  private mapCoverThumb(novel: Novel, url: string) {
+    console.log('thumb url:', url);
+    const updated: Novel = {
+      ...novel,
+      coverThumbURL: url
+    };
+    return updated;
+  }
+  private mapCoverFull(novel: Novel, url: string) {
+    console.log('thumb url:', url);
+    const updated: Novel = {
+      ...novel,
+      coverFullURL: url
+    };
+    return updated;
+  }
+  coverThumbURL(coverID: string): Observable<string> {
+    const path = `${storageKeys.NovelsPath}/${coverID}/${storageKeys.NovelsCoverThumb}`;
+    return this.afStorage.ref(path).getDownloadURL();
+  }
+  coverFullURL(coverID: string): Observable<string> {
+    const path = `${storageKeys.NovelsPath}/${coverID}/${storageKeys.NovelsCoverFull}`;
+    return this.afStorage.ref(path).getDownloadURL();
   }
 
   novelAdd(data: Novel): Promise<string> {
@@ -98,7 +126,8 @@ export class NovelService extends PaginateCollectionService<Novel> {
       genres: data.genres,
       tags: data.tags,
 
-      cover: false,
+      coverThumbURL: storageKeys.DefaultNovelsCoverThumb,
+      coverFullURL: storageKeys.DefaultNovelsCoverFull,
       public: data.public || false,
 
       createdAt: this.timestamp,
@@ -113,8 +142,8 @@ export class NovelService extends PaginateCollectionService<Novel> {
 
     // Get a new write batch
     const batch = this.afs.firestore.batch();
-    const storyRef = this.afs.doc<Novel>(`${dbKeys.C_NOVELS}/${newStoryId}`).ref;
-    const statsRef = this.afs.doc<NovelsStats>(`${dbKeys.C_NOVELS}/${dbKeys.STATS_DOC}`).ref;
+    const storyRef = this.afs.doc<Novel>(`${dbKeys.CNovels}/${newStoryId}`).ref;
+    const statsRef = this.afs.doc<NovelsStats>(`${dbKeys.CNovels}/${dbKeys.STATS_DOC}`).ref;
 
     batch.set(storyRef, newNovel);
     batch.set(statsRef, newStats, { merge: true });
@@ -126,17 +155,20 @@ export class NovelService extends PaginateCollectionService<Novel> {
   }
 
   novelCoverUpload(id: string, img: File): AngularFireUploadTask {
-    const path = `${storageKeys.NOVELS_COVER_PATH}/${id}/${storageKeys.NOVELS_COVER_ORIGINAL}`;
+    const path = `${storageKeys.NovelsPath}/${id}/${storageKeys.NovelsCoverOriginal}`;
     return this.afStorage.upload(path, img);
   }
 
-  novelCoverRemove(id: string) {
-    const path = `${storageKeys.NOVELS_COVER_PATH}/${id}/${storageKeys.NOVELS_COVER_ORIGINAL}`;
-    return this.afStorage.ref(path).delete().toPromise();
+  novelCoverRemove(id: string = this.novelID): Promise<void> {
+    const path = `${dbKeys.CNovels}/${id}`;
+    return this.afs.doc<Novel>(path).update({
+      coverFullURL: storageKeys.DefaultNovelsCoverFull,
+      coverThumbURL: storageKeys.DefaultNovelsCoverThumb
+    });
   }
 
   novelTitleEdit(id: string, title: string) {
-    const path = `${dbKeys.C_NOVELS}/${id}`;
+    const path = `${dbKeys.CNovels}/${id}`;
     return this.afs.doc<Novel>(path).update({
       updatedAt: this.timestamp,
       title,
@@ -145,7 +177,7 @@ export class NovelService extends PaginateCollectionService<Novel> {
   }
 
   novelDescriptionEdit(id: string, description: string) {
-    const path = `${dbKeys.C_NOVELS}/${id}`;
+    const path = `${dbKeys.CNovels}/${id}`;
     return this.afs.doc<Novel>(path).update({
       updatedAt: this.timestamp,
       description
@@ -153,7 +185,7 @@ export class NovelService extends PaginateCollectionService<Novel> {
   }
 
   novelGenresEdit(id: string, genres: Genre[]) {
-    const path = `${dbKeys.C_NOVELS}/${id}`;
+    const path = `${dbKeys.CNovels}/${id}`;
     return this.afs.doc<Novel>(path).update({
       updatedAt: this.timestamp,
       genres
@@ -174,8 +206,8 @@ export class NovelService extends PaginateCollectionService<Novel> {
 
     // Process batch write
     const batch = this.afs.firestore.batch();
-    const refNovel = this.afs.doc<Novel>(`${dbKeys.C_NOVELS}/${id}`).ref;
-    const refStats = this.afs.doc<NovelsStats>(`${dbKeys.C_NOVELS}/${dbKeys.STATS_DOC}`).ref;
+    const refNovel = this.afs.doc<Novel>(`${dbKeys.CNovels}/${id}`).ref;
+    const refStats = this.afs.doc<NovelsStats>(`${dbKeys.CNovels}/${dbKeys.STATS_DOC}`).ref;
 
     batch.update(refNovel, upNovel);
     batch.update(refStats, upStats);
@@ -184,7 +216,7 @@ export class NovelService extends PaginateCollectionService<Novel> {
   }
 
   novelTagsEdit(id: string, overwriteTags: string[]) {
-    const path = `${dbKeys.C_NOVELS}/${id}`;
+    const path = `${dbKeys.CNovels}/${id}`;
     return this.afs.doc<Novel>(path).update({
       tags: overwriteTags,
       updatedAt: this.timestamp
@@ -192,7 +224,7 @@ export class NovelService extends PaginateCollectionService<Novel> {
   }
 
   novelTagRemove(id: string, removeTag: string) {
-    const path = `${dbKeys.C_NOVELS}/${id}`;
+    const path = `${dbKeys.CNovels}/${id}`;
     return this.afs.doc<Novel>(path).update({
       tags: firestore.FieldValue.arrayRemove(removeTag),
       updatedAt: this.timestamp
@@ -211,8 +243,8 @@ export class NovelService extends PaginateCollectionService<Novel> {
 
     // Process batch write
     const batch = this.afs.firestore.batch();
-    const refNovel = this.afs.doc<Novel>(`${dbKeys.C_NOVELS}/${id}`).ref;
-    const refStats = this.afs.doc<NovelsStats>(`${dbKeys.C_NOVELS}/${dbKeys.STATS_DOC}`).ref;
+    const refNovel = this.afs.doc<Novel>(`${dbKeys.CNovels}/${id}`).ref;
+    const refStats = this.afs.doc<NovelsStats>(`${dbKeys.CNovels}/${dbKeys.STATS_DOC}`).ref;
 
     batch.delete(refNovel);
     batch.set(refStats, upStats, { merge: true });
@@ -230,46 +262,46 @@ export class NovelService extends PaginateCollectionService<Novel> {
 
   // LIKE/DISLIKE SYSTEM
   like(): Observable<void> {
-    const path = `${dbKeys.C_NOVELS}/${this.novelID}`;
+    const path = `${dbKeys.CNovels}/${this.novelID}`;
     return this.ls.like(path);
   }
   dislike(): Observable<void> {
-    const path = `${dbKeys.C_NOVELS}/${this.novelID}`;
+    const path = `${dbKeys.CNovels}/${this.novelID}`;
     return this.ls.dislike(path);
   }
   unlike(): Observable<void> {
-    const path = `${dbKeys.C_NOVELS}/${this.novelID}`;
+    const path = `${dbKeys.CNovels}/${this.novelID}`;
     return this.ls.reset(path);
   }
   getLikes(): Observable<LikeStats> {
-    const path = `${dbKeys.C_NOVELS}/${this.novelID}`;
+    const path = `${dbKeys.CNovels}/${this.novelID}`;
     return this.ls.stats(path);
   }
   likeState(): Observable<Like> {
-    const path = `${dbKeys.C_NOVELS}/${this.novelID}`;
+    const path = `${dbKeys.CNovels}/${this.novelID}`;
     return this.ls.state(path);
   }
 
   // LIBRARY SYSTEM
   libNovels(uid: string) {
     return this.libs.library(uid).pipe(
-      map(library => this.libs.selectField(library, dbKeys.C_library_novels))
+      map(library => this.libs.selectField(library, dbKeys.CLibraryNovels))
     );
   }
   libMyNovels() {
     return this.libs.myLibrary().pipe(
-      map(library => this.libs.selectField(library, dbKeys.C_library_novels))
+      map(library => this.libs.selectField(library, dbKeys.CLibraryNovels))
     );
   }
-  inLibrary(novelID: string) {
+  inLibrary(novelID: string = this.novelID) {
     return this.libs.myLibrary().pipe(
-      map(library => this.libs.inLibrary(library, dbKeys.C_library_novels, novelID))
+      map(library => this.libs.inLibrary(library, dbKeys.CLibraryNovels, novelID))
     );
   }
-  libAdd(novelID: string) {
-    return this.libs.add(dbKeys.C_library_novels, novelID);
+  libAdd(novelID: string = this.novelID) {
+    return this.libs.add(dbKeys.CLibraryNovels, novelID);
   }
-  libRemove(novelID: string) {
-    return this.libs.remove(dbKeys.C_library_novels, novelID);
+  libRemove(novelID: string = this.novelID) {
+    return this.libs.remove(dbKeys.CLibraryNovels, novelID);
   }
 }

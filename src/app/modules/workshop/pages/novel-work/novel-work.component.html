@@ -23,7 +23,8 @@
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start center" fxLayoutGap=".6em">
 
       <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center" fxLayoutGap=".6em">
-        <app-cover-reupload [cover]="novel.cover" [novelID]="novel.id"></app-cover-reupload>
+        <app-cover-reupload [novelID]="novel.id" [thumbURL]="novel.coverThumbURL" [fullURL]="novel.coverFullURL">
+        </app-cover-reupload>
         <!--<app-ratings [novel]="novel"></app-ratings>-->
       </div>
 

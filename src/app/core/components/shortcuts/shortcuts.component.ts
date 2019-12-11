@@ -45,11 +45,11 @@ export class ShortcutsComponent implements OnInit {
   switchThemeMode(event: MouseEvent = null) {
     if (event) { event.stopPropagation(); }
 
-    this.config.setSetting(keysConfig.SELECTED_THEME_DARK_MODE, (!this.themeMode));
+    this.config.setSetting(keysConfig.SELECTED_DARK_MODE, (!this.themeMode));
   }
 
   get themeMode() {
-    return this.config.snapshotSetting<boolean>(keysConfig.SELECTED_THEME_DARK_MODE);
+    return this.config.snapshotSetting<boolean>(keysConfig.SELECTED_DARK_MODE);
   }
 
   switchTheme(event: MouseEvent = null) {

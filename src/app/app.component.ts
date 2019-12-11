@@ -33,8 +33,8 @@ export class AppComponent implements OnInit, OnDestroy {
     ).subscribe(appSettings => {
       this.applyFontSize(appSettings[keysConfig.FONT_SIZE_KEY] as number);
       this.applyTheme(appSettings[keysConfig.SELECTED_THEME] as string);
-      this.applyThemeMode(appSettings[keysConfig.SELECTED_THEME_DARK_MODE] as boolean);
-      let sidenav = appSettings[keysConfig.SIDENAV_OPEN] === undefined;
+      this.applyThemeMode(appSettings[keysConfig.SELECTED_DARK_MODE] as boolean);
+      let sidenav = appSettings[keysConfig.SIDENAV_OPEN];
       sidenav = sidenav === undefined ? true : sidenav as boolean;
       this.applySidenav(sidenav);
     });

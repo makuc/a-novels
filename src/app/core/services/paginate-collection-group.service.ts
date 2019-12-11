@@ -1,35 +1,36 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { AngularFirestore, QueryGroupFn, AngularFirestoreCollectionGroup } from '@angular/fire/firestore';
-import { tap, first } from 'rxjs/operators';
-import { Genre } from 'src/app/shared/models/novels/genre.model';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import {
+  AngularFirestore,
+  QueryGroupFn,
+  AngularFirestoreCollectionGroup,
+  DocumentChangeAction,
+  QueryDocumentSnapshot
+} from '@angular/fire/firestore';
+import { throttleTime, takeUntil } from 'rxjs/operators';
 import { HttpErrorsHelper } from '../helpers/http-errors.helper';
+import { QueryConfig } from './paginate-collection.service';
 
-export interface QueryConfig {
-  public: boolean;
-  authorID?: string;
-  genres?: Genre[];
-  sortField: 'iTitle' | 'createdAt' | 'updatedAt'; // field to orderBy
-  limit: number; // limit per query
-  reverse: boolean; // reverse order
-  prepend: boolean; // prepend to source
-}
+type CompiledSnapshot<T> = T & { doc: QueryDocumentSnapshot<T> };
+
 @Injectable({
   providedIn: 'root'
 })
-export class PaginateCollectionGroupService<T> extends HttpErrorsHelper {
+export class PaginateCollectionGroupService<T> extends HttpErrorsHelper implements OnDestroy {
+
+  protected end: Subject<void> = new Subject();
 
 // tslint:disable: variable-name
-  private _done = new BehaviorSubject(false);
-  private _loading = new BehaviorSubject(false);
-  private _data = new BehaviorSubject([]);
+  private _done: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private _loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private _data: BehaviorSubject<CompiledSnapshot<T>[]> = new BehaviorSubject([]);
 // tslint:enable: variable-name
   private colID: string;
   protected query: QueryConfig;
   protected queryFunc: QueryGroupFn;
 
   // Observable data
-  data: Observable<T[]> = this._data.asObservable();
+  data: Observable<CompiledSnapshot<T>[]> = this._data.asObservable();
   done: Observable<boolean> = this._done.asObservable();
   loading: Observable<boolean> = this._loading.asObservable();
 
@@ -38,6 +39,11 @@ export class PaginateCollectionGroupService<T> extends HttpErrorsHelper {
     protected afs: AngularFirestore
   ) {
     super();
+  }
+
+  ngOnDestroy() {
+    this.end.next();
+    this.end.complete();
   }
 
   // Initial query sets options and defines the Observable
@@ -50,23 +56,18 @@ export class PaginateCollectionGroupService<T> extends HttpErrorsHelper {
     this.colID = collectionID;
     this.queryFunc = queryFunc;
     this.query = {
-      public: true,
       sortField: 'createdAt',
-      limit: 2,
+      limit: 1,
       reverse: false,
       prepend: false,
       ...opts
     };
 
     const begin = this.afs.collectionGroup<T>(this.colID, ref => {
-      if (!this.queryFunc) {
-        return ref.orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
-                  .limit(this.query.limit);
-      } else {
-        return this.queryFunc(ref)
-                   .orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
-                   .limit(this.query.limit);
-      }
+      const query = this.queryFunc ? this.queryFunc(ref) : ref;
+      return query
+        .orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
+        .limit(this.query.limit);
     });
 
     this.mapAndUpdate(begin);
@@ -74,19 +75,12 @@ export class PaginateCollectionGroupService<T> extends HttpErrorsHelper {
 
   more() {
     if (!this._done.value) {
-      const cursor = this.getCursor();
-
       const more = this.afs.collectionGroup<T>(this.colID, ref => {
-        if (!this.queryFunc) {
-          return ref.orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
-                    .limit(this.query.limit)
-                    .startAfter(cursor);
-        } else {
-          return this.queryFunc(ref)
-                     .orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
-                     .limit(this.query.limit)
-                     .startAfter(cursor);
-        }
+        const query = this.queryFunc ? this.queryFunc(ref) : ref;
+        return query
+          .orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
+          .limit(this.query.limit)
+          .startAfter(this.cursor);
       });
 
       this.mapAndUpdate(more);
@@ -94,7 +88,7 @@ export class PaginateCollectionGroupService<T> extends HttpErrorsHelper {
   }
 
   // Determines the doc snapshot to paginate query
-  private getCursor() {
+  private  get cursor() {
     const current = this._data.value;
     if (current.length) {
       return this.query.prepend ? current[0].doc : current[current.length - 1].doc;
@@ -104,6 +98,7 @@ export class PaginateCollectionGroupService<T> extends HttpErrorsHelper {
 
   // Maps the snapshot to usable format the updates source
   private mapAndUpdate(col: AngularFirestoreCollectionGroup<T>) {
+    console.log('load more?', this._done.value, this._loading.value);
     if (this._done.value || this._loading.value) { return; }
 
     // loading
@@ -111,34 +106,64 @@ export class PaginateCollectionGroupService<T> extends HttpErrorsHelper {
 
     // Map snapshot with doc ref (needed for cursor)
     return col.snapshotChanges().pipe(
-      tap(arr => {
-        let values = arr.map(snap => {
-          const data = snap.payload.doc.data();
-          const doc = snap.payload.doc;
-          return {
-            ...data,
-            doc
-          };
-        });
-
-        // If prepending, reverse the batch order
-        values = this.query.prepend ? values.reverse() : values;
-        values = this.query.prepend ? values.concat(this._data.value) : this._data.value.concat(values);
-
-        // Update source with new values, done loading
-        this._data.next(values);
-        this._loading.next(false);
-
-        // No more values, mark done
-        if (!values.length) {
-          this._done.next(true);
-        }
-      }),
-      first()
+      throttleTime(1000, undefined, { trailing: true, leading: true }),
+      takeUntil(this.end)
     ).subscribe(
-      () => null,
-      (err) => console.error('mapAndUpdate:', err)
+      snaps => this.processSnaps(snaps),
+      err => console.error(err)
     );
+  }
+
+  private processSnaps(snaps: DocumentChangeAction<T>[]) {
+    console.log('processing snaps');
+    const value = this._data.value;
+    const newDocs: CompiledSnapshot<T>[] = [];
+
+    snaps.forEach(snap => {
+      const data = snap.payload.doc.data();
+      const doc = {
+        ...data,
+        doc: snap.payload.doc
+      };
+
+      let exists = false;
+      for (let i = 0; i < value.length; i++) {
+        const val = value[i];
+        if (val.doc.id === doc.doc.id) {
+          Object.keys(doc.doc).forEach((key, index) => {
+            if (key !== 'doc' && value[i][key] !== doc[key]) {
+              value[i][key] = doc[key];
+            }
+          });
+          value[i] = doc;
+          exists = true;
+          break;
+        }
+      }
+
+      // Those that weren't updated, just append them...
+      if (!exists) {
+        if (this.query.prepend) {
+          newDocs.unshift(doc);
+        } else {
+          newDocs.push(doc);
+        }
+      }
+    });
+
+    // If prepending
+    if (newDocs.length > 0) {
+      const updated = this.query.prepend ? newDocs.concat(value) : value.concat(newDocs);
+      this._data.next(updated);
+    }
+
+    // Update source with new values, done loading
+    this._loading.next(false);
+
+    // No more values, mark done
+    if (snaps.length < this.query.limit) {
+      this._done.next(true);
+    }
   }
 
 }

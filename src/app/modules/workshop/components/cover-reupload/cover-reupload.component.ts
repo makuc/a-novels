@@ -37,7 +37,8 @@ import { AlertService } from 'src/app/core/services/alert.service';
 export class CoverReuploadComponent implements OnInit {
 
   s = storageKeys;
-  @Input() cover = false;
+  @Input() thumbURL: string;
+  @Input() fullURL: string;
   @Input() novelID: string;
   uploadPercent: Observable<number>;
 
@@ -59,15 +60,6 @@ export class CoverReuploadComponent implements OnInit {
 
   get changed(): boolean {
     return (this.elCover.nativeElement.files.length > 0);
-  }
-
-  coverURL(): string {
-    return storageKeys.GEN_URL(
-      storageKeys.BASIC_URL,
-      storageKeys.NOVELS_COVER_PATH,
-      this.cover ? this.novelID : storageKeys.NOVELS_COVER_DEFAULT_NAME,
-      storageKeys.NOVELS_COVER_THUMBNAIL
-    );
   }
 
   reuploadCover() {
@@ -97,10 +89,7 @@ export class CoverReuploadComponent implements OnInit {
       },
       (err) => {
         this.busy = false;
-        if (err.code === storageKeys.E404) {
-          return this.alert.success('It may take a minute for changes to take effect...');
-        }
-        console.error('Remove cover:', err);
+        console.error(err);
       }
     );
   }
@@ -129,6 +118,11 @@ export class CoverReuploadComponent implements OnInit {
       this.msg = null;
       this.msgIcon = null;
     } , 3000);
+  }
+
+  get isDefault() {
+    const defaultFull = `${storageKeys.BASIC_URL}${storageKeys.DefaultNovelsCoverFull}`;
+    return this.fullURL === defaultFull;
   }
 
 }

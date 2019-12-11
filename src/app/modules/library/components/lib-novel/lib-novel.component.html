@@ -14,7 +14,7 @@
       <ul class="overlay">
         <li *ngFor="let g of d.n.genres">{{ g.name }}</li>
       </ul>
-      <img [src]="coverURL(d.n.cover, d.n.id)">
+      <img [src]="d.n.coverThumbURL">
     </div>
     <div class="progress">
         <span class="label">Read</span>

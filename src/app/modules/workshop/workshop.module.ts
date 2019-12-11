@@ -16,6 +16,7 @@ import { EditTXEComponent } from './components/edit-txe/edit-txe.component';
 import { EditGenresComponent } from './components/edit-genres/edit-genres.component';
 import { EditTagsComponent } from './components/edit-tags/edit-tags.component';
 import { TagsSelectorAutocompleteComponent } from './components/tags-selector-autocomplete/tags-selector-autocomplete.component';
+import { NovelEntryComponent } from './components/novel-entry/novel-entry.component';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import { TagsSelectorAutocompleteComponent } from './components/tags-selector-au
   ],
   declarations: [
     WorksComponent,
+    NovelEntryComponent,
     NovelAddComponent,
     TagsSelectorComponent,
     TagsSelectorAutocompleteComponent,

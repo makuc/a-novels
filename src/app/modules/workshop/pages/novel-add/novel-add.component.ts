@@ -91,7 +91,10 @@ export class NovelAddComponent implements OnInit {
         this.loading = false;
         this.router.navigate([`/workshop/novel/${id}`]);
       },
-      err => console.error(err)
+      err => {
+        this.loading = false;
+        console.error(err);
+      }
     );
   }
 

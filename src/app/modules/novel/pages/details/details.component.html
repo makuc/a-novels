@@ -37,7 +37,9 @@
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start stretch" fxLayoutAlign.xs="start center" fxLayoutGap=".6em">
 
       <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center" fxLayoutGap=".6em">
-        <img alt="Novel's cover picture''" [src]="coverURL(novel.cover, novel.id)">
+        <a [href]="novel.coverFullURL">
+          <img alt="Novel's cover picture" [src]="novel.coverThumbURL">
+        </a>
         <app-ratings [novelID]="novel.id"></app-ratings>
       </div>
 

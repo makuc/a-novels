@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import {
   AngularFirestore,
-  AngularFirestoreCollection,
   QueryFn,
   DocumentChangeAction,
   QueryDocumentSnapshot
 } from '@angular/fire/firestore';
-import { tap, first, map, mergeMap, single, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { firestore } from 'firebase';
 import { Genre } from 'src/app/shared/models/novels/genre.model';
 import { HttpErrorsHelper } from '../helpers/http-errors.helper';

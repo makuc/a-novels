@@ -22,6 +22,7 @@ interface ReviewsQueryConfig {
   providedIn: 'root'
 })
 export class ReviewsService extends PaginateCollectionService<Review> {
+
 // tslint:disable: variable-name
   private novelID: string;
 // tslint:enable: variable-name
@@ -44,10 +45,10 @@ export class ReviewsService extends PaginateCollectionService<Review> {
   }
 
   private pathRC(novelID: string) {
-    return `${dbKeys.C_NOVELS}/${novelID}/${dbKeys.C_NOVELS_REVIEWS}`;
+    return `${dbKeys.CNovels}/${novelID}/${dbKeys.CNovelsReviews}`;
   }
   private pathStats(novelID: string) {
-    return `${dbKeys.C_NOVELS}/${novelID}/${dbKeys.C_STATS}/${dbKeys.C_STATS_Reviews}`;
+    return `${dbKeys.CNovels}/${novelID}/${dbKeys.CStats}/${dbKeys.CStatsReviews}`;
   }
 
   // Implementation for retrieving reviews
@@ -55,7 +56,7 @@ export class ReviewsService extends PaginateCollectionService<Review> {
   // passing opts will override the defaults
   init(novelID: string, opts?: any) {
     this.novelID = novelID;
-    const path = `${dbKeys.C_NOVELS}/${novelID}/${dbKeys.C_NOVELS_REVIEWS}`;
+    const path = `${dbKeys.CNovels}/${novelID}/${dbKeys.CNovelsReviews}`;
     super.doInit(path, opts);
   }
 
@@ -204,23 +205,23 @@ export class ReviewsService extends PaginateCollectionService<Review> {
 
   // LIKE/DISLIKE SYSTEM
   like(reviewID: string): Observable<void> {
-    const path = `${dbKeys.C_NOVELS}/${this.novelID}/${dbKeys.C_NOVELS_REVIEWS}/${reviewID}`;
+    const path = `${dbKeys.CNovels}/${this.novelID}/${dbKeys.CNovelsReviews}/${reviewID}`;
     return this.ls.like(path);
   }
   dislike(reviewID: string): Observable<void> {
-    const path = `${dbKeys.C_NOVELS}/${this.novelID}/${dbKeys.C_NOVELS_REVIEWS}/${reviewID}`;
+    const path = `${dbKeys.CNovels}/${this.novelID}/${dbKeys.CNovelsReviews}/${reviewID}`;
     return this.ls.dislike(path);
   }
   unlike(reviewID: string): Observable<void> {
-    const path = `${dbKeys.C_NOVELS}/${this.novelID}/${dbKeys.C_NOVELS_REVIEWS}/${reviewID}`;
+    const path = `${dbKeys.CNovels}/${this.novelID}/${dbKeys.CNovelsReviews}/${reviewID}`;
     return this.ls.reset(path);
   }
   getLikes(reviewID: string): Observable<LikeStats> {
-    const path = `${dbKeys.C_NOVELS}/${this.novelID}/${dbKeys.C_NOVELS_REVIEWS}/${reviewID}`;
+    const path = `${dbKeys.CNovels}/${this.novelID}/${dbKeys.CNovelsReviews}/${reviewID}`;
     return this.ls.stats(path);
   }
   likeState(reviewID: string): Observable<Like> {
-    const path = `${dbKeys.C_NOVELS}/${this.novelID}/${dbKeys.C_NOVELS_REVIEWS}/${reviewID}`;
+    const path = `${dbKeys.CNovels}/${this.novelID}/${dbKeys.CNovelsReviews}/${reviewID}`;
     return this.ls.state(path);
   }
 

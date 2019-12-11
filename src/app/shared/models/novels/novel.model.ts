@@ -1,5 +1,4 @@
 import { firestore } from 'firebase/app';
-import { AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Genre } from './genre.model';
 import { UserMeta } from '../users/user-profile.model';
 
@@ -26,7 +25,9 @@ export class Novel {
     genres: Genre[];
     tags: string[] | firestore.FieldValue;
 
-    cover?: boolean = false;
+    coverThumbURL?: string; // TO-DO: Fix implementation project-wise
+    coverFullURL?: string;
+    coverID?: string;
     public?: boolean = false;
     complete?: boolean = false;
 

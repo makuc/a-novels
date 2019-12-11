@@ -59,10 +59,10 @@ export class ChaptersService implements OnDestroy {
   }
 
   private pathCh(chapterID: string, novelID = this.query.novelID): string {
-    return `${dbKeys.C_NOVELS}/${novelID}/${dbKeys.C_NOVELS_CHAPTERS}/${chapterID}`;
+    return `${dbKeys.CNovels}/${novelID}/${dbKeys.CNovelsChapters}/${chapterID}`;
   }
   private pathStats(novelID = this.query.novelID): string {
-    return `${dbKeys.C_NOVELS}/${novelID}/${dbKeys.C_STATS}/${dbKeys.C_NOVELS_CHAPTERS}`;
+    return `${dbKeys.CNovels}/${novelID}/${dbKeys.CStats}/${dbKeys.CNovelsChapters}`;
   }
 
   init(novelID: string, chapterID: string, opts?: Partial<ChaptersQuery>) {
@@ -400,12 +400,12 @@ export class ChaptersService implements OnDestroy {
 
   readGet(novelID: string = this.novelID): Observable<HistoryNovel> {
     this.novelID = novelID;
-    return this.hs.getMyHistory<HistoryNovel>(dbKeys.C_history_novels, novelID);
+    return this.hs.getMyHistory<HistoryNovel>(dbKeys.CHistoryNovels, novelID);
   }
 
   readSet(chapterID: string, read = false) {
     return this.afs.doc<ChaptersStats>(this.pathStats(this.novelID)).valueChanges().pipe(
-      exhaustMap(stats => this.hs.setMyHistory<HistoryNovel>(dbKeys.C_history_novels, this.novelID, {
+      exhaustMap(stats => this.hs.setMyHistory<HistoryNovel>(dbKeys.CHistoryNovels, this.novelID, {
         novel: stats.novel,
         chapterID,
         index: this.chapterID_to_index(stats.toc, chapterID),

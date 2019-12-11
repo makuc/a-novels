@@ -17,7 +17,7 @@ export class GenresService {
   constructor(
     private afStore: AngularFirestore
   ) {
-    this._genres = this.afStore.collection<Genre>(dbKeys.C_GENRES, ref => ref.orderBy('name'));
+    this._genres = this.afStore.collection<Genre>(dbKeys.CGenres, ref => ref.orderBy('name'));
   }
 
   get timestamp() {

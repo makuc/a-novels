@@ -36,7 +36,7 @@
   </ng-container>
   <ng-container *ngIf="!changed">
     <img  alt="Novel's cover picture''"
-          [src]="coverURL()">
+          [src]="thumbURL">
   </ng-container>
 
   <input  #sCover
@@ -77,18 +77,17 @@
   </button>
 
   <a  mat-icon-button
-      *ngIf="cover"
       [disabled]="busy"
       matTooltip="Save cover"
       matTooltipClass="dscr-tooltip"
       aria-label="Save cover"
       target="_blank"
       download
-      [href]="s.GEN_URL(s.BASIC_URL, s.NOVELS_COVER_PATH, novelID, s.NOVELS_COVER_THUMBNAIL)">
+      [href]="fullURL">
     <mat-icon>save_alt</mat-icon>
   </a>
   <button mat-icon-button
-          *ngIf="cover && !changed"
+          *ngIf="!isDefault && !changed"
           [disabled]="busy"
           matTooltip="Remove cover"
           matTooltipClass="dscr-tooltip"

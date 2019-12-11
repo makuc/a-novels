@@ -35,7 +35,7 @@ export class LibraryService extends HttpErrorsHelper {
       switchMap(user => user ? this.us.getUser(uid) : this.rejectLoginObservable ), // Check if logged in
       switchMap(user => {
         if (!user) { return EMPTY; }
-        const path = `${dbKeys.C_library}/${user.uid}`;
+        const path = `${dbKeys.CLibrary}/${user.uid}`;
         return this.afs.doc<Library>(path).valueChanges();
       })
     );
@@ -45,7 +45,7 @@ export class LibraryService extends HttpErrorsHelper {
     return this.auth.getUser.pipe(
       switchMap(user => {
         if (!user) { return EMPTY; }
-        const path = `${dbKeys.C_library}/${user.uid}`;
+        const path = `${dbKeys.CLibrary}/${user.uid}`;
         return this.afs.doc<Library>(path).valueChanges();
       })
     );
@@ -72,7 +72,7 @@ export class LibraryService extends HttpErrorsHelper {
       return this.rejectLoginPromise;
     }
 
-    return this.afs.doc<Library>(`${dbKeys.C_library}/${this.user.uid}`).set({
+    return this.afs.doc<Library>(`${dbKeys.CLibrary}/${this.user.uid}`).set({
       uid: this.user.uid,
       updatedAt: this.timestamp,
       [field]: firestore.FieldValue.arrayUnion(id)
@@ -87,7 +87,7 @@ export class LibraryService extends HttpErrorsHelper {
       return this.rejectLoginPromise;
     }
 
-    return this.afs.doc<Library>(`${dbKeys.C_library}/${this.user.uid}`).set({
+    return this.afs.doc<Library>(`${dbKeys.CLibrary}/${this.user.uid}`).set({
       uid: this.user.uid,
       updatedAt: this.timestamp,
       [field]: firestore.FieldValue.arrayRemove(id)

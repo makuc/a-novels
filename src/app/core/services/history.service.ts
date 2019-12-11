@@ -29,7 +29,7 @@ export class HistoryService extends HttpErrorsHelper {
         if (!user) {// First expose yourself a little!
           return this.rejectLoginObservable;
         }
-        const fullPath = `${dbKeys.C_history}/${uid}/${path}/${key}`;
+        const fullPath = `${dbKeys.CHistory}/${uid}/${path}/${key}`;
         return this.afs.doc<T>(fullPath).valueChanges();
       })
     );
@@ -40,7 +40,7 @@ export class HistoryService extends HttpErrorsHelper {
     return this.auth.getUser.pipe(
       switchMap(user => {
         if (!user) { return null; }
-        const fullPath = `${dbKeys.C_history}/${user.uid}/${path}/${key}`;
+        const fullPath = `${dbKeys.CHistory}/${user.uid}/${path}/${key}`;
         return this.afs.doc<T>(fullPath).valueChanges();
       })
     );
@@ -49,7 +49,7 @@ export class HistoryService extends HttpErrorsHelper {
   setMyHistory<T>(path: string, key: string, value: T): Promise<void> {
     if (!path || !key || !value) { return this.rejectDataPromise; }
     if (!this.user) { return Promise.resolve(); }
-    return this.afs.doc<T>(`${dbKeys.C_history}/${this.user.uid}/${path}/${key}`).set(value, { merge: true });
+    return this.afs.doc<T>(`${dbKeys.CHistory}/${this.user.uid}/${path}/${key}`).set(value, { merge: true });
   }
 
 }

@@ -3,7 +3,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { dbKeys } from 'src/app/keys.config';
 import { firestore } from 'firebase';
 import { Review } from 'src/app/shared/models/novels/review.model';
-import { PaginateCollectionGroupService, QueryConfig } from 'src/app/core/services/paginate-collection-group.service';
+import { PaginateCollectionGroupService } from 'src/app/core/services/paginate-collection-group.service';
+import { QueryConfig } from 'src/app/core/services/paginate-collection.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +22,11 @@ export class UserReviewsService extends PaginateCollectionGroupService<Review> {
       const query = ref.where('author.uid', '==', uid);
       return query;
     };
-    this.doInit(dbKeys.C_NOVELS_REVIEWS, opts, queryFunc);
+    this.doInit(dbKeys.CNovelsReviews, opts, queryFunc);
   }
 
   getRevs(uid: string) {
-    return this.afs.collectionGroup<Review>(dbKeys.C_NOVELS_REVIEWS, ref => {
+    return this.afs.collectionGroup<Review>(dbKeys.CNovelsReviews, ref => {
       return ref.where('author.uid', '==', uid);
     }).valueChanges();
   }

@@ -54,15 +54,6 @@ export class PNovelsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.end.complete();
   }
 
-  coverURL(custom: boolean, novelID: string): string {
-    return storageKeys.GEN_URL(
-      storageKeys.BASIC_URL,
-      storageKeys.NOVELS_COVER_PATH,
-      custom ? novelID : storageKeys.NOVELS_COVER_DEFAULT_NAME,
-      storageKeys.NOVELS_COVER_THUMBNAIL
-    );
-  }
-
   initScroll() {
     this.scroll.offset(0, 400);
     this.scroll.scrollPosition.pipe(

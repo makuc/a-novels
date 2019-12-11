@@ -27,14 +27,14 @@ export class LikesService extends HttpErrorsHelper {
   get timestamp() { return firestore.FieldValue.serverTimestamp(); }
 
   stats(elPath: string): Observable<LikeStats> {
-    return this.afs.doc<LikeStats>(`${elPath}/${dbKeys.C_STATS}/${dbKeys.C_Likes}`).valueChanges();
+    return this.afs.doc<LikeStats>(`${elPath}/${dbKeys.CStats}/${dbKeys.CLikes}`).valueChanges();
   }
 
   state(elPath: string): Observable<Like> {
     return this.auth.getUser.pipe(
       switchMap(user => {
         if (!user) { return EMPTY; }
-        const path = `${elPath}/${dbKeys.C_Likes}/${user.uid}`;
+        const path = `${elPath}/${dbKeys.CLikes}/${user.uid}`;
         return this.afs.doc<Like>(path).valueChanges();
       })
     );
@@ -66,7 +66,7 @@ export class LikesService extends HttpErrorsHelper {
       return EMPTY;
     }
     const uid = this.user.uid;
-    return this.afs.doc<Like>(`${elPath}/${dbKeys.C_Likes}/${uid}`).valueChanges().pipe(
+    return this.afs.doc<Like>(`${elPath}/${dbKeys.CLikes}/${uid}`).valueChanges().pipe(
       map(like => this.mapLike(uid, like))
     );
   }
@@ -108,8 +108,8 @@ export class LikesService extends HttpErrorsHelper {
 
     // Write new entries in batch
     const batch = this.afs.firestore.batch();
-    const refLike = this.afs.doc<Like>(`${elPath}/${dbKeys.C_Likes}/${like.uid}`).ref;
-    const refStats = this.afs.doc<LikeStats>(`${elPath}/${dbKeys.C_STATS}/${dbKeys.C_Likes}`).ref;
+    const refLike = this.afs.doc<Like>(`${elPath}/${dbKeys.CLikes}/${like.uid}`).ref;
+    const refStats = this.afs.doc<LikeStats>(`${elPath}/${dbKeys.CStats}/${dbKeys.CLikes}`).ref;
 
     batch.set(refLike, newLike);
     batch.set(refStats, newStats, { merge: true });
@@ -136,8 +136,8 @@ export class LikesService extends HttpErrorsHelper {
 
     // Write new entries in batch
     const batch = this.afs.firestore.batch();
-    const refLike = this.afs.doc<Like>(`${elPath}/${dbKeys.C_Likes}/${this.user.uid}`).ref;
-    const refStats = this.afs.doc<LikeStats>(`${elPath}/${dbKeys.C_STATS}/${dbKeys.C_Likes}`).ref;
+    const refLike = this.afs.doc<Like>(`${elPath}/${dbKeys.CLikes}/${this.user.uid}`).ref;
+    const refStats = this.afs.doc<LikeStats>(`${elPath}/${dbKeys.CStats}/${dbKeys.CLikes}`).ref;
 
     batch.set(refStats, newStats, { merge: true });
     batch.delete(refLike);

@@ -3,14 +3,14 @@
     <li *ngFor="let novel of novels; let last = last">
       <div fxLayout="row" fxLayoutAlign="start start" fxLayout.xs="column">
         <div>
-          <img class="cover-img" [src]="coverURL(novel.cover, novel.id)">
+          <img class="cover-img" [src]="novel.coverThumbURL">
         </div>
 
         <div>
           <a class="l" routerLink="/workshop/novel/{{ novel.id }}">
             <h2>{{ novel.title }}</h2>
           </a>
-          <div [innerHTML]="novel.description">
+          <div [innerHTML]="novel.description" appMinimizeBtn minimizedMaxHeight="8.5em" color="stacked">
 
           </div>
         </div>

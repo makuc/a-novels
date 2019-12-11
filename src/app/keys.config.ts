@@ -12,52 +12,52 @@ export const keysConfig = {
   // Themes
   DEFAULT_THEME: 'indigo',
   SELECTED_THEME: 'theme',
-  SELECTED_THEME_DARK_MODE: 'dark-mode',
+  SELECTED_DARK_MODE: 'dark-mode',
   THEMES: ['indigo', 'purple'],
 
   // Authentication
   CURRENT_USER_KEY: 'user',
 
   SIDENAV_OPEN: 'sidenav-open',
-  SIDENAV_MAXIMIZED: 'sidenav-maximized',
+  SIDENAV_MAX: 'sidenav-maximized',
 };
 
 export const dbKeys = {
   STATS_DOC: '---STATS---',
 
-  C_TAGS: 'tags',
+  CTags: 'tags',
 
-  C_GENRES: 'genres',
+  CGenres: 'genres',
 
   CUsers: 'users',
 
-  C_NOVELS: 'novels',
-  C_FAVS: 'favourites',
-  C_Likes: 'likes',
-  C_NOVELS_CHAPTERS: 'chapters',
-  C_NOVELS_CHAPTERS_PUBLIC_DOC: '---PUBLIC---',
-  C_NOVELS_CHAPTERS_PRIVATE_DOC: '---PRIVATE---',
-  C_NOVELS_REVIEWS: 'reviews',
+  CNovels: 'novels',
+  CFavs: 'favourites',
+  CLikes: 'likes',
+  CNovelsChapters: 'chapters',
+  CNovelsReviews: 'reviews',
 
-  C_STATS: 'stats',
-  C_STATS_Reviews: 'reviews',
-  C_STATS_Chapters: 'chapters',
+  CStats: 'stats',
+  CStatsReviews: 'reviews',
+  CStatsChapters: 'chapters',
 
-  C_library: 'libraries',
-  C_library_novels: 'novels',
+  CLibrary: 'libraries',
+  CLibraryNovels: 'novels',
 
-  C_history: 'histories',
-  C_history_novels: 'novels',
+  CHistory: 'histories',
+  CHistoryNovels: 'novels',
 };
 
 export const storageKeys = {
   BASIC_URL: 'https://firebasestorage.googleapis.com/v0/b/testing-192515.appspot.com/o/',
+  DEFAULT_NAME: 'default',
 
-  NOVELS_COVER_PATH: 'novels',
-  NOVELS_COVER_FULL: 'cover-full.jpg?alt=media',
-  NOVELS_COVER_THUMBNAIL: 'cover-full.jpg?alt=media',
-  NOVELS_COVER_ORIGINAL: 'cover-full.jpg',
-  NOVELS_COVER_DEFAULT_NAME: 'default',
+  NovelsPath: 'novels',
+  DefaultNovelsCoverFull: 'novels%2Fdefault%2Ffull.jpg?alt=media&token=73ce7344-1f28-4272-9d9b-a78df292eb9a',
+  DefaultNovelsCoverThumb: 'novels%2Fdefault%2Fthumb.jpg?alt=media&token=e2465d3a-4ad8-4abb-afec-669f769859ce',
+  NovelsCoverOriginal: 'orig',
+  NovelsCoverThumb: 'thumb.jpg',
+  NovelsCoverFull: 'full.jpg',
 
   GEN_URL: (base: string, ...data: string[]) => {
     return base + data.join('%2F');

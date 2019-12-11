@@ -4,7 +4,7 @@ import { Novel } from 'src/app/shared/models/novels/novel.model';
 import { PageEvent } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, share, switchMap } from 'rxjs/operators';
 import { NovelService } from 'src/app/core/services/novel.service';
 import { Like, LikeStats } from 'src/app/shared/models/like.model';
 import { HistoryNovel } from 'src/app/shared/models/history/history.model';
@@ -43,7 +43,9 @@ export class DetailsComponent extends UnauthorizedHelper implements OnInit {
     super(router);
 
     this.novelID = this.route.snapshot.paramMap.get('novelID');
-    this.novel$ = this.ns.novelGet(this.novelID);
+    this.novel$ = this.ns.novelGet(this.novelID).pipe(
+      share()
+    );
     this.toc$ = this.cs.toc(this.novelID).pipe(
       map(toc => this.cs.tocFilterPublic(toc)),
       tap(toc => this.toc = toc)
@@ -85,15 +87,6 @@ export class DetailsComponent extends UnauthorizedHelper implements OnInit {
         err => this.handleUnauthorized(err)
       );
     }
-  }
-
-  coverURL(custom: boolean, novelID: string): string {
-    return storageKeys.GEN_URL(
-      storageKeys.BASIC_URL,
-      storageKeys.NOVELS_COVER_PATH,
-      custom ? novelID : storageKeys.NOVELS_COVER_DEFAULT_NAME,
-      storageKeys.NOVELS_COVER_THUMBNAIL
-    );
   }
 
   toDate(ts: firestore.Timestamp) {

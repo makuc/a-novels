@@ -5,7 +5,7 @@
 
       <div class="cover" fxFlex fxLayout="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start center"
             fxLayoutGap=".6em">
-        <img alt="Cover picture of '{{ novel.title}}''" [src]="coverURL(novel.cover, novel.id)">
+        <img alt="Cover picture of '{{ novel.title}}''" [src]="novel.coverThumbURL">
       </div>
 
 

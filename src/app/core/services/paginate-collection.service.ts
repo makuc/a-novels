@@ -1,7 +1,13 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { AngularFirestore, AngularFirestoreCollection, QueryFn, QueryDocumentSnapshot } from '@angular/fire/firestore';
-import { tap, takeUntil, throttleTime } from 'rxjs/operators';
+import {
+  AngularFirestore,
+  AngularFirestoreCollection,
+  QueryFn,
+  QueryDocumentSnapshot,
+  DocumentChangeAction
+} from '@angular/fire/firestore';
+import { takeUntil, throttleTime } from 'rxjs/operators';
 import { firestore } from 'firebase';
 import { HttpErrorsHelper } from '../helpers/http-errors.helper';
 
@@ -27,7 +33,7 @@ export class PaginateCollectionService<T> extends HttpErrorsHelper implements On
 // tslint:enable: variable-name
   private path: string;
   protected query: QueryConfig;
-  protected queryFunc: (ref: firestore.CollectionReference) => firestore.Query;
+  protected queryFunc: QueryFn;
 
   // Observable data
   data: Observable<CompiledSnapshot<T>[]> = this._data.asObservable();
@@ -80,7 +86,7 @@ export class PaginateCollectionService<T> extends HttpErrorsHelper implements On
         return query
           .orderBy(this.query.sortField, this.query.reverse ? 'desc' : 'asc')
           .limit(this.query.limit)
-          .startAfter(this.getCursor());
+          .startAfter(this.cursor);
       });
 
       this.mapAndUpdate(more);
@@ -88,7 +94,7 @@ export class PaginateCollectionService<T> extends HttpErrorsHelper implements On
   }
 
   // Determines the doc snapshot to paginate query
-  private getCursor() {
+  private get cursor() {
     const current = this._data.value;
     if (current.length) {
       return this.query.prepend ? current[0].doc : current[current.length - 1].doc;
@@ -106,61 +112,62 @@ export class PaginateCollectionService<T> extends HttpErrorsHelper implements On
     // Map snapshot with doc ref (needed for cursor)
     return col.snapshotChanges().pipe(
       throttleTime(1000, undefined, { trailing: true, leading: true }),
-      tap(snaps => {
-        const value = this._data.value;
-        let newDocs: CompiledSnapshot<T>[] = [];
-
-        snaps.forEach(snap => {
-          const data = snap.payload.doc.data();
-          const doc = {
-            ...data,
-            doc: snap.payload.doc
-          };
-
-          let exists = false;
-          for (let i = 0; i < value.length; i++) {
-            const val = value[i];
-            if (val.doc.id === doc.doc.id) {
-              Object.keys(doc.doc).forEach((key, index) => {
-                if (key !== 'doc' && value[i][key] !== doc[key]) {
-                  value[i][key] = doc[key];
-                }
-              });
-              value[i] = doc;
-              exists = true;
-              break;
-            }
-          }
-
-          // Those that weren't updated, just append them...
-          if (!exists) {
-            if (this.query.prepend) {
-              newDocs.unshift(doc);
-            } else {
-              newDocs.push(doc);
-            }
-          }
-        });
-
-        // If prepending
-        if (newDocs.length > 0) {
-          newDocs = this.query.prepend ? newDocs.concat(value) : value.concat(newDocs);
-        }
-
-        // Update source with new values, done loading
-        this._data.next(newDocs);
-        this._loading.next(false);
-
-        // No more values, mark done
-        if (snaps.length < this.query.limit) {
-          this._done.next(true);
-        }
-      }),
       takeUntil(this.end)
     ).subscribe(
-      () => null,
-      (err) => console.error('mapAndUpdate:', err)
+      snaps => this.processSnaps(snaps),
+      err => console.error(err)
     );
+  }
+
+  private processSnaps(snaps: DocumentChangeAction<T>[]) {
+    const value = this._data.value;
+    const newDocs: CompiledSnapshot<T>[] = [];
+
+    snaps.forEach(snap => {
+      const data = snap.payload.doc.data();
+      const doc = {
+        ...data,
+        doc: snap.payload.doc
+      };
+
+      let exists = false;
+      for (let i = 0; i < value.length; i++) {
+        const val = value[i];
+        if (val.doc.id === doc.doc.id) {
+          Object.keys(doc.doc).forEach((key, index) => {
+            if (key !== 'doc' && value[i][key] !== doc[key]) {
+              value[i][key] = doc[key];
+            }
+          });
+          value[i] = doc;
+          exists = true;
+          break;
+        }
+      }
+
+      // Those that weren't updated, just append them...
+      if (!exists) {
+        if (this.query.prepend) {
+          newDocs.unshift(doc);
+        } else {
+          newDocs.push(doc);
+        }
+      }
+    });
+
+    // If prepending
+    if (newDocs.length > 0) {
+      const updated = this.query.prepend ? newDocs.concat(value) : value.concat(newDocs);
+      this._data.next(updated);
+    }
+
+    // Update source with new values, done loading
+    this._loading.next(false);
+
+    // No more values, mark done
+    if (snaps.length < this.query.limit) {
+      this._done.next(true);
+    }
   }
 
 }
