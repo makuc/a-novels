@@ -29,22 +29,22 @@ export class ChapterAddComponent implements OnInit {
     private cs: ChaptersService,
     private router: Router,
     private route: ActivatedRoute
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.novelID = this.route.snapshot.paramMap.get('novelID');
     this.chapterID = this.route.snapshot.paramMap.get('chapterID');
 
     this.novel = this.novels.novelGet(this.novelID);
     this.cs.init(this.novelID, this.chapterID);
+  }
 
+  ngOnInit() {
     this.cs.loading.pipe(
       filter(val => val === false),
       switchMap(() => this.cs.data),
       first()
     ).subscribe(
       chapters => this.prepareFormGroup(chapters),
-      (err) => console.error('Getting ch:', err)
+      (err) => console.error(err)
     );
   }
 
@@ -53,7 +53,7 @@ export class ChapterAddComponent implements OnInit {
   }
 
   prepareFormGroup(chapters: Chapter[]) {
-    if (chapters.length > 0) {
+    if (chapters.length > 0 && chapters[0]) {
       this.chapter = chapters[0];
     } else {
       this.chapter = new Chapter();

@@ -33,6 +33,8 @@ export class RatingsComponent implements OnInit, OnDestroy {
     ).subscribe(
       stats => {
         if (stats) {
+          // console.log(stats);
+          const nRevs = stats.nRevs as number;
           this.nRevs = stats.nRevs as number || 0;
           this.nFavs = stats.nFavs as number || 0;
           this.story = (stats.sumStory as number) / this.nRevs || 0;

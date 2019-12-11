@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ChapterMeta } from 'src/app/shared/models/novels/chapter.model';
 import { TOC } from 'src/app/shared/models/novels/chapters-stats.model';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chapters-work',

@@ -32,8 +32,8 @@ export class Review {
   worldReview: string = '';
   grammReview: string = '';
 
-  createdAt?: firestore.Timestamp | firestore.FieldValue = firestore.FieldValue.serverTimestamp();
-  updatedAt?: firestore.Timestamp | firestore.FieldValue = firestore.FieldValue.serverTimestamp();
+  createdAt?: firestore.Timestamp | firestore.FieldValue;
+  updatedAt?: firestore.Timestamp | firestore.FieldValue;
 
   likes?: number | firestore.FieldValue;
   dislikes?: number | firestore.FieldValue;

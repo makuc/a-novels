@@ -2,7 +2,7 @@ import { dbKeys } from 'src/app/keys.config';
 import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { firestore } from 'firebase/app';
-import { first, map, tap, takeUntil, exhaustMap } from 'rxjs/operators';
+import { first, map, tap, takeUntil, exhaustMap, debounceTime } from 'rxjs/operators';
 import { Chapter, ChapterMeta } from 'src/app/shared/models/novels/chapter.model';
 import { NovelService } from './novel.service';
 import { ChaptersStats, ChaptersList, TOC } from 'src/app/shared/models/novels/chapters-stats.model';
@@ -234,6 +234,7 @@ export class ChaptersService implements OnDestroy {
 
   chapterAdd(chapter: Chapter, novelID = this.novelID): Observable<void> {
     return this.afs.doc<ChaptersStats>(this.pathStats(novelID)).valueChanges().pipe(
+      debounceTime(200),
       exhaustMap(stats => this.ensureNovelMetaExists(stats, novelID)),
       exhaustMap(stats => this.chapterSet(chapter, stats)),
       first()
@@ -258,7 +259,7 @@ export class ChaptersService implements OnDestroy {
       id: newChapterID,
       title: chapter.title,
       createdAt: this.timestamp,
-      public: chapter.public
+      public: chapter.public || false
     };
     // Get a new write batch
     const batch = this.afs.firestore.batch();

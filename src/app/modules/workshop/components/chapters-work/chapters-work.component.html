@@ -1,5 +1,5 @@
 <ng-container *ngIf="toc$ | async as toc; else noToc">
-  <ng-container *ngIf="toc.indexes.length == 0; else noToc">
+  <ng-container *ngIf="toc.indexes.length > 0; else noToc">
     <ul class="v-list full"
         *ngIf="toc.indexes.slice().reverse() as rtoc"
         cdkDropList

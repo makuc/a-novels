@@ -27,7 +27,6 @@ export class Novel {
 
     coverThumbURL?: string; // TO-DO: Fix implementation project-wise
     coverFullURL?: string;
-    coverID?: string;
     public?: boolean = false;
     complete?: boolean = false;
 
