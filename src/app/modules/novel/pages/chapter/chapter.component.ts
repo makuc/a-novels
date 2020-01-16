@@ -34,6 +34,8 @@ export class ChapterComponent extends UnauthorizedHelper implements OnInit, OnDe
   islib$: Observable<boolean>;
   busyLib = false;
 
+  toc$: Observable<TOC>;
+
   tocOpen = false;
 
   constructor(
@@ -63,6 +65,7 @@ export class ChapterComponent extends UnauthorizedHelper implements OnInit, OnDe
     this.likeState$ = this.ns.likeState();
     this.likes$ = this.ns.getLikes();
     this.islib$ = this.ns.inLibrary(this.novelID);
+
   }
 
   ngOnInit() { }
@@ -83,6 +86,8 @@ export class ChapterComponent extends UnauthorizedHelper implements OnInit, OnDe
         }
       }
     );
+
+    this.toc$ = this.cs.readToc$;
   }
 
   ngOnDestroy() {

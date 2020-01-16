@@ -94,6 +94,8 @@ export class ChapterAddComponent implements OnInit {
       content: this.form.chapter.value,
       public: this.form.public.value
     };
+
+    // return console.log('New ch?', newCh.id);
     this.cs.chapterAdd(newCh).subscribe(
       () => this.router.navigate([`/workshop/novel/${this.novelID}`]),
       (err) => console.error('Adding chapter:', err)

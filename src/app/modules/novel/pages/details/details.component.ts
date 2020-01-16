@@ -4,7 +4,7 @@ import { Novel } from 'src/app/shared/models/novels/novel.model';
 import { PageEvent } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, tap, share, switchMap } from 'rxjs/operators';
+import { map, tap, share, switchMap, shareReplay } from 'rxjs/operators';
 import { NovelService } from 'src/app/core/services/novel.service';
 import { Like, LikeStats } from 'src/app/shared/models/like.model';
 import { HistoryNovel } from 'src/app/shared/models/history/history.model';
@@ -26,7 +26,6 @@ export class DetailsComponent extends UnauthorizedHelper implements OnInit {
   busyLib = false;
   busyFav = false;
   novelID: string;
-  toc: TOC;
   novel$: Observable<Novel>;
   toc$: Observable<TOC>;
   likes$: Observable<LikeStats>;
@@ -48,7 +47,7 @@ export class DetailsComponent extends UnauthorizedHelper implements OnInit {
     );
     this.toc$ = this.cs.toc(this.novelID).pipe(
       map(toc => this.cs.tocFilterPublic(toc)),
-      tap(toc => this.toc = toc)
+      shareReplay(1)
     );
     this.islib$ = this.ns.inLibrary(this.novelID);
     this.likeState$ = this.ns.likeState();

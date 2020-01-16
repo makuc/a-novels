@@ -55,12 +55,23 @@ $chListItemHeight: 2.9em;
   padding: .3em;
   padding-right: 0;
   display: flex;
-  flex-flow: row wrap; // <flex-direction> <flex-warp>
+  flex-flow: row nowrap; // <flex-direction> <flex-warp>
   justify-content: flex-start;
   align-items: center;
   position: relative;
 
   .private {
     opacity: .5;
+  }
+
+  .l {
+    flex: 1 1 0%;
+    text-align: left;
+    overflow: hidden;
+  }
+  .l-dec {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }

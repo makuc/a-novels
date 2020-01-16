@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, OnChanges } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TOC } from 'src/app/shared/models/novels/chapters-stats.model';
 import { ChaptersService } from 'src/app/core/services/chapters.service';
@@ -14,7 +14,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
   templateUrl: './toc.component.html',
   styleUrls: ['./toc.component.scss']
 })
-export class TocComponent implements OnInit, OnDestroy {
+export class TocComponent implements OnInit, OnDestroy, OnChanges {
   destroyer: Subject<void> = new Subject();
 
   // tslint:disable: variable-name
@@ -46,6 +46,8 @@ export class TocComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.prepareTocPage();
   }
+
+  ngOnChanges() { }
 
   ngOnDestroy() {
     this.destroyer.next();

@@ -20,6 +20,13 @@
     }
   }
 
+  l-line {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+  }
+
   .l-crop {
     overflow: hidden;
     width: 100%;

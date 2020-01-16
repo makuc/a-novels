@@ -13,10 +13,10 @@
         <div class="ch-content">
           <div class="index" [class.private]="!toc.toc[i].public">{{ displayIndex(i) }}</div>
 
-          <a fxFlex class="l l-inner title"
+          <a class="l l-inner title"
             [class.private]="!toc.toc[i].public"
             routerLink="/workshop/novel/{{ novelID }}/{{ toc.toc[i].id }}">
-            <div class="l-dec">{{ toc.toc[i].title }}</div>
+            <div class="l-dec l-line">{{ toc.toc[i].title }}</div>
             <div class="small-print" *ngIf="toc.toc[i].createdAt">{{ toc.toc[i].createdAt?.toMillis() | date }}</div>
           </a>
 

@@ -16,7 +16,7 @@ $config: mat-typography-config( //
 );
 
 section {
-  margin-top: 1em;
+  padding: 1em;
 
   h1 {
     @include mat-typography-level-to-styles($config, title);

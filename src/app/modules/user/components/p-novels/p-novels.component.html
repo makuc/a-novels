@@ -1,18 +1,16 @@
 <div class="container" *ngIf="novels$ | async as novels; else noNovels">
   <ul class="v-list" *ngIf="novels.length > 0; else noNovels">
     <li *ngFor="let novel of novels; let last = last">
-      <div fxLayout="row" fxLayoutAlign="start start" fxLayout.xs="column">
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayout.xs="column" fxLayoutAlign.xs="start center" fxLayoutGap.xs="1em">
         <div>
           <img class="cover-img" [src]="novel.coverThumbURL">
         </div>
 
-        <div>
+        <div fxFlex fxFlexAlign.xs="stretch">
           <a class="l" routerLink="/workshop/novel/{{ novel.id }}">
             <h2>{{ novel.title }}</h2>
           </a>
-          <div [innerHTML]="novel.description" appMinimizeBtn minimizedMaxHeight="8.5em" color="stacked">
-
-          </div>
+          <div [innerHTML]="novel.description" appMinimizeBtn minimizedMaxHeight="8.5em" color="stacked"></div>
         </div>
       </div>
     </li>

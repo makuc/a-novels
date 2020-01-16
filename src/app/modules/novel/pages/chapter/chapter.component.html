@@ -20,7 +20,7 @@
         <mat-icon>close</mat-icon>
       </button>
     </div>
-    <app-toc *ngIf="chs[0]" [novelID]="chs[0].novel.id"></app-toc>
+    <app-toc *ngIf="chs[0]" [novelID]="chs[0].novel.id" [toc]="toc$ | async"></app-toc>
   </div>
 
   <div id="no-ch" class="end scrollTo" *ngIf="done$ | async">

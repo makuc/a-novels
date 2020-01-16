@@ -2,7 +2,7 @@ import { dbKeys } from 'src/app/keys.config';
 import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { firestore } from 'firebase/app';
-import { first, map, tap, takeUntil, exhaustMap, debounceTime } from 'rxjs/operators';
+import { first, map, tap, takeUntil, exhaustMap, debounceTime, shareReplay } from 'rxjs/operators';
 import { Chapter, ChapterMeta } from 'src/app/shared/models/novels/chapter.model';
 import { NovelService } from './novel.service';
 import { ChaptersStats, ChaptersList, TOC } from 'src/app/shared/models/novels/chapters-stats.model';
@@ -42,6 +42,7 @@ export class ChaptersService implements OnDestroy {
   done: Observable<boolean> = this._done.asObservable();
   loading: Observable<boolean> = this._loading.asObservable();
   readToc: TOC;
+  readToc$: Observable<TOC>;
 
   constructor(
     private afs: AngularFirestore,
@@ -80,9 +81,12 @@ export class ChaptersService implements OnDestroy {
     this.cursor = chapterID;
     this.cursorPrev = chapterID;
 
-    this.toc().pipe(
+    this.readToc$ = this.toc().pipe(
       map(toc => this.tocFilterPublic(toc)),  // We are only interested in PUBLIC chapter
       tap(() => this._done.next(false)),      // If changed, enable another try for additional chapters!
+      shareReplay(1)
+    );
+    this.readToc$.pipe(
       takeUntil(this.end)                     // Unsubscribe when destroyed
     ).subscribe(toc => this.readToc = toc);
 
@@ -180,13 +184,14 @@ export class ChaptersService implements OnDestroy {
 
   toc(novelID = this.novelID): Observable<TOC> {
     this.novelID = novelID;
-    const toc$ = this.tocAll(novelID).pipe(
-      map(toc => this.tocFilterPublic(toc))
+    this.readToc$ = this.tocAll(novelID).pipe(
+      map(toc => this.tocFilterPublic(toc)),
+      shareReplay(1)
     );
-    toc$.pipe(
-      first()
+    this.readToc$.pipe(
+      takeUntil(this.end)
     ).subscribe(toc => this.readToc = toc);
-    return toc$;
+    return this.readToc$;
   }
   tocAll(novelID = this.novelID): Observable<TOC> {
     this.novelID = novelID;
@@ -261,6 +266,18 @@ export class ChaptersService implements OnDestroy {
       createdAt: this.timestamp,
       public: chapter.public || false
     };
+
+    let updateIndex: string;
+    if (chapter.id && stats) {
+      const indexes = Object.keys(stats.toc);
+      for (const i in indexes) {
+        if (stats.toc[i].id === chapter.id) {
+          updateIndex = i;
+          break;
+        }
+      }
+    }
+
     // Get a new write batch
     const batch = this.afs.firestore.batch();
 
@@ -288,9 +305,9 @@ export class ChaptersService implements OnDestroy {
       public: firestore.FieldValue.increment(chapter.public ? 1 : 0),
       private: firestore.FieldValue.increment(chapter.public ? 0 : 1),
       toc: {
-        [stats.nextIndex]: chapterMeta
+        [updateIndex ? updateIndex : stats.nextIndex]: chapterMeta
       },
-      nextIndex: firestore.FieldValue.increment(1)
+      nextIndex: firestore.FieldValue.increment(updateIndex ? 0 : 1)
     }, { merge: true });
 
     // Commit the batch
@@ -358,7 +375,7 @@ export class ChaptersService implements OnDestroy {
           batch.update(statsRef, {
             updatedAt: this.timestamp,
             id: chapterID,
-            private: firestore.FieldValue.arrayRemove(chapterMeta)
+            private: firestore.FieldValue.arrayRemove(chapterMeta),
           });
         }
 

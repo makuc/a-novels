@@ -20,16 +20,16 @@
       <div class="inblock opaque cursor-help" matTooltip="Date created" matTooltipClass="t-closer">
         {{ toDate(novel.createdAt) | date }}
       </div>
-      <span class="opaque">
+      <span class="opaque" *ngIf="{ toc: toc$ | async } as t">
         |
         <div class="inblock cursor-help" matTooltip="Chapters released to-date" matTooltipClass="t-closer">
           <mat-icon inline>library_books</mat-icon>
-          {{ toc ? toc.indexes.length : 0 }}
+          {{ t.toc ? t.toc.indexes.length : 0 }}
         </div>
         |
         <div class="inblock cursor-help" matTooltip="Release over the past month" matTooltipClass="t-closer">
             <mat-icon inline>trending_up</mat-icon>
-            {{ toc ? calcReleaseRate(toc) : 0 }} chs / week
+            {{ t.toc ? calcReleaseRate(t.toc) : 0 }} chs / week
         </div>
       </span>
     </div>

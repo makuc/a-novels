@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { dbKeys } from 'src/app/keys.config';
-import { Observable } from 'rxjs';
+import { Observable, EMPTY } from 'rxjs';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { HttpErrorsHelper } from '../helpers/http-errors.helper';
 import { switchMap } from 'rxjs/operators';
@@ -39,7 +39,7 @@ export class HistoryService extends HttpErrorsHelper {
     if (!path || !key) { return this.rejectDataObservable; }
     return this.auth.getUser.pipe(
       switchMap(user => {
-        if (!user) { return null; }
+        if (!user) { return EMPTY; }
         const fullPath = `${dbKeys.CHistory}/${user.uid}/${path}/${key}`;
         return this.afs.doc<T>(fullPath).valueChanges();
       })
