@@ -118,7 +118,7 @@
         <mat-icon class="tab-icon">toc</mat-icon>
         <strong>Chapters</strong>
       </ng-template>
-      <div class="toc" *ngIf="toc$ | async; else noChs">
+      <div class="toc" *ngIf="toc$ | async as toc; else noChs">
         <app-toc [novelID]="novelID" [toc]="toc" pagination></app-toc>
       </div>
       <ng-template #noChs>

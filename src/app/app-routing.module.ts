@@ -16,7 +16,7 @@ const redirectLoggedInToLibrary = () => redirectLoggedInTo(['library']);
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'browse',
     pathMatch: 'full'
   },
   {

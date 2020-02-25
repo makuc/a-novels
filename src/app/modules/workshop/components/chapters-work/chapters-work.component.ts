@@ -39,13 +39,17 @@ export class ChaptersWorkComponent implements OnInit {
     );
   }
 
-  displayIndex(index: string): number {
-    return parseInt(index, 10) + 1;
-  }
-
   togglePrivate(chapterID: string, state: boolean) {
     this.chsBusy = true;
     this.chapters.chapterPublicToggle(chapterID, state).subscribe(
+      () => this.chsBusy = false,
+      err => console.error(err)
+    );
+  }
+
+  deleteChapter(chapterID: string, curPublic: boolean) {
+    this.chsBusy = true;
+    this.chapters.chapterRemove(chapterID, curPublic).subscribe(
       () => this.chsBusy = false,
       err => console.error(err)
     );

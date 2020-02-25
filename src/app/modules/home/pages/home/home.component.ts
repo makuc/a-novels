@@ -12,7 +12,8 @@ import { Subject } from 'rxjs';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   private destroyer = new Subject<void>();
-  tabs = ['assets/img/carousel/bird2.jpg', 'assets/img/carousel/bird1.jpg', 'assets/img/carousel/bird3.jpg'];
+  tabs = ['assets/img/carousel/pic1.jpg', 'assets/img/carousel/pic2.jpg', 'assets/img/carousel/pic3.jpg'];
+  urls = ['/novel/oYVtELIBo9yItle7ZFZJ', '/novel/LSxDRnPrMupOWxBHEPfE', '/novel/1jpiDvAHvZZUU8XZps5p'];
   currentUser: User;
   users = [];
 

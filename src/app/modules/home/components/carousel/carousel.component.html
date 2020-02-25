@@ -5,8 +5,10 @@
       <ng-template mat-tab-label>
         <mat-icon color="primary">{{ index == selected ? "radio_button_checked" : "radio_button_unchecked" }}</mat-icon>
       </ng-template>
-      <img app-swipe-side src="{{ imageUrl }}" width="100%"
+      <a [routerLink]="urls[index]">
+        <img app-swipe-side [src]="imageUrl" width="100%"
            (swipeleft)="nextTab()" (swiperight)="prevTab()" data-mc-options='{ "touchAction": "pan-y" }'>
+      </a>
     </mat-tab>
   </mat-tab-group>
   <app-btn-switch [nTabs]="tabs.length" [(selected)]="selected"></app-btn-switch>

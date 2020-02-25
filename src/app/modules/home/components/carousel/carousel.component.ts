@@ -9,6 +9,7 @@ import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 export class CarouselComponent implements OnInit {
 
   @Input() tabs: string[];
+  @Input() urls: string[];
   selected = 0;
 
   constructor() { }

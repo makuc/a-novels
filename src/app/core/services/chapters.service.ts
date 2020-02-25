@@ -9,6 +9,7 @@ import { ChaptersStats, ChaptersList, TOC } from 'src/app/shared/models/novels/c
 import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
 import { HistoryService } from './history.service';
 import { HistoryNovel } from 'src/app/shared/models/history/history.model';
+import { NovelMeta } from 'src/app/shared/models/novels/novel.model';
 
 interface TmpChStats {
   stats: ChaptersStats;
@@ -239,7 +240,7 @@ export class ChaptersService implements OnDestroy {
 
   chapterAdd(chapter: Chapter, novelID = this.novelID): Observable<void> {
     return this.afs.doc<ChaptersStats>(this.pathStats(novelID)).valueChanges().pipe(
-      debounceTime(200),
+      debounceTime(250),
       exhaustMap(stats => this.ensureNovelMetaExists(stats, novelID)),
       exhaustMap(stats => this.chapterSet(chapter, stats)),
       first()
@@ -247,8 +248,19 @@ export class ChaptersService implements OnDestroy {
   }
 
   private ensureNovelMetaExists(stats: ChaptersStats, novelID: string = this.novelID): Observable<ChaptersStats> {
-    if (stats && stats.novel) {
-      return of<ChaptersStats>(stats);
+    if (stats) {
+      return this.novels.novelGet(novelID).pipe(
+        map(novel => {
+          return {
+            ...stats,
+            novel: {
+              id: novel.id,
+              title: novel.title
+            } as NovelMeta,
+            author: novel.author
+          } as ChaptersStats;
+        })
+      );
     } else {
       return this.novels.novelGet(novelID).pipe(
         map(novel => new ChaptersStats({
@@ -268,9 +280,14 @@ export class ChaptersService implements OnDestroy {
     };
 
     let updateIndex: string;
+
+    let indexes: string[];
+    if (stats && stats.toc) {
+      indexes = Object.keys(stats.toc);
+    }
+
     if (chapter.id && stats) {
-      const indexes = Object.keys(stats.toc);
-      for (const i in indexes) {
+       for (const i in indexes) {
         if (stats.toc[i].id === chapter.id) {
           updateIndex = i;
           break;
@@ -299,6 +316,25 @@ export class ChaptersService implements OnDestroy {
 
     // Update stats
     const statsRef = this.afs.doc<ChaptersStats>(this.pathStats(stats.novel.id)).ref;
+/*
+    let newIndex = 0;
+    if (!updateIndex && indexes) {
+      console.log('calc newIndex');
+      // tslint:disable-next-line: forin
+      for (const rawI in indexes) {
+        console.log('rawI:', rawI);
+        const i = parseInt(rawI, 10);
+        if (i >= newIndex) {
+          newIndex = i + 1;
+        }
+      }
+    }
+    console.log('newIndex-orig:', newIndex);
+    if (newIndex < stats.nextIndex) {
+      newIndex = stats.nextIndex;
+    }
+    console.log('newIndex:', newIndex);
+*/
     batch.set(statsRef, {
       updatedAt: this.timestamp,
       id: newChapterID,
@@ -319,7 +355,6 @@ export class ChaptersService implements OnDestroy {
       exhaustMap(stats => {
         const toc = stats.toc;
         const index = this.chapterID_to_index(toc, chapterID);
-        const ch = toc[index];
 
         const batch = this.afs.firestore.batch();
         const chapterRef = this.afs.doc<Chapter>(this.pathCh(chapterID, novelID)).ref;
@@ -330,20 +365,14 @@ export class ChaptersService implements OnDestroy {
 
         const statsRef = this.afs.doc<ChaptersStats>(this.pathStats(novelID)).ref;
 
+        toc[index].public = !currentPublic;
+
         batch.update(statsRef, {
           id: chapterID,
           updatedAt: this.timestamp,
           public: firestore.FieldValue.increment(currentPublic ? -1 : 1),
           private: firestore.FieldValue.increment(currentPublic ? 1 : -1),
-          toc: {
-            ...toc,
-            [index]: {
-              id: ch.id,
-              title: ch.title,
-              createdAt: ch.createdAt,
-              public: !currentPublic
-            }
-          }
+          toc
         });
 
         return batch.commit();
@@ -351,34 +380,35 @@ export class ChaptersService implements OnDestroy {
       first()
     );
   }
-  chapterRemove(chapterID: string, novelID: string = this.novelID): Observable<void> {
-    return this.afs.doc<Chapter>(this.pathCh(chapterID, novelID)).valueChanges().pipe(
-      exhaustMap(chapter => {
-        const chapterMeta: ChapterMeta = {
-          id: chapter.id,
-          title: chapter.title,
-          public: chapter.public
-        };
+  chapterRemove(chapterID: string, currentPublic: boolean, novelID: string = this.novelID): Observable<void> {
+    return this.afs.doc<ChaptersStats>(this.pathStats(novelID)).valueChanges().pipe(
+      exhaustMap(stats => {
+        const toc = stats.toc;
+        const indexes = Object.keys(toc);
+        const index = this.chapterID_to_index(toc, chapterID);
 
         const batch = this.afs.firestore.batch();
         const chapterRef = this.afs.doc<Chapter>(this.pathCh(chapterID, novelID)).ref;
         batch.delete(chapterRef);
 
         const statsRef = this.afs.doc<ChaptersStats>(this.pathStats(novelID)).ref;
-        if (chapter.public) {
-          batch.update(statsRef, {
-            updatedAt: this.timestamp,
-            id: chapterID,
-            public: firestore.FieldValue.arrayRemove(chapterMeta)
-          });
-        } else {
-          batch.update(statsRef, {
-            updatedAt: this.timestamp,
-            id: chapterID,
-            private: firestore.FieldValue.arrayRemove(chapterMeta),
-          });
+
+        let i = index;
+        while (i < indexes.length - 1) {
+          toc[i] = toc[i + 1];
+          i++;
         }
 
+        delete toc[indexes.length - 1];
+
+        batch.update(statsRef, {
+          id: chapterID,
+          updatedAt: this.timestamp,
+          public: firestore.FieldValue.increment(currentPublic ? -1 : 0),
+          private: firestore.FieldValue.increment(currentPublic ? 0 : -1),
+          toc,
+          nextIndex: firestore.FieldValue.increment(-1)
+        });
         return batch.commit();
       }),
       first()
@@ -389,12 +419,13 @@ export class ChaptersService implements OnDestroy {
     const keys = Object.keys(toc);
     let index: string = null;
 
-    for (const key in keys) {
-      if (toc[key].id === chapterID) {
-        index = key;
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < keys.length; i++) {
+      if (toc[i] && toc[i].id === chapterID) {
+        index = keys[i];
+        break;
       }
     }
-
     return parseInt(index, 10);
   }
 

@@ -7,7 +7,7 @@
         </div>
 
         <div fxFlex fxFlexAlign.xs="stretch">
-          <a class="l" routerLink="/workshop/novel/{{ novel.id }}">
+          <a class="l" routerLink="/novel/{{ novel.id }}">
             <h2>{{ novel.title }}</h2>
           </a>
           <div [innerHTML]="novel.description" appMinimizeBtn minimizedMaxHeight="8.5em" color="stacked"></div>

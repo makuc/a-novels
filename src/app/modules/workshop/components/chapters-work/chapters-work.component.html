@@ -8,10 +8,10 @@
         cdkDropListLockAxis="y"
         [cdkDropListDisabled]="chsBusy">
 
-      <li *ngFor="let i of rtoc" cdkDrag>
+      <li *ngFor="let i of rtoc; let index = index" cdkDrag>
         <div class="ch-placeholder" *cdkDragPlaceholder></div>
         <div class="ch-content">
-          <div class="index" [class.private]="!toc.toc[i].public">{{ displayIndex(i) }}</div>
+          <div class="index" [class.private]="!toc.toc[i].public">{{ rtoc.length - index }}</div>
 
           <a class="l l-inner title"
             [class.private]="!toc.toc[i].public"
@@ -31,7 +31,7 @@
                     [attr.aria-label]="toc.toc[i].public ? 'Make chapter private' : 'Make chapter public'">
               <app-icon>{{ toc.toc[i].public ? 'visibility' : 'visibility_off' }}</app-icon>
             </button>
-            <button type="button"
+            <button type="button" (click)="deleteChapter(toc.toc[i].id, toc.toc[i].public)"
                     appBtn color="warn" aria-label="Delete chapter" matTooltip="Delete chapter">
               <app-icon>delete</app-icon>
             </button>

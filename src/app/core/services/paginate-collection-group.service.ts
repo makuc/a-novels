@@ -98,7 +98,7 @@ export class PaginateCollectionGroupService<T> extends HttpErrorsHelper implemen
 
   // Maps the snapshot to usable format the updates source
   private mapAndUpdate(col: AngularFirestoreCollectionGroup<T>) {
-    console.log('load more?', this._done.value, this._loading.value);
+    // console.log('load more?', this._done.value, this._loading.value);
     if (this._done.value || this._loading.value) { return; }
 
     // loading
@@ -115,7 +115,7 @@ export class PaginateCollectionGroupService<T> extends HttpErrorsHelper implemen
   }
 
   private processSnaps(snaps: DocumentChangeAction<T>[]) {
-    console.log('processing snaps');
+    // console.log('processing snaps');
     const value = this._data.value;
     const newDocs: CompiledSnapshot<T>[] = [];
 
